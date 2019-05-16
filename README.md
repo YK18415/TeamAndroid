@@ -1,5 +1,7 @@
 # TeamAndroid
 Dies ist ein Projekt von der Ostfalia Hochschule für angewandte Wissenschaften.
+"Icon made by Freepik from www.flaticon.com"
+
 
 ## Team-Konventionen:
 1. Kommentare (inkl. JavaDoc) auf englisch.

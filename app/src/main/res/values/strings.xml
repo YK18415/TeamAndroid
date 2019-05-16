@@ -1,4 +1,11 @@
 <resources>
+    <!-- LoginActivity -->
+    <string name="loginActivity_Headline">Login</string>
+    <string name="loginActivity_TextView_Role">Sind sind ...</string>
+    <string name="loginActivity_Role_Betreuer">Betreuer</string>
+    <string name="loginActivity_Role_Betreuter">Betreuter</string>
+    <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>
+
     <string name="app_name">TeamAndroid</string>
     <string name="title_activity_login">LoginActivity</string>
 </resources>

@@ -23,29 +23,25 @@ public class LoginActivity extends AppCompatActivity {
 
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
-        final EditText editTextPhonenumber = findViewById(R.id.editText_Phonenumber);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login(radioButtonRoleBetreuer, radioButtonRoleBetreuter, editTextPhonenumber);
+                login(radioButtonRoleBetreuer, radioButtonRoleBetreuter);
             }
         });
     }
 
-    private void login(RadioButton radioButtonRoleBetreuer, RadioButton radioButtonRoleBetreuter, EditText editTextPhonenumber) {
+    private void login(RadioButton radioButtonRoleBetreuer, RadioButton radioButtonRoleBetreuter) {
         //Storage:
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
-
-        if(!TextUtils.isEmpty(editTextPhonenumber.getText())) {
-            if(radioButtonRoleBetreuer.isChecked()) {
-                editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
-            } else {
-                editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
-            }
-            editor.commit();
+        if(radioButtonRoleBetreuer.isChecked()) {
+            editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
+        } else {
+            editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
         }
+        editor.commit();
     }
 
 }

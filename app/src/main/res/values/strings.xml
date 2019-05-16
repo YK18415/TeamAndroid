@@ -6,6 +6,12 @@
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
     <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>
 
+    <!-- MainActivity - Betreuer -->
     <string name="app_name">TeamAndroid</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="ContactList">Person wählen</string>
+    <string name="AddPersonToCantactList">Kontaktliste erweitern</string>
+    <string name="TextView_Receiver_Headline">Anrufen:</string>
+    <string name="TextView_Receiver">---------------</string>
+    <string name="anrufen">anrufen</string>
 </resources>

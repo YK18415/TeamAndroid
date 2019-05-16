@@ -1,5 +1,6 @@
 package android.ostfalia.teamandroid;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
         }
         editor.commit();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
 }

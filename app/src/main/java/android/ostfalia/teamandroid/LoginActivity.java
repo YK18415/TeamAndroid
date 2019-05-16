@@ -1,11 +1,14 @@
 package android.ostfalia.teamandroid;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
@@ -32,7 +35,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(RadioButton radioButtonRoleBetreuer, RadioButton radioButtonRoleBetreuter, EditText editTextPhonenumber) {
+        //Storage:
+        SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
 
+        if(!TextUtils.isEmpty(editTextPhonenumber.getText())) {
+            if(radioButtonRoleBetreuer.isChecked()) {
+                editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
+            } else {
+                editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
+            }
+            editor.commit();
+        }
     }
 
 }

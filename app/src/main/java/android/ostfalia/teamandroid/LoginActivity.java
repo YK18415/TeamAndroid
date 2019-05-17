@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().hide();
         setContentView(R.layout.activity_login);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         //Storage:
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
+
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
             Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
             startActivity(intent);

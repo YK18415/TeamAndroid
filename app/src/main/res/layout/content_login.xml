@@ -103,18 +103,19 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="297dp"
+        android:layout_width="374dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:inputType="textPassword"
+        android:hint="@string/loginActivity_TextView_Password"
+        android:inputType="textVisiblePassword|textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.183"
-        app:layout_constraintStart_toStartOf="@+id/textViewPassword"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPassword"
         app:layout_constraintVertical_bias="0.0" />
 

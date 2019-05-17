@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".LoginActivity"
     tools:showIn="@layout/activity_login">
@@ -36,14 +37,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.008" />
+        app:layout_constraintVertical_bias="0.06" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="181dp"
         android:layout_height="142dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.392"
@@ -76,24 +77,11 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textViewPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/loginActivity_TextView_Password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.306"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
-
-    <TextView
         android:id="@+id/textView"
         android:layout_width="350dp"
         android:layout_height="71dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:text="@string/loginActivity_TextView_Description"
         app:layout_constraintEnd_toEndOf="parent"
@@ -103,19 +91,33 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="297dp"
+        android:layout_width="299dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:inputType="textPassword"
+        android:hint="@string/loginActivity_TextView_Password"
+        android:inputType="textVisiblePassword|textPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.178" />
+
+    <ImageButton
+        android:id="@+id/imageButtonInfoPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.183"
-        app:layout_constraintStart_toStartOf="@+id/textViewPassword"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPassword"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.281"
+        app:layout_constraintStart_toEndOf="@+id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.157"
+        app:srcCompat="@android:drawable/ic_menu_info_details" />
 
 </android.support.constraint.ConstraintLayout>

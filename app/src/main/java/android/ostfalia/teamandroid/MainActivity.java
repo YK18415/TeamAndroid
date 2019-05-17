@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().hide();
         setContentView(R.layout.activity_main);
 
         savedData = getApplicationContext().getSharedPreferences("PEOPLE", MODE_PRIVATE); //lesen

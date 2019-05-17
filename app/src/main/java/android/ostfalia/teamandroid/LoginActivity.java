@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -19,23 +20,30 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActionBar().hide();
         setContentView(R.layout.activity_login);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
+        final ImageButton imageButtonInfoPassword = findViewById(R.id.imageButtonInfoPassword);
         editTextPassword = findViewById(R.id.editTextPassword);
-        final TextView textViewPassword =  findViewById(R.id.textViewPassword);
 
         editTextPassword.setVisibility(View.GONE);
-        textViewPassword.setVisibility(View.GONE);
+        imageButtonInfoPassword.setVisibility(View.GONE);
 
         radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.VISIBLE);
-                textViewPassword.setVisibility(View.VISIBLE);
+                imageButtonInfoPassword.setVisibility(View.VISIBLE);
+                imageButtonInfoPassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: add infos about masterpassword
+                    }
+                });
             }
         });
 
@@ -43,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.GONE);
-                textViewPassword.setVisibility(View.GONE);
+                imageButtonInfoPassword.setVisibility(View.GONE);
             }
         });
 
@@ -60,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         //Storage:
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
+
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
             Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
             startActivity(intent);
@@ -74,5 +83,4 @@ public class LoginActivity extends AppCompatActivity {
         }
         editor.commit();
     }
-
 }

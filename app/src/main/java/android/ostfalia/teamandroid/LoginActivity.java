@@ -12,8 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
+
+    EditText editTextPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,27 @@ public class LoginActivity extends AppCompatActivity {
 
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        final TextView textViewPassword =  findViewById(R.id.textViewPassword);
+
+        editTextPassword.setVisibility(View.GONE);
+        textViewPassword.setVisibility(View.GONE);
+
+        radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextPassword.setVisibility(View.VISIBLE);
+                textViewPassword.setVisibility(View.VISIBLE);
+            }
+        });
+
+        radioButtonRoleBetreuer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextPassword.setVisibility(View.GONE);
+                textViewPassword.setVisibility(View.GONE);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -39,12 +63,18 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
+            startActivity(intent);
         } else {
-            editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
+            if(!TextUtils.isEmpty(editTextPassword.getText())) {
+                editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
+                editor.putString("password", String.valueOf(editTextPassword.getText()));
+
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);// TODO: Refactoren
+                startActivity(intent);
+            }
         }
         editor.commit();
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
     }
 
 }

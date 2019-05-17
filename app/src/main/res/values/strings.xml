@@ -5,6 +5,7 @@
     <string name="loginActivity_Role_Betreuer">Betreuer</string>
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
     <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>
+    <string name="loginActivity_TextView_Password">Das Sicherheitspasswort für den Betreuer ist ...</string>
 
     <!-- MainActivity - Betreuer -->
     <string name="app_name">TeamAndroid</string>

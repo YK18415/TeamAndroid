@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,5 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
 }

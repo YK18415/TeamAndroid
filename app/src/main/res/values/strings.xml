@@ -16,4 +16,9 @@
     <string name="TextView_Receiver_Headline">Anrufen:</string>
     <string name="TextView_Receiver">---------------</string>
     <string name="anrufen">anrufen</string>
+
+
+    <string-array name="spinnerContactInit">
+        <item>Bitte auswählen...</item>
+    </string-array>
 </resources>

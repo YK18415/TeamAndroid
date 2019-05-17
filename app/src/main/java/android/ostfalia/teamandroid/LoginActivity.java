@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         //Storage:
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
+
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
             Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
             startActivity(intent);

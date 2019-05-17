@@ -1,10 +1,14 @@
 package android.ostfalia.teamandroid;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     SharedPreferences.Editor editor;
     SharedPreferences savedData;
 
+    private static final int REQUEST_PHONE_CALL = 123; // TODO: Wofür ist das?
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +49,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // Validate, rather user has done login before:
         validateFirstLogin();
+        // Validate, rather user has allowed the Call-Permission before:
+        validatePhoneCallPermission();
 
         spinnerContactList = findViewById(R.id.spinnerContactList);
-            spinnerContactList.setOnItemSelectedListener(this);
+        spinnerContactList.setOnItemSelectedListener(this);
         btnAddPerson = findViewById(R.id.btnAddPerson);
         btnCall = findViewById(R.id.btnCall);
         textViewReceiver = findViewById(R.id.textViewReceiver);
@@ -61,15 +69,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-//        this.fillSpinner();
-
-/*        btnContactList.setOnClickListener(new View.OnClickListener() {
+        btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseReceiver();
+                call();
             }
         });
-*/  }
+    }
 
     private void validateFirstLogin() {
         String role;
@@ -81,21 +87,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    /**Called by Android OS on Pause
-     *
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        this.saveContactList();
+    private void validatePhoneCallPermission() {
+        if(checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+        }
     }
 
-    /**Called by Android OS on Resume
-     *
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
+        /**Called by Android OS on Pause
+         *
+         */
+        @Override
+        protected void onPause() {
+            super.onPause();
+            this.saveContactList();
+        }
+
+        /**Called by Android OS on Resume
+         *
+         */
+        @Override
+        protected void onResume() {
+            super.onResume();
 
         this.loadContactList();
         String[] names = this.convertPersonListToNamesArray();
@@ -130,13 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         } else {
             this.fillSpinnerInitial();
-/*            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
-            int numberElements = adapter.getCount();
-            for(int position = 0; position < numberElements; position++) {
-                personList.add(new Person(adapter.getItem(position).toString()));
-
-            }
-*/        }
+        }
     }
 
     /**Create List for showing by Spinner
@@ -165,12 +171,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //TODO Listener vom Spinner
+        textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void call() {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + textViewReceiver.getText()));
+        try {
+            startActivity(intent);
+        } catch(SecurityException se) {
+            se.printStackTrace();
+            Toast.makeText(MainActivity.this, "Es gab einen Fehler", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void chooseReceiver() {
@@ -204,10 +220,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                // TODO: Handle erstellter Contact.
                 Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
-                // added the newContact, who was created by the user:
 
+                // add the newContact, who was created by the user, to the benutzerList:
                 if(newContact != null && !betreuterList.contains(newContact)) {
                     betreuterList.add(newContact);
                 }

@@ -1,5 +1,7 @@
 package android.ostfalia.teamandroid;
 
+import android.text.Editable;
+
 import java.io.Serializable;
 
 public class Contact implements Serializable {

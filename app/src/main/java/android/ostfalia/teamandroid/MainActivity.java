@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnCall;
     TextView textViewReceiver;
 
-    List<Betreuter> betreuterList = new ArrayList<Betreuter>();
+    List<Contact> betreuterList = new ArrayList<Contact>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         textViewReceiver = findViewById(R.id.textViewReceiver);
 
         // Default-Betreute:
-        betreuterList.add(new Betreuter("Max", "Mustermann", "01234567891011"));
-        betreuterList.add(new Betreuter("Hallo", "Duda", "12343212121"));
+        betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
+        betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
 
         btnContactList.setOnClickListener(new View.OnClickListener() {
             @Override

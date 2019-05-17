@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         // Default-Betreute:
         betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
         betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
+
+        btnAddPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewPerson();
+            }
+        });
 
         btnContactList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,15 +79,29 @@ public class MainActivity extends AppCompatActivity {
         Dialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Wählen Sie eine Person.");
+        // TODO: Dismissal sofort!
         builder.setSingleChoiceItems(contactListString, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 textViewReceiver.setText(contactListString[which]);
             }
         });
-
         dialog = builder.create();
         dialog.show();
+    }
+
+    private void addNewPerson() {
+        Intent intent = new Intent(MainActivity.this, NewContact.class);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                // TODO: Handle erstellter Contact.
+            }
+        }
     }
 
     @Override

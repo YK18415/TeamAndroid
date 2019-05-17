@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_telephone_approval"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".NewContact"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

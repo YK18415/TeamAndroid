@@ -10,6 +10,7 @@ public class Contact {
     private long postcode;
     private String City;
 
+
     public Contact(String firstname, String lastname, String telephonenumber) {
         this.firstname = firstname;
         this.lastname = lastname;

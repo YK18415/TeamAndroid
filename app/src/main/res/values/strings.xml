@@ -17,18 +17,14 @@
     <string name="TextView_Receiver">---------------</string>
     <string name="anrufen">anrufen</string>
 
-<<<<<<< HEAD
-
     <string-array name="spinnerContactInit">
         <item>Bitte auswählen...</item>
     </string-array>
-=======
+
     <!-- NewContactActivity -->
     <string name="newContactActivity_textViewNewContactHeadline">Neuer Kontakt</string>
     <string name="newContactActivity_textViewMandatoryFields">Pflichtfelder:</string>
     <string name="newContactActivity_textViewOptionalFields">Optionale Felder:</string>
     <string name="newContactActivity_BtnStore">speichern</string>
 
-
->>>>>>> cc5ded42938be85fe0f0da427cd7ad05c6334ff1
 </resources>

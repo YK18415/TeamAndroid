@@ -27,16 +27,13 @@ public class LoginActivity extends AppCompatActivity {
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
         editTextPassword = findViewById(R.id.editTextPassword);
-        final TextView textViewPassword =  findViewById(R.id.textViewPassword);
 
         editTextPassword.setVisibility(View.GONE);
-        textViewPassword.setVisibility(View.GONE);
 
         radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.VISIBLE);
-                textViewPassword.setVisibility(View.VISIBLE);
             }
         });
 
@@ -44,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.GONE);
-                textViewPassword.setVisibility(View.GONE);
             }
         });
 
@@ -76,5 +72,4 @@ public class LoginActivity extends AppCompatActivity {
         }
         editor.commit();
     }
-
 }

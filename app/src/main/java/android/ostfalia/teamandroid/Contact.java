@@ -1,6 +1,8 @@
 package android.ostfalia.teamandroid;
 
-public class Contact {
+import java.io.Serializable;
+
+public class Contact implements Serializable {
 
     private String firstname;
     private String lastname;

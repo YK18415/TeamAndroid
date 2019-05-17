@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -35,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().hide();
         setContentView(R.layout.activity_main);
 
         savedData = getApplicationContext().getSharedPreferences("PEOPLE", MODE_PRIVATE); //lesen
@@ -54,28 +54,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
         betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
 
-
-
-
-
-
-
-
-
-
         btnAddPerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addNewPerson();
             }
         });
-
-
-
-
-
-
-
 
 //        this.fillSpinner();
 
@@ -86,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 */  }
-
-
 
     private void validateFirstLogin() {
         String role;
@@ -191,12 +173,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-
-
-
-
-
-
     private void chooseReceiver() {
        // final List<String> contactListString = new ArrayList<String>();
 
@@ -229,6 +205,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 // TODO: Handle erstellter Contact.
+                Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
+                // added the newContact, who was created by the user:
+
+                if(newContact != null && !betreuterList.contains(newContact)) {
+                    betreuterList.add(newContact);
+                }
             }
         }
     }

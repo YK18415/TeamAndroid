@@ -1,7 +1,8 @@
 <resources>
     <!-- LoginActivity -->
     <string name="loginActivity_Headline">Login</string>
-    <string name="loginActivity_TextView_Role">Sind sind ...</string>
+    <string name="loginActivity_TextView_Description">Diese App ist für Menschen gedacht, die besondere Aufmerksamkeit benötigen. Diese App hat für diese Betreuung ein Rollensystem eingeführt. Dabei richtet der Betreuer die App für den Betreuten ein.</string>
+    <string name="loginActivity_TextView_Role">Sind richten die Rolle des ...</string>
     <string name="loginActivity_Role_Betreuer">Betreuer</string>
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
     <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>

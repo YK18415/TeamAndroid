@@ -16,4 +16,12 @@
     <string name="TextView_Receiver_Headline">Anrufen:</string>
     <string name="TextView_Receiver">---------------</string>
     <string name="anrufen">anrufen</string>
+
+    <!-- NewContactActivity -->
+    <string name="newContactActivity_textViewNewContactHeadline">Neuer Kontakt</string>
+    <string name="newContactActivity_textViewMandatoryFields">Pflichtfelder:</string>
+    <string name="newContactActivity_textViewOptionalFields">Optionale Felder:</string>
+    <string name="newContactActivity_BtnStore">speichern</string>
+
+
 </resources>

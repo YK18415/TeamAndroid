@@ -1,7 +1,6 @@
 package android.ostfalia.teamandroid;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;

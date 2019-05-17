@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button btnCall;
     TextView textViewReceiver;
 
-    List<Contact> betreuterList = new ArrayList<Contact>();
+    List<Contact> betreuterList = new ArrayList<>();
     SharedPreferences.Editor editor;
     SharedPreferences savedData;
 

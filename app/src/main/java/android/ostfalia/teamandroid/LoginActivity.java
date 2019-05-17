@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -26,14 +27,23 @@ public class LoginActivity extends AppCompatActivity {
 
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
+        final ImageButton imageButtonInfoPassword = findViewById(R.id.imageButtonInfoPassword);
         editTextPassword = findViewById(R.id.editTextPassword);
 
         editTextPassword.setVisibility(View.GONE);
+        imageButtonInfoPassword.setVisibility(View.GONE);
 
         radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.VISIBLE);
+                imageButtonInfoPassword.setVisibility(View.VISIBLE);
+                imageButtonInfoPassword.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: add infos about masterpassword
+                    }
+                });
             }
         });
 
@@ -41,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.GONE);
+                imageButtonInfoPassword.setVisibility(View.GONE);
             }
         });
 

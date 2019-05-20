@@ -10,3 +10,7 @@ Dies ist ein Projekt von der Ostfalia Hochschule für angewandte Wissenschaften.
 4. Geschweifte Klammer im Methodenkopf.
 5. Eine Methode, eine Funktionalität.
 
+## Was festgehalten werden soll
+Der Betreute hat eine versteckte Interaktion, womit eine neue Interaktion sich öffnet. Nach einem Masterpassword könen dann die Informationen des Betreuers geändert werden.
+
+Der Betrerer kriegt eine Information, dass in der Betreutrensicht eine versteckte Interaktion gibt, die die Konatktinformationen des Betreuers ändert.

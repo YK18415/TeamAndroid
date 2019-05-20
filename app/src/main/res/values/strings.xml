@@ -35,4 +35,14 @@
     <string name="newContactActivity_PostcodeHint">Postleitzahl</string>
     <string name="newContactActivity_CityHint">Stadt/Dorf</string>
 
+    <!-- CallActivity -->
+    <string name="callActivity_auflegen">auflegen</string>
+    <string name="callActivity_Picture_Headline">Das Bild des Partners:</string>
+    <string name="callActivity_Button_Camera">Bild aufnehmen</string>
+    <string name="callActivity_Headline">Anruf aktiv</string>
+
+    <!-- CallActivity - Betreuter -->
+    <string name="callActivity_Decision_Headline">Genehmigung:</string>
+    <string name="callActivity_Decision">Genehmigung ausstehend</string>
+
 </resources>

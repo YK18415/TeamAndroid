@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    /**Validate, rather user has done login before
+     *
+     */
     private void validateFirstLogin() {
         String role;
         SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
@@ -87,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    /**Validate, rather user has allowed the Call-Permission before
+     *
+     */
     private void validatePhoneCallPermission() {
         if(checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
@@ -159,11 +165,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return names;
     }
 
+    /**Fill Spinner with saved data
+     *
+     * @param names Names-Array for chosing in Spinner
+     */
     private void setSpinnerAdapter(String[] names) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
         spinnerContactList.setAdapter(adapter);
     }
 
+    /**Fill Spinner with initial data if nothing's saved
+     *
+     */
     private void fillSpinnerInitial() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
         spinnerContactList.setAdapter(adapter);
@@ -189,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void chooseReceiver() {
+/*    private void chooseReceiver() {
        // final List<String> contactListString = new ArrayList<String>();
 
         final CharSequence[] contactListString = new CharSequence[betreuterList.size()];
@@ -210,7 +223,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog = builder.create();
         dialog.show();
     }
+*/
 
+    /**Open new Activity - NewContact
+     *
+     */
     private void addNewPerson() {
         Intent intent = new Intent(MainActivity.this, NewContact.class);
         startActivityForResult(intent, 1);
@@ -230,6 +247,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    /**Locks relogin possibility
+     *
+     */
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();

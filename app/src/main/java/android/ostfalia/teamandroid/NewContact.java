@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.Serializable;
-
 public class NewContact extends AppCompatActivity {
 
     Contact newContact;
@@ -60,7 +58,7 @@ public class NewContact extends AppCompatActivity {
                     }
 
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("CONTACT", (Serializable) newContact);
+                    resultIntent.putExtra("CONTACT", newContact);
                     setResult(RESULT_OK, resultIntent);
                     finish(); // ends current activity
                 }

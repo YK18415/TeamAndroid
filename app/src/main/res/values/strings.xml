@@ -27,5 +27,12 @@
     <string name="newContactActivity_textViewMandatoryFields">Pflichtfelder:</string>
     <string name="newContactActivity_textViewOptionalFields">Optionale Felder:</string>
     <string name="newContactActivity_BtnStore">speichern</string>
+    <string name="newContactActivity_FirstNameHint">Vorname</string>
+    <string name="newContactActivity_LastNameHint">Nachname</string>
+    <string name="newContactActivity_PhonenumberHint">Telefonenummer</string>
+    <string name="newContactActivity_StreetHint">Straße</string>
+    <string name="newContactActivity_StreetnumberHint">Nummer</string>
+    <string name="newContactActivity_PostcodeHint">Postleitzahl</string>
+    <string name="newContactActivity_CityHint">Stadt/Dorf</string>
 
 </resources>

@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         savedData = getApplicationContext().getSharedPreferences("PEOPLE", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
-        // Validate, rather user has done login before:
+        // Validate, that the user has logged in before:
         validateFirstLogin();
-        // Validate, rather user has allowed the Call-Permission before:
+        // Validate, that user has allowed the Call-Permission before:
         validatePhoneCallPermission();
 
         spinnerContactList = findViewById(R.id.spinnerContactList);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-    /**Validate, rather user has done login before
+    /**Validate, that the user has logged in before
      *
      */
     private void validateFirstLogin() {

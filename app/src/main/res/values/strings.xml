@@ -14,6 +14,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="ContactList">Person wählen</string>
     <string name="AddPersonToCantactList">Kontaktliste erweitern</string>
+    <string name="btnDeleteContact">Aktuellen Kontakt entfernen</string>
     <string name="TextView_Receiver_Headline">Anrufen:</string>
     <string name="TextView_Receiver">---------------</string>
     <string name="anrufen">anrufen</string>

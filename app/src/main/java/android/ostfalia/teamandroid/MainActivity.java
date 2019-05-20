@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     Spinner spinnerContactList;
     Button btnAddPerson;
+    ImageButton btnDeleteContact;
     Button btnCall;
     TextView textViewReceiver;
 
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerContactList = findViewById(R.id.spinnerContactList);
         spinnerContactList.setOnItemSelectedListener(this);
         btnAddPerson = findViewById(R.id.btnAddPerson);
+        btnDeleteContact = findViewById(R.id.btnDeleteContact);
         btnCall = findViewById(R.id.btnCall);
         textViewReceiver = findViewById(R.id.textViewReceiver);
 
@@ -69,12 +72,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        btnDeleteContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteContact();
+            }
+        });
+
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 call();
             }
         });
+    }
+
+    private void deleteContact() {
+        betreuterList.remove(spinnerContactList.getSelectedItemPosition());
+        this.setSpinnerAdapter(this.convertPersonListToNamesArray());
     }
 
     /**Validate, that the user has logged in before

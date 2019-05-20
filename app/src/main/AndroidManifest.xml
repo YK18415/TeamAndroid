@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.ostfalia.teamandroid">
 
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -11,9 +11,10 @@
         android:roundIcon="@mipmap/ic_telephone_approval"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NewContact"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity android:name=".CallActivity"></activity>
+        <activity
+            android:name=".NewContact"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"

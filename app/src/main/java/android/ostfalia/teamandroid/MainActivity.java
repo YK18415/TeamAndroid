@@ -88,8 +88,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void deleteContact() {
-        betreuterList.remove(spinnerContactList.getSelectedItemPosition());
-        this.setSpinnerAdapter(this.convertPersonListToNamesArray());
+        if(!this.betreuterList.isEmpty()) {
+            Dialog dialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Ausgewählten Kontakt löschen?");
+            builder.setCancelable(true);
+            builder.setPositiveButton(
+                    "Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            betreuterList.remove(spinnerContactList.getSelectedItemPosition());
+                            setSpinnerAdapter(convertPersonListToNamesArray());
+                        }
+                    });
+
+            builder.setNegativeButton(
+                    "No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            dialog = builder.create();
+            dialog.show();
+        }
     }
 
     /**Validate, that the user has logged in before
@@ -152,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void loadContactList() {
         if(savedData.contains("contactList")) {
-            String personSpinnerList = savedData.getString("contactList", "");
+            String contactSpinnerList = savedData.getString("contactList", "");
             Gson gson = new Gson();
-            Contact contactToArray[] = gson.fromJson(personSpinnerList, Contact[].class);
+            Contact[] contactToArray = gson.fromJson(contactSpinnerList, Contact[].class);
 
             for (int idx = 0; idx < contactToArray.length; idx++) {
                 if (idx >= betreuterList.size()) {

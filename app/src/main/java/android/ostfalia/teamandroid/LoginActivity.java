@@ -63,6 +63,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**Login onClickListener - checks which role is chosen and logs in
+     *
+     * @param radioButtonRoleBetreuer View radioButtonBetreuer
+     * @param radioButtonRoleBetreuter View radioButtonBetreuter
+     */
     private void login(RadioButton radioButtonRoleBetreuer, RadioButton radioButtonRoleBetreuter) {
         //Storage:
         SharedPreferences.Editor editor = getSharedPreferences("logindata", MODE_PRIVATE).edit();

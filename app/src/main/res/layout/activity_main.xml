@@ -38,14 +38,29 @@
     <Button
         android:id="@+id/btnAddPerson"
         android:layout_width="wrap_content"
-        android:layout_height="55sp"
-        android:layout_marginTop="41dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="37dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="212dp"
         android:text="@string/AddPersonToCantactList"
         app:layout_constraintBottom_toTopOf="@+id/textViewReceiver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerContactList" />
+
+    <ImageButton
+        android:id="@+id/btnDeleteContact"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="212dp"
+        android:contentDescription="@string/btnDeleteContact"
+        app:layout_constraintBottom_toTopOf="@+id/textViewCall"
+        app:layout_constraintEnd_toStartOf="@+id/btnAddPerson"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerContactList"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <TextView
         android:id="@+id/textViewCall"
@@ -74,7 +89,7 @@
     <Spinner
         android:id="@+id/spinnerContactList"
         android:layout_width="0dp"
-        android:layout_height="50sp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="150dp"
         android:layout_marginEnd="8dp"
@@ -88,18 +103,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-    <ImageButton
-        android:id="@+id/btnDeleteContact"
-        android:layout_width="55sp"
-        android:layout_height="55sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="55dp"
-        android:layout_marginBottom="200dp"
-        android:contentDescription="@string/btnDeleteContact"
-        app:layout_constraintBottom_toTopOf="@+id/textViewCall"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerContactList"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </android.support.constraint.ConstraintLayout>

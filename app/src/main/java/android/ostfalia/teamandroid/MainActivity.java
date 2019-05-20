@@ -29,6 +29,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private boolean initialState = false;
     Spinner spinnerContactList;
     Button btnAddPerson;
     ImageButton btnDeleteContact;
@@ -93,12 +94,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage("Ausgewählten Kontakt löschen?");
             builder.setCancelable(true);
+
             builder.setPositiveButton(
                     "Yes",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             betreuterList.remove(spinnerContactList.getSelectedItemPosition());
                             setSpinnerAdapter(convertPersonListToNamesArray());
+                            if (betreuterList.isEmpty()) {
+                                textViewReceiver.setText(R.string.TextView_Receiver);
+                                fillSpinnerInitial();
+                            }
                         }
                     });
 
@@ -153,8 +159,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             super.onResume();
 
         this.loadContactList();
-        String[] names = this.convertPersonListToNamesArray();
-        this.setSpinnerAdapter(names);
+        if(!betreuterList.isEmpty()) {
+            String[] names = this.convertPersonListToNamesArray();
+            this.setSpinnerAdapter(names);
+        } else
+            this.fillSpinnerInitial();
     }
 
     /**Saving personList as json
@@ -183,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     betreuterList.add(contactToArray[idx]);
                 }
             }
-        } else {
-            this.fillSpinnerInitial();
         }
     }
 
@@ -209,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setSpinnerAdapter(String[] names) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
         spinnerContactList.setAdapter(adapter);
+        this.initialState = false;
     }
 
     /**Fill Spinner with initial data if nothing's saved
@@ -217,11 +225,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void fillSpinnerInitial() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
         spinnerContactList.setAdapter(adapter);
+        this.initialState = true;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
+        if(!this.initialState)
+            textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
     }
 
     @Override

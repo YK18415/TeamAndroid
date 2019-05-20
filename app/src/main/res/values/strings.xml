@@ -20,7 +20,7 @@
     <string name="anrufen">anrufen</string>
 
     <string-array name="spinnerContactInit">
-        <item>Bitte auswählen...</item>
+        <item>Kein Kontakt vorhanden</item>
     </string-array>
 
     <!-- NewContactActivity -->

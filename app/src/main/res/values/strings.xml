@@ -6,7 +6,7 @@
     <string name="loginActivity_Role_Betreuer">Betreuer</string>
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
     <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>
-    <string name="loginActivity_TextView_Password">Das Sicherheitspasswort für den Betreuer ist ...</string>
+    <string name="loginActivity_TextView_Password">Sicherheitspasswort für Betreuer</string>
     <string name="loginActivity_Info_Password">Dieses Passwort für die Änderungen von empfindlichen Informationen (z.B. Händynummer des Bereuers) benötigt. Schreiben Sie sich das Passwort gut auf!</string>
 
     <!-- MainActivity - Betreuer -->

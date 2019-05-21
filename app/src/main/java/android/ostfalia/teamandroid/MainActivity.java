@@ -88,6 +88,135 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    /**
+     * Validate, that the user has logged in before
+     */
+    private void validateFirstLogin() {
+        String role;
+        savedData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        role = savedData.getString("role","");
+        if(TextUtils.isEmpty(role)) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        } else if(role.equals("Betreuer")) {
+            findViewById(R.id.content_betreuer).setVisibility(View.VISIBLE);
+            findViewById(R.id.content_betreuter).setVisibility(View.GONE);
+        } else if(role.equals("Betreuter")){
+            findViewById(R.id.content_betreuter).setVisibility(View.VISIBLE);
+            findViewById(R.id.content_betreuer).setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * Validate, rather user has allowed the Call-Permission before
+     */
+    private void validatePhoneCallPermission() {
+        if(checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+        }
+    }
+
+        /**
+         * Called by Android OS on Pause
+         */
+        @Override
+        protected void onPause() {
+            super.onPause();
+            this.saveContactList();
+        }
+
+        /**
+         * Called by Android OS on Resume
+         */
+        @Override
+        protected void onResume() {
+            super.onResume();
+
+        this.loadContactList();
+        if(!betreuterList.isEmpty()) {
+            String[] names = this.convertPersonListToNamesArray();
+            this.setSpinnerAdapter(names);
+        } else
+            this.fillSpinnerInitial();
+    }
+
+    /**
+     * Saving contactList as json
+     */
+    private void saveContactList() {
+        Gson gson = new Gson();
+        String listAsString = gson.toJson(betreuterList);
+        editor.putString("contactList", listAsString);
+
+        editor.commit();
+    }
+
+    /**
+     * Load contactList from json if possible
+     * Otherwise load initial contactList from xml
+     */
+    private void loadContactList() {
+        if(savedData.contains("contactList")) {
+            String contactSpinnerList = savedData.getString("contactList", "");
+            Gson gson = new Gson();
+            Contact[] contactToArray = gson.fromJson(contactSpinnerList, Contact[].class);
+
+            for (int idx = 0; idx < contactToArray.length; idx++) {
+                if (idx >= betreuterList.size()) {
+                    betreuterList.add(contactToArray[idx]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Create List for showing by Spinner
+     * @return String[] names
+     */
+    private String[] convertPersonListToNamesArray() {
+        String[] names = new String[betreuterList.size()];
+
+        int person_idx = 0;
+        for(Contact contact : betreuterList) {
+            names[person_idx++] = contact.getFirstname() + " " + contact.getLastname();
+        }
+        return names;
+    }
+
+    /**
+     * Fill Spinner with saved data
+     * @param names Names-Array for chosing in Spinner
+     */
+    private void setSpinnerAdapter(String[] names) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
+        spinnerContactList.setAdapter(adapter);
+        this.initialState = false;
+    }
+
+    /**
+     * Fill Spinner with initial data if nothing's saved
+     */
+    private void fillSpinnerInitial() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
+        spinnerContactList.setAdapter(adapter);
+        this.initialState = true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(!this.initialState)
+            textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    /**
+     * Delete onClickListener - Deletes selected contact
+     */
     private void deleteContact() {
         if(!this.betreuterList.isEmpty()) {
             Dialog dialog;
@@ -118,125 +247,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             dialog = builder.create();
             dialog.show();
         }
-    }
-
-    /**Validate, that the user has logged in before
-     *
-     */
-    private void validateFirstLogin() {
-        String role;
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-        role = settings.getString("role","");
-        if(TextUtils.isEmpty(role)) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    /**Validate, rather user has allowed the Call-Permission before
-     *
-     */
-    private void validatePhoneCallPermission() {
-        if(checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
-        }
-    }
-
-        /**Called by Android OS on Pause
-         *
-         */
-        @Override
-        protected void onPause() {
-            super.onPause();
-            this.saveContactList();
-        }
-
-        /**Called by Android OS on Resume
-         *
-         */
-        @Override
-        protected void onResume() {
-            super.onResume();
-
-        this.loadContactList();
-        if(!betreuterList.isEmpty()) {
-            String[] names = this.convertPersonListToNamesArray();
-            this.setSpinnerAdapter(names);
-        } else
-            this.fillSpinnerInitial();
-    }
-
-    /**Saving personList as json
-     *
-     */
-    private void saveContactList() {
-        Gson gson = new Gson();
-        String listAsString = gson.toJson(betreuterList);
-        editor.putString("contactList", listAsString);
-
-        editor.commit();
-    }
-
-    /**Load personList from json if possible
-     * Otherwise Load personList from xml
-     *
-     */
-    private void loadContactList() {
-        if(savedData.contains("contactList")) {
-            String contactSpinnerList = savedData.getString("contactList", "");
-            Gson gson = new Gson();
-            Contact[] contactToArray = gson.fromJson(contactSpinnerList, Contact[].class);
-
-            for (int idx = 0; idx < contactToArray.length; idx++) {
-                if (idx >= betreuterList.size()) {
-                    betreuterList.add(contactToArray[idx]);
-                }
-            }
-        }
-    }
-
-    /**Create List for showing by Spinner
-     *
-     * @return String[] names
-     */
-    private String[] convertPersonListToNamesArray() {
-        String[] names = new String[betreuterList.size()];
-
-        int person_idx = 0;
-        for(Contact contact : betreuterList) {
-            names[person_idx++] = contact.getFirstname() + " " + contact.getLastname();
-        }
-        return names;
-    }
-
-    /**Fill Spinner with saved data
-     *
-     * @param names Names-Array for chosing in Spinner
-     */
-    private void setSpinnerAdapter(String[] names) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
-        spinnerContactList.setAdapter(adapter);
-        this.initialState = false;
-    }
-
-    /**Fill Spinner with initial data if nothing's saved
-     *
-     */
-    private void fillSpinnerInitial() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
-        spinnerContactList.setAdapter(adapter);
-        this.initialState = true;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(!this.initialState)
-            textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     private void call() {
@@ -272,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 */
 
-    /**Open new Activity - NewContact
-     *
+    /**
+     * Open new Activity - NewContact
      */
     private void addNewPerson() {
         Intent intent = new Intent(MainActivity.this, NewContact.class);
@@ -294,8 +304,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    /**Locks relogin possibility
-     *
+    /**
+     * Locks relogin possibility
      */
     @Override
     public void onBackPressed() {

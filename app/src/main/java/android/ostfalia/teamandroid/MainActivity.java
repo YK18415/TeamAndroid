@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        savedData = getApplicationContext().getSharedPreferences("PEOPLE", MODE_PRIVATE); //lesen
+        savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
         // Validate, that the user has logged in before:
@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         textViewReceiver = findViewById(R.id.textViewReceiver);
 
         // Default-Betreute:
-        betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
-        betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
+//        betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
+//        betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
 
         btnAddPerson.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void validateFirstLogin() {
         String role;
-        savedData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-        role = savedData.getString("role","");
+        SharedPreferences loginData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        role = loginData.getString("role","");
         if(TextUtils.isEmpty(role)) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

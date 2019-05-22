@@ -7,13 +7,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.android.internal.telephony.ITelephony;
+
+import java.lang.reflect.Method;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -31,17 +38,32 @@ public class CallActivity extends AppCompatActivity {
         btnCallEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                endCall();
+                if (isCallActive(getApplicationContext())) {
+                    endCall();
+                } else {
+                    Toast.makeText(CallActivity.this, "Kein Anruf ist aktiv.", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 
     private void endCall() {
-        // TODO: With Receiver
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+            Method methods = telephonyManager.getClass().getDeclaredMethod("getITelephony");
+            methods.setAccessible(true);
+            Object iTelephony = methods.invoke(telephonyManager);
+
+            ITelephony telephony = (ITelephony) iTelephony;
+            telephony.endCall();
+
+        } catch (Exception e) {
+            Toast.makeText(CallActivity.this, "FATALER ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen.", Toast.LENGTH_LONG).show();
+        }
     }
 
-
-
+    // Code by Mauricio Manoel and slfan on StackOverflow:
     public static boolean isCallActive(Context context){
         AudioManager manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         if(manager.getMode() == AudioManager.MODE_IN_CALL || manager.getMode() == AudioManager.MODE_IN_COMMUNICATION){
@@ -49,6 +71,4 @@ public class CallActivity extends AppCompatActivity {
         }
         return false;
     }
-
-
 }

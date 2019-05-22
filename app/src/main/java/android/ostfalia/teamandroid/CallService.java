@@ -3,11 +3,14 @@ package android.ostfalia.teamandroid;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.telecom.Connection;
+import android.telecom.PhoneAccountHandle;
 import android.util.Log;
-import android.widget.Toast;
 
-public class CallService extends Service {
-    public CallService() {
+class ConnectionService extends Service {
+
+    public final void addExistingConnection (PhoneAccountHandle phoneAccountHandle, Connection connection) {
+
     }
 
     @Override

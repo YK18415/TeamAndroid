@@ -217,6 +217,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }, 1000);
 
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         new BackgroundTask().execute(textViewReceiver.getText().toString());
     }
 

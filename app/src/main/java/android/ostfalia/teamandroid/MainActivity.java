@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.google.gson.Gson;
 
@@ -29,14 +30,22 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private boolean initialState = false;
-    Spinner spinnerContactList;
-    Button btnAddPerson;
-    ImageButton btnDeleteContact;
-    Button btnCall;
-    TextView textViewReceiver;
+    private enum Role {BETREUER, BETREUTER}
 
-    List<Contact> betreuterList = new ArrayList<>();
+    private boolean initialState = false;
+    private Role role;
+
+    private Toolbar toolbar;
+    private Spinner spinnerContactList;
+    private TextView textViewReceiver;
+
+    private TextView textViewBetreuerName;
+    private TextView textViewBetreuerPhonenumber;
+    private TextView textViewBetreuerStreetNumber;
+    private TextView textViewBetreuerPostcode;
+    private TextView textViewBetreuerCity;
+
+    private List<Contact> contactList = new ArrayList<>();
     SharedPreferences.Editor editor;
     SharedPreferences savedData;
 
@@ -50,35 +59,61 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
-        // Validate, that the user has logged in before:
-        validateFirstLogin();
         // Validate, that user has allowed the Call-Permission before:
-        validatePhoneCallPermission();
-
-        spinnerContactList = findViewById(R.id.spinnerContactList);
-        spinnerContactList.setOnItemSelectedListener(this);
-        btnAddPerson = findViewById(R.id.btnAddPerson);
-        btnDeleteContact = findViewById(R.id.btnDeleteContact);
-        btnCall = findViewById(R.id.btnCall);
-        textViewReceiver = findViewById(R.id.textViewReceiver);
-
+        this.validatePhoneCallPermission();
+        // Validate, that the user has logged in before:
+        this.validateFirstLogin();
+        // initialize View
+        this.initView();
+        // set Content View
+        this.setContent();
+        // initialize Content
+        this.initContent();
         // Default-Betreute:
-//        betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
-//        betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
 
-        btnAddPerson.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewPerson();
-            }
-        });
+//        contactList.add(new Contact("Max", "Mustermann", "01234567891011"));
+//        contactList.add(new Contact("Hallo", "Duda", "12343212121"));
 
-        btnDeleteContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteContact();
-            }
-        });
+
+    }
+
+    /**
+     * Initialize View content
+     */
+    private void initView() {
+        switch(this.role) {
+            case BETREUER:
+                this.spinnerContactList = findViewById(R.id.spinnerContactList);
+                Button btnAddPerson = findViewById(R.id.btnAddPerson);
+                ImageButton btnDeleteContact = findViewById(R.id.btnDeleteContact);
+                this.textViewReceiver = findViewById(R.id.textViewReceiver);
+
+                this.spinnerContactList.setOnItemSelectedListener(this);
+                btnAddPerson.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addNewPerson();
+                    }
+                });
+
+                btnDeleteContact.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteContact();
+                    }
+                });
+            break;
+
+            case BETREUTER:
+                textViewBetreuerName = findViewById(R.id.textViewBetreuerName);
+                textViewBetreuerPhonenumber = findViewById(R.id.textViewBetreuerPhonenumber);
+                textViewBetreuerStreetNumber = findViewById(R.id.textViewBetreuerStreetNumber);
+                textViewBetreuerPostcode = findViewById(R.id.textViewBetreuerPostcode);
+                textViewBetreuerCity = findViewById(R.id.textViewBetreuerCity);
+            break;
+        }
+        this.toolbar = findViewById(R.id.toolbar);
+        Button btnCall = findViewById(R.id.btnCall);
 
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,17 +130,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String role;
         SharedPreferences loginData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
         role = loginData.getString("role","");
+
         if(TextUtils.isEmpty(role)) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-        } else if(role.equals("Betreuer")) {
-            findViewById(R.id.content_betreuer).setVisibility(View.VISIBLE);
-            findViewById(R.id.content_betreuter).setVisibility(View.GONE);
-        } else if(role.equals("Betreuter")){
-            findViewById(R.id.content_betreuter).setVisibility(View.VISIBLE);
-            findViewById(R.id.content_betreuer).setVisibility(View.GONE);
         }
+        if(role != null)
+            this.setRole(role);
 
+    }
+
+    private void setRole(String role) {
+        if(role.equals("Betreuer"))
+            this.role = Role.BETREUER;
+        else if(role.equals("Betreuter"))
+            this.role = Role.BETREUTER;
+    }
+
+    /**
+     * Set correct Content in Main Activity
+     */
+    private void setContent() {
+        switch(this.role) {
+            case BETREUER:
+                findViewById(R.id.content_betreuer).setVisibility(View.VISIBLE);
+                findViewById(R.id.content_betreuter).setVisibility(View.GONE);
+                this.toolbar.setTitle(R.string.label_overview_betreuer);
+            break;
+
+            case BETREUTER:
+                findViewById(R.id.content_betreuter).setVisibility(View.VISIBLE);
+                findViewById(R.id.content_betreuer).setVisibility(View.GONE);
+                this.toolbar.setTitle(R.string.label_overview_betreuter);
+            break;
+        }
     }
 
     /**
@@ -117,44 +175,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-        /**
-         * Called by Android OS on Pause
-         */
-        @Override
-        protected void onPause() {
-            super.onPause();
-            this.saveContactList();
-        }
-
-        /**
-         * Called by Android OS on Resume
-         */
-        @Override
-        protected void onResume() {
-            super.onResume();
-
-        this.loadContactList();
-        if(!betreuterList.isEmpty()) {
-            String[] names = this.convertPersonListToNamesArray();
-            this.setSpinnerAdapter(names);
-        } else
-            this.fillSpinnerInitial();
+    /**
+     * Called by Android OS on Pause
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.saveContactList();
     }
 
     /**
-     * Saving contactList as json
+     * Called by Android OS on Resume
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.loadContactList();
+        this.initContent();
+    }
+
+    private void initContent() {
+        switch (this.role) {
+            case BETREUER:
+                if(!contactList.isEmpty()) {
+                    String[] names = this.convertPersonListToNamesArray();
+                    this.setSpinnerAdapter(names);
+                } else
+                    this.fillSpinnerInitial();
+            break;
+            case BETREUTER:
+                if(!contactList.isEmpty()) {
+                    Contact contact = contactList.get(0);
+
+                    String buffer = contact.getFirstname()+" "+contact.getLastname();
+                    textViewBetreuerName.setText(buffer);
+                    textViewBetreuerPhonenumber.setText(contact.getTelephonenumber());
+
+                    buffer = contact.getStreet()+" "+contact.getHousenumber();
+                    textViewBetreuerStreetNumber.setText(buffer);
+
+                    textViewBetreuerPostcode.setText(String.valueOf(contact.getPostcode()));
+                    textViewBetreuerCity.setText(contact.getCity());
+                }
+            break;
+        }
+    }
+
+    /**
+     * Save contactList as json
      */
     private void saveContactList() {
         Gson gson = new Gson();
-        String listAsString = gson.toJson(betreuterList);
+        String listAsString = gson.toJson(contactList);
         editor.putString("contactList", listAsString);
 
         editor.commit();
     }
 
     /**
-     * Load contactList from json if possible
-     * Otherwise load initial contactList from xml
+     * Load contactList from json
      */
     private void loadContactList() {
         if(savedData.contains("contactList")) {
@@ -163,8 +242,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Contact[] contactToArray = gson.fromJson(contactSpinnerList, Contact[].class);
 
             for (int idx = 0; idx < contactToArray.length; idx++) {
-                if (idx >= betreuterList.size()) {
-                    betreuterList.add(contactToArray[idx]);
+                if (idx >= contactList.size()) {
+                    contactList.add(contactToArray[idx]);
                 }
             }
         }
@@ -175,10 +254,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @return String[] names
      */
     private String[] convertPersonListToNamesArray() {
-        String[] names = new String[betreuterList.size()];
+        String[] names = new String[contactList.size()];
 
         int person_idx = 0;
-        for(Contact contact : betreuterList) {
+        for(Contact contact : contactList) {
             names[person_idx++] = contact.getFirstname() + " " + contact.getLastname();
         }
         return names;
@@ -186,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /**
      * Fill Spinner with saved data
-     * @param names Names-Array for chosing in Spinner
+     * @param names Names-Array displayed in Spinner
      */
     private void setSpinnerAdapter(String[] names) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names);
@@ -195,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Fill Spinner with initial data if nothing's saved
+     * Fill Spinner with initial data
      */
     private void fillSpinnerInitial() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinnerContactInit, android.R.layout.simple_spinner_dropdown_item);
@@ -206,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(!this.initialState)
-            textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
+            textViewReceiver.setText(contactList.get(position).getTelephonenumber());
     }
 
     @Override
@@ -218,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Delete onClickListener - Deletes selected contact
      */
     private void deleteContact() {
-        if(!this.betreuterList.isEmpty()) {
+        if(!this.contactList.isEmpty()) {
             Dialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage("Ausgewählten Kontakt löschen?");
@@ -228,9 +307,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     "Yes",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            betreuterList.remove(spinnerContactList.getSelectedItemPosition());
+                            contactList.remove(spinnerContactList.getSelectedItemPosition());
                             setSpinnerAdapter(convertPersonListToNamesArray());
-                            if (betreuterList.isEmpty()) {
+                            if (contactList.isEmpty()) {
                                 textViewReceiver.setText(R.string.TextView_Receiver);
                                 fillSpinnerInitial();
                             }
@@ -250,7 +329,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void call() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + textViewReceiver.getText()));
+        Intent intent = null;
+        switch(this.role) {
+            case BETREUER:  intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + textViewReceiver.getText()));                break;
+            case BETREUTER: intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + textViewBetreuerPhonenumber.getText()));     break;
+        }
+
         try {
             startActivity(intent);
         } catch(SecurityException se) {
@@ -262,9 +346,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 /*    private void chooseReceiver() {
        // final List<String> contactListString = new ArrayList<String>();
 
-        final CharSequence[] contactListString = new CharSequence[betreuterList.size()];
-        for (int i = 0; i < betreuterList.size(); i++) {
-            contactListString[i] = betreuterList.get(i).getFirstname() + " " + betreuterList.get(i).getLastname();
+        final CharSequence[] contactListString = new CharSequence[contactList.size()];
+        for (int i = 0; i < contactList.size(); i++) {
+            contactListString[i] = contactList.get(i).getFirstname() + " " + contactList.get(i).getLastname();
         }
 
         Dialog dialog;
@@ -297,8 +381,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
 
                 // add the newContact, who was created by the user, to the benutzerList:
-                if(newContact != null && !betreuterList.contains(newContact)) {
-                    betreuterList.add(newContact);
+                if(newContact != null && !contactList.contains(newContact)) {
+                    contactList.add(newContact);
                 }
             }
         }
@@ -307,9 +391,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Locks relogin possibility
      */
-    @Override
+/*    @Override
     public void onBackPressed() {
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
-
+*/
 }

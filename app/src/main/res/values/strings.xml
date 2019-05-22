@@ -2,26 +2,38 @@
     <!-- LoginActivity -->
     <string name="loginActivity_Headline">Login</string>
     <string name="loginActivity_TextView_Description">Diese App ist für Menschen gedacht, die besondere Aufmerksamkeit benötigen. Diese App hat für diese Betreuung ein Rollensystem eingeführt. Dabei richtet der Betreuer die App für den Betreuten ein.</string>
-    <string name="loginActivity_TextView_Role">Einrichten der Rolle...</string>
+    <string name="loginActivity_TextView_Role">Einrichten der Rolle…</string>
     <string name="loginActivity_Role_Betreuer">Betreuer</string>
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
-    <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist ...</string>
+    <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist …</string>
     <string name="loginActivity_TextView_Password">Sicherheitspasswort für Betreuer</string>
     <string name="loginActivity_Info_Password">Dieses Passwort für die Änderungen von empfindlichen Informationen (z.B. Händynummer des Bereuers) benötigt. Schreiben Sie sich das Passwort gut auf!</string>
 
+    <!-- MainActivity -->
+    <string name="anrufen">anrufen</string>
+
     <!-- MainActivity - Betreuer -->
+    <string name="label_overview_betreuer">Welcome</string>
     <string name="app_name">TeamAndroid</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="ContactList">Person wählen</string>
     <string name="AddPersonToCantactList">Kontaktliste erweitern</string>
+    <string name="showContactDetails">Kontakt anzeigen</string>
     <string name="btnDeleteContact">Aktuellen Kontakt entfernen</string>
     <string name="TextView_Receiver_Headline">Anrufen:</string>
     <string name="TextView_Receiver">---------------</string>
-    <string name="anrufen">anrufen</string>
 
     <string-array name="spinnerContactInit">
         <item>Kein Kontakt vorhanden</item>
     </string-array>
+
+    <!-- MainActivity - Betreuter -->
+    <string name="label_overview_betreuter">Dein Betreuer:</string>
+    <string name="content_betreuter_NameHint">Name</string>
+    <string name="content_betreuter_StreetHint">Straße + Hausnummer</string>
+    <string name="content_betreuter_addressHint">Adresse</string>
+    <string name="content_betreuter_labelTel">Nummer:</string>
+    <string name="content_betreuter_postcodeHint">38302</string>
 
     <!-- NewContactActivity -->
     <string name="newContactActivity_textViewNewContactHeadline">Neuer Kontakt</string>

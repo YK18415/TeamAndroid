@@ -10,10 +10,12 @@ import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -25,13 +27,19 @@ import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CallActivity extends AppCompatActivity {
 
     private static String TAG = "CallActivity";
     protected static final int REQUEST_CAPTURE_PICTURE = 1;
     ImageView imageView;
+
+    String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +73,18 @@ public class CallActivity extends AppCompatActivity {
     private void takeAPicture() {
         Intent intentTakePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(intentTakePicture.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intentTakePicture, REQUEST_CAPTURE_PICTURE);
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+               photoFile = createImageFile();
+            } catch (IOException ex) {
+                Toast.makeText(this, "Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.", Toast.LENGTH_LONG).show();
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                intentTakePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intentTakePicture, REQUEST_CAPTURE_PICTURE);
+            }
         }
     }
 
@@ -77,6 +96,24 @@ public class CallActivity extends AppCompatActivity {
             Bitmap bitmap = (Bitmap)extras.get("data");
             imageView.setImageBitmap(bitmap);
         }
+    }
+
+
+    // Code by google from 'https://developer.android.com/training/camera/photobasics':
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
 
@@ -96,7 +133,7 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    // Code by Mauricio Manoel and slfan on StackOverflow:
+    // Code by Mauricio Manoel and slfan from StackOverflow:
     public static boolean isCallActive(Context context){
         AudioManager manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         if(manager.getMode() == AudioManager.MODE_IN_CALL || manager.getMode() == AudioManager.MODE_IN_COMMUNICATION){

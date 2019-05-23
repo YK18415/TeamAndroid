@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Binder;
@@ -40,6 +41,7 @@ public class CallActivity extends AppCompatActivity {
     ImageView imageView;
 
     String currentPhotoPath;
+    File photoFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,6 @@ public class CallActivity extends AppCompatActivity {
         Intent intentTakePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(intentTakePicture.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
             try {
                photoFile = createImageFile();
             } catch (IOException ex) {
@@ -92,9 +93,12 @@ public class CallActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CAPTURE_PICTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap bitmap = (Bitmap)extras.get("data");
-            imageView.setImageBitmap(bitmap);
+            File file = new File(photoFile.toString());
+
+            if(file.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                imageView.setImageBitmap(bitmap);
+            }
         }
     }
 

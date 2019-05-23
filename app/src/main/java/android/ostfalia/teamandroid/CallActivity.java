@@ -1,26 +1,21 @@
 package android.ostfalia.teamandroid;
 
-import android.annotation.SuppressLint;
-import android.app.Instrumentation;
-import android.app.IntentService;
-import android.app.Service;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,7 +36,7 @@ public class CallActivity extends AppCompatActivity {
     ImageView imageView;
 
     String currentPhotoPath;
-    File photoFile = null;
+    File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +55,13 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPictureInPopup();
+            }
+        });
+
         btnCallEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +72,27 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showPictureInPopup() {
+        AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
+        imageDialog.setTitle("Bild vergrößert");
+        LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
+        View view = inflater.inflate(R.layout.image_popup, null);
+        ImageView imageViewPopup = view.findViewById(R.id.imageViewPopup);
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+        imageViewPopup.setImageBitmap(bitmap);
+
+        imageDialog.setView(view);
+        imageDialog.setNeutralButton("Zurück", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO: close AlertDialog:
+
+            }
+        });
+        imageDialog.create();
+        imageDialog.show();
     }
 
     private void takeAPicture() {
@@ -96,7 +119,7 @@ public class CallActivity extends AppCompatActivity {
             File file = new File(photoFile.toString());
 
             if(file.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 imageView.setImageBitmap(bitmap);
             }
         }

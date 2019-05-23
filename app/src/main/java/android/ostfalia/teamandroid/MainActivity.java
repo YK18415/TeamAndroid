@@ -212,7 +212,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         handler.postDelayed(new Runnable(){
             @Override
             public void run() {
-                startActivity(new Intent(MainActivity.this, CallActivity.class));
+                Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+                String role;
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                role = settings.getString("role","");
+                intent.putExtra("role", role);
+                startActivity(intent);
                 handlerThread.quit();
             }
         }, 1000);

@@ -12,12 +12,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,12 +43,15 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_betreuer);
+        setLayout();
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar);
 
         // Layout components:
         Button btnCamera = findViewById(R.id.btnCamera);
-        Button btnCallEnd = findViewById(R.id.btnCallEnd);
+        ImageButton btnCallEnd = findViewById(R.id.btnCallEnd);
         imageView = findViewById(R.id.imageView);
+
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +79,17 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
+    private void setLayout() {
+        Bundle bundle = getIntent().getExtras();
+        String role = bundle.get("role").toString();
+        switch (role) {
+            case "Betreuer": setContentView(R.layout.activity_call_betreuer); break;
+            case "Betreuter": setContentView(R.layout.activity_call_betreuter); break;
+        }
+    }
+
     private void showPictureInPopup() {
+        AlertDialog dialog;
         AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
         imageDialog.setTitle("Bild vergrößert");
         LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
@@ -84,15 +99,14 @@ public class CallActivity extends AppCompatActivity {
         imageViewPopup.setImageBitmap(bitmap);
 
         imageDialog.setView(view);
-        imageDialog.setNeutralButton("Zurück", new DialogInterface.OnClickListener() {
+        imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: close AlertDialog:
-
+                dialog.dismiss();
             }
         });
-        imageDialog.create();
-        imageDialog.show();
+        dialog = imageDialog.create();
+        dialog.show();
     }
 
     private void takeAPicture() {

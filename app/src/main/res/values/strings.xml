@@ -39,7 +39,7 @@
     <string name="callActivity_auflegen">auflegen</string>
     <string name="callActivity_Picture_Headline">Das Bild des Partners:</string>
     <string name="callActivity_Button_Camera">Bild aufnehmen</string>
-    <string name="callActivity_Headline">Anruf aktiv</string>
+    <string name="callActivity_Headline">Anrufansicht</string>
 
     <!-- CallActivity - Betreuter -->
     <string name="callActivity_Decision_Headline">Genehmigung:</string>

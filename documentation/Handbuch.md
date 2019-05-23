@@ -1,4 +1,4 @@
-# Handbuch zu TeamAndriod
+# Handbuch zu TeamAndroid
 ### 1. Was ist TeamAndroid?
 Dieses Projekt entstand im Auftrag der Hochschule für angewandte
 Wissenschaften Ostfalia durch den Kurs "Anwendung mobiler Systeme".

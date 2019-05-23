@@ -140,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    /**
+     * Set Enum for switching Content View
+     * @param role String (Betreuer / Betreuter)
+     */
     private void setRole(String role) {
         if(role.equals("Betreuer"))
             this.role = Role.BETREUER;
@@ -194,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.initContent();
     }
 
+    /**
+     * Set Data in Content View
+     */
     private void initContent() {
         switch (this.role) {
             case BETREUER:
@@ -391,9 +398,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Locks relogin possibility
      */
-/*    @Override
+    @Override
     public void onBackPressed() {
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
-*/
+
 }

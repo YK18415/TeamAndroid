@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -21,9 +22,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +38,8 @@ public class CallActivity extends AppCompatActivity {
 
     private static String TAG = "CallActivity";
     protected static final int REQUEST_CAPTURE_PICTURE = 1;
+
+    // Layout components for both:
     ImageView imageView;
 
     String currentPhotoPath;
@@ -47,11 +52,15 @@ public class CallActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
 
-        // Layout components:
+        // Layout components for both:
         Button btnCamera = findViewById(R.id.btnCamera);
         ImageButton btnCallEnd = findViewById(R.id.btnCallEnd);
         imageView = findViewById(R.id.imageView);
-
+        // Layout components for Betreuer:
+        ImageButton imageButtonAccept = findViewById(R.id.imageButtonAccept);
+        ImageButton imageButtonDecline =  findViewById(R.id.imageButtonDecline);
+        // Layout component for Betreuter:
+        TextView textViewDecision = findViewById(R.id.textViewDecision);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,36 +86,59 @@ public class CallActivity extends AppCompatActivity {
                 }
             }
         });
+
+        imageButtonAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
+            }
+        });
+
+        imageButtonDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
+            }
+        });
     }
 
     private void setLayout() {
         Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();
         switch (role) {
-            case "Betreuer": setContentView(R.layout.activity_call_betreuer); break;
-            case "Betreuter": setContentView(R.layout.activity_call_betreuter); break;
+            case "Betreuer":
+                setContentView(R.layout.activity_call_betreuer);
+                break;
+            case "Betreuter":
+                setContentView(R.layout.activity_call_betreuter);
+                break;
         }
     }
 
     private void showPictureInPopup() {
-        AlertDialog dialog;
-        AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
-        imageDialog.setTitle("Bild vergrößert");
-        LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
-        View view = inflater.inflate(R.layout.image_popup, null);
-        ImageView imageViewPopup = view.findViewById(R.id.imageViewPopup);
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-        imageViewPopup.setImageBitmap(bitmap);
+        if(imageView.getDrawable() != null) {
+            AlertDialog dialog;
+            AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
+            imageDialog.setTitle("Bild vergrößert");
+            LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
+            View view = inflater.inflate(R.layout.image_popup, null);
+            ImageView imageViewPopup = view.findViewById(R.id.imageViewPopup);
+            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+            imageViewPopup.setImageBitmap(bitmap);
 
-        imageDialog.setView(view);
-        imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog = imageDialog.create();
-        dialog.show();
+            imageDialog.setView(view);
+            imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog = imageDialog.create();
+            dialog.show();
+        } else {
+            Toast.makeText(this, "Sie haben kein Bild aufgenommen.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void takeAPicture() {
@@ -181,5 +213,31 @@ public class CallActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //SharedPreferences.Editor editor = settings.edit(); // For writing.
+
+        // Store the data:
+        //editor.putString("message", String.valueOf(editTextMessage.getText()));
+        Gson gson = new Gson();
+
+        //storeComplexData(gson,"PERSONLIST", personList, editor);    // Store personList:
+        //editor.commit();
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //editTextMessage.setText(settings.getString("message",""));
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

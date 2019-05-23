@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,11 +29,13 @@ import android.widget.Toast;
 import com.android.internal.telephony.ITelephony;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -44,6 +47,10 @@ public class CallActivity extends AppCompatActivity {
 
     String currentPhotoPath;
     File photoFile;
+    Bitmap bitmap;
+
+    /*//Storage:
+    SharedPreferences settings;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,14 @@ public class CallActivity extends AppCompatActivity {
         setLayout();
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
+
+        //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
+        /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
+
+        if(isCallActive(this) && wasPaused) {
+            String bitmapStr = settings.getString("imagePreferance", "");
+            imageView.setImageBitmap(decodeBase64(bitmapStr));
+        }*/
 
         // Layout components for both:
         Button btnCamera = findViewById(R.id.btnCamera);
@@ -87,19 +102,19 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        imageButtonAccept.setOnClickListener(new View.OnClickListener() {
+       /* imageButtonAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO
             }
-        });
+        });*/
 
-        imageButtonDecline.setOnClickListener(new View.OnClickListener() {
+       /* imageButtonDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO
             }
-        });
+        });*/
     }
 
     private void setLayout() {
@@ -123,7 +138,7 @@ public class CallActivity extends AppCompatActivity {
             LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
             View view = inflater.inflate(R.layout.image_popup, null);
             ImageView imageViewPopup = view.findViewById(R.id.imageViewPopup);
-            Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+            //Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
             imageViewPopup.setImageBitmap(bitmap);
 
             imageDialog.setView(view);
@@ -165,7 +180,7 @@ public class CallActivity extends AppCompatActivity {
             File file = new File(photoFile.toString());
 
             if(file.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 imageView.setImageBitmap(bitmap);
             }
         }
@@ -215,29 +230,32 @@ public class CallActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
+   /* @Override
     protected void onPause() {
         super.onPause();
-        //SharedPreferences.Editor editor = settings.edit(); // For writing.
+        SharedPreferences.Editor editor = settings.edit(); // For writing.
 
         // Store the data:
-        //editor.putString("message", String.valueOf(editTextMessage.getText()));
-        Gson gson = new Gson();
+        editor.putBoolean("IS_CALL_ACTIVE", isCallActive(this));
+        editor.putString("CURRENT_PHOTO_PATH", currentPhotoPath);
+        // Store image:
+        editor.putString("imagePreferance", encodeTobase64(bitmap));
 
-        //storeComplexData(gson,"PERSONLIST", personList, editor);    // Store personList:
-        //editor.commit();
+        editor.commit();
     }
 
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immage = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        //editTextMessage.setText(settings.getString("message",""));
+        return imageEncoded;
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }*/
 }

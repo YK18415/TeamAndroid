@@ -120,11 +120,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
          */
         @Override
         protected void onResume() {
+            //SharedPreferences settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
             super.onResume();
 
         this.loadContactList();
         String[] names = this.convertPersonListToNamesArray();
         this.setSpinnerAdapter(names);
+
+       /* Boolean b = settings.getBoolean("imagePreferance", false);
+        if(b) {
+            Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+            String role;
+            savedData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+            role = savedData.getString("role","");
+            intent.putExtra("role", role);
+            intent.putExtra("IS_PAUSED", true);
+            startActivity(intent);
+        }*/
     }
 
     /**Saving personList as json

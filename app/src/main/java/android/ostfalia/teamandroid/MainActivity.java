@@ -72,13 +72,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Validate, that user has allowed the Call-Permission before:
         this.validatePhoneCallPermission();
         // Validate, that the user has logged in before:
-        this.validateFirstLogin();
-        // initialize View
-        this.initView();
-        // set Content View
-        this.setContent();
-        // initialize Content
-        this.initContent();
+        if(!this.validateFirstLogin()) {
+            // initialize View
+            this.initView();
+            // set Content View
+            this.setContent();
+            // initialize Content
+            this.initContent();
+        }
         // Default-Betreute:
 
 //        contactList.add(new Contact("Max", "Mustermann", "01234567891011"));
@@ -136,27 +137,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Validate, that the user has logged in before
      */
-    private void validateFirstLogin() {
-        boolean firstLogin = false;
+    private Boolean validateFirstLogin() {
         String role;
         SharedPreferences loginData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
         role = loginData.getString("role","");
 
         if(TextUtils.isEmpty(role)) {
-            firstLogin = true;
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            //startActivityForResult(intent, 1);
             startActivity(intent);
+            return true;
+        }else {
+            this.setRole(role);
+            Bundle bundle = getIntent().getExtras();
+            if(bundle != null) {
+                Contact contact = (Contact) bundle.get("BETREUER_CONTACT");
+
+                if(this.role == Role.BETREUTER && contact != null) {
+                    contactList.add(contact);
+                }
+            }
+
+            return false;
         }/* else if (role.equals(getResources().getString(R.string.loginActivity_Role_Betreuer))) {
             Intent intent = new Intent(MainActivity.this, MainActivityBetreuer.class);
             startActivity(intent);
         }*/
 
-        if(role != null) {
-            this.setRole(role);
-        }
-        
-        if(firstLogin && this.role == Role.BETREUTER)
-            this.addNewPerson();
     }
 
     /**
@@ -213,8 +220,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-        this.loadContactList();
-        this.initContent();
+        if(!this.validateFirstLogin()) {
+            this.loadContactList();
+            this.initContent();
+        }
 
         /* Boolean b = settings.getBoolean("imagePreferance", false);
         if(b) {
@@ -466,6 +475,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onBackPressed() {
+        // TODO: Minimize the app.
+
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
 

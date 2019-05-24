@@ -3,6 +3,7 @@ package android.ostfalia.teamandroid;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -81,10 +84,25 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
                 editor.putString("password", String.valueOf(editTextPassword.getText()));
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);// TODO: Refactoren
-                startActivity(intent);
+                // Add Betreuer:
+                Intent intent = new Intent(LoginActivity.this, NewContact.class);
+                startActivityForResult(intent, 1);
             }
         }
         editor.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
+
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);// TODO: Refactoren
+                intent.putExtra("BETREUER_CONTACT", newContact);
+                startActivity(intent);
+            }
+        }
     }
 }

@@ -1,21 +1,24 @@
 package android.ostfalia.teamandroid;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,12 +29,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivityBetreuer extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     Spinner spinnerContactList;
     Button btnAddPerson;
     Button btnCall;
     TextView textViewReceiver;
+    Button changeBetr;
+
+    LinearLayout contactInfo;
+    TextView street;
+    TextView houseNo;
+    TextView post;
+    TextView city;
 
     List<Contact> betreuterList = new ArrayList<>();
     SharedPreferences.Editor editor;
@@ -42,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_betreuer);
 
         savedData = getApplicationContext().getSharedPreferences("PEOPLE", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
@@ -57,10 +67,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         btnAddPerson = findViewById(R.id.btnAddPerson);
         btnCall = findViewById(R.id.btnCall);
         textViewReceiver = findViewById(R.id.textViewReceiver);
+        changeBetr = findViewById(R.id.changeBetr);
 
-        // Default-Betreute:
-        betreuterList.add(new Contact("Max", "Mustermann", "01234567891011"));
-        betreuterList.add(new Contact("Hallo", "Duda", "12343212121"));
+        contactInfo=findViewById(R.id.contactInfo);
+        street = findViewById(R.id.street);
+        houseNo = findViewById(R.id.houseNo);
+        post = findViewById(R.id.post);
+        city = findViewById(R.id.city);
 
         btnAddPerson.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +88,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 call();
             }
         });
+
+        changeBetr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showChangeBetr();
+            }
+        });
     }
 
     /**Validate, that the user has logged in before
@@ -85,10 +105,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
         role = settings.getString("role","");
         if(TextUtils.isEmpty(role)) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else if (role.equals(getResources().getString(R.string.loginActivity_Role_Betreuer))) {
-            Intent intent = new Intent(MainActivity.this, MainActivityBetreuer.class);
+            Intent intent = new Intent(MainActivityBetreuer.this, LoginActivity.class);
             startActivity(intent);
         }
     }
@@ -98,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void validatePhoneCallPermission() {
         if(checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+            ActivityCompat.requestPermissions(MainActivityBetreuer.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
         }
     }
 
@@ -188,11 +205,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         textViewReceiver.setText(betreuterList.get(position).getTelephonenumber());
+        contactInfo.setVisibility(View.VISIBLE);
+
+        street.setText(betreuterList.get(position).getStreet()!=null?getString(R.string.contactStreet) + " " + betreuterList.get(position).getStreet():getString(R.string.contactNoStreet));
+        houseNo.setText(betreuterList.get(position).getHousenumber()!=0?getString(R.string.contactHouseNo) + " " + betreuterList.get(position).getHousenumber():getString(R.string.contactNoHouseNo));
+        post.setText(betreuterList.get(position).getPostcode()!=0?getString(R.string.contactPostal) + " " + betreuterList.get(position).getPostcode():getString(R.string.contactNoPostal));
+        city.setText(betreuterList.get(position).getCity()!=null?getString(R.string.contactCity) + " " + betreuterList.get(position).getCity():getString(R.string.contactNoCity));
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        contactInfo.setVisibility(View.GONE);
     }
 
     private void call() {
@@ -201,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startActivity(intent);
         } catch(SecurityException se) {
             se.printStackTrace();
-            Toast.makeText(MainActivity.this, "Es gab einen Fehler", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivityBetreuer.this, "Es gab einen Fehler", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -232,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      *
      */
     private void addNewPerson() {
-        Intent intent = new Intent(MainActivity.this, NewContact.class);
+        Intent intent = new Intent(MainActivityBetreuer.this, NewContact.class);
         startActivityForResult(intent, 1);
     }
 
@@ -255,7 +278,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onBackPressed() {
+        //todo shouldn't this minimize the app?
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Shows a popup window that explains how to change the "Betreuer" on the device of the "Betreuter"
+     */
+    public void showChangeBetr(){
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        final PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.change_betreuer_help, null, false),500,1000, true);
+
+        pw.showAtLocation(this.findViewById(R.id.contactInfo), Gravity.CENTER, 0, 0);
+
+        pw.getContentView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+            }
+        });
+    }
 }

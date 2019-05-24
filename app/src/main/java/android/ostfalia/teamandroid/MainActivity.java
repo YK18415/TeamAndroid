@@ -137,23 +137,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Validate, that the user has logged in before
      */
     private void validateFirstLogin() {
+        boolean firstLogin = false;
         String role;
         SharedPreferences loginData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
         role = loginData.getString("role","");
 
         if(TextUtils.isEmpty(role)) {
+            firstLogin = true;
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }/* else if (role.equals(getResources().getString(R.string.loginActivity_Role_Betreuer))) {
             Intent intent = new Intent(MainActivity.this, MainActivityBetreuer.class);
             startActivity(intent);
         }*/
+
         if(role != null) {
             this.setRole(role);
-            if(this.role == Role.BETREUTER)
-                this.addNewPerson();
         }
-
+        
+        if(firstLogin && this.role == Role.BETREUTER)
+            this.addNewPerson();
     }
 
     /**

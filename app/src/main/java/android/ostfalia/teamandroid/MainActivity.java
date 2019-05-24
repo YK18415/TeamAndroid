@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (this.role) {
             case BETREUER:
                 if(!contactList.isEmpty()) {
-                    String[] names = this.convertPersonListToNamesArray();
+                    String[] names = this.convertContactListToNamesArray();
                     this.setSpinnerAdapter(names);
                 } else
                     this.fillSpinnerInitial();
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Create List for showing by Spinner
      * @return String[] names
      */
-    private String[] convertPersonListToNamesArray() {
+    private String[] convertContactListToNamesArray() {
         String[] names = new String[contactList.size()];
 
         int person_idx = 0;
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             contactList.remove(spinnerContactList.getSelectedItemPosition());
-                            setSpinnerAdapter(convertPersonListToNamesArray());
+                            setSpinnerAdapter(convertContactListToNamesArray());
                             if (contactList.isEmpty()) {
                                 textViewReceiver.setText(R.string.TextView_Receiver);
                                 fillSpinnerInitial();

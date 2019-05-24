@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         if(radioButtonRoleBetreuer.isChecked()) {
 
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
-            Intent intent = new Intent(LoginActivity.this, MainActivityBetreuer.class); // TODO: Refactoren
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
             startActivity(intent);
         } else {
             if(!TextUtils.isEmpty(editTextPassword.getText())) {

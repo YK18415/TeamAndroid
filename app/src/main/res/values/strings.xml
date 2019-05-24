@@ -14,7 +14,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="ContactList">Person wählen</string>
     <string name="AddPersonToCantactList">Kontaktliste erweitern</string>
-    <string name="TextView_Receiver_Headline">Anrufen:</string>
+    <string name="TextView_Receiver_Headline">Telefonnummer:</string>
     <string name="TextView_Receiver">---------------</string>
     <string name="anrufen">anrufen</string>
 
@@ -34,5 +34,15 @@
     <string name="newContactActivity_StreetnumberHint">Nummer</string>
     <string name="newContactActivity_PostcodeHint">Postleitzahl</string>
     <string name="newContactActivity_CityHint">Stadt/Dorf</string>
+    <string name="contactStreet">Straße:</string>
+    <string name="contactHouseNo">Hausnummer:</string>
+    <string name="contactPostal">Plz:</string>
+    <string name="contactCity">Ort:</string>
+    <string name="contactNoStreet">Keine Straße angegeben</string>
+    <string name="contactNoHouseNo">Keine Hausnummer angegeben</string>
+    <string name="contactNoPostal">Keine Postleitzahl angegeben</string>
+    <string name="contactNoCity">Keine Stadt angegeben</string>
+    <string name="betreuer_ndern">Betreuer Ändern</string>
+    <string name="changeBetrHelpText">Um den Betreuer auf dem Gerät des Betreuten zu ändern, ... und geben sie das beim Einrichten der App festgelegte Passwort ein.</string>
 
 </resources>

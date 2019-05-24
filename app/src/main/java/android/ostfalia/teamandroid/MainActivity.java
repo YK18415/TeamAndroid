@@ -148,8 +148,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Intent intent = new Intent(MainActivity.this, MainActivityBetreuer.class);
             startActivity(intent);
         }*/
-        if(role != null)
+        if(role != null) {
             this.setRole(role);
+            if(this.role == Role.BETREUTER)
+                this.addNewPerson();
+        }
 
     }
 

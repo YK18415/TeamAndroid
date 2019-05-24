@@ -81,6 +81,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/colorPrimary"
         android:text="@string/callActivity_Button_Camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

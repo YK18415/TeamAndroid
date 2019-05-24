@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".CallActivity">
 
 
@@ -14,6 +15,7 @@
         android:layout_marginStart="66dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
         android:src="@drawable/ic_baseline_check_24px"
         app:layout_constraintBottom_toTopOf="@+id/btnCallEnd"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +29,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
         android:src="@drawable/ic_baseline_close_24px"
         app:layout_constraintBottom_toTopOf="@+id/btnCallEnd"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +43,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
-        android:background="@android:color/holo_red_dark"
+        android:background="@color/colorHangUpCall"
         android:src="@drawable/ic_sharp_call_end_24px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +82,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/colorPrimary"
         android:text="@string/callActivity_Button_Camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

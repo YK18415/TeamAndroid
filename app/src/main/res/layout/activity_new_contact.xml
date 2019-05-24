@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorBackground"
     tools:context=".NewContact">
 
     <TextView
@@ -40,10 +41,10 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/newContactActivity_FirstNameHint"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMandatoryFields"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMandatoryFields" />
 
     <EditText
         android:id="@+id/editTextLastName"
@@ -54,11 +55,11 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/newContactActivity_LastNameHint"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editTextFirstName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMandatoryFields"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMandatoryFields" />
 
     <EditText
         android:id="@+id/editTextTelephonenumber"
@@ -67,14 +68,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:digits="+1234567890"
         android:ems="10"
         android:hint="@string/newContactActivity_PhonenumberHint"
-        android:digits="+1234567890"
+        android:importantForAutofill="no"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLastName"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextLastName" />
 
     <TextView
         android:id="@+id/textViewOptionalFields"
@@ -95,11 +96,11 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/newContactActivity_StreetHint"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/editTextStreetnumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOptionalFields"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOptionalFields" />
 
     <EditText
         android:id="@+id/editTextStreetnumber"
@@ -107,13 +108,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
+        android:digits="1234567890abcdefg"
         android:ems="10"
         android:hint="@string/newContactActivity_StreetnumberHint"
-        android:digits="1234567890abcdefg"
+        android:importantForAutofill="no"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOptionalFields"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOptionalFields" />
 
     <EditText
         android:id="@+id/editTextPostcode"
@@ -122,15 +123,15 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:digits="1234567890"
         android:ems="10"
         android:hint="@string/newContactActivity_PostcodeHint"
-        android:maxLength="5"
-        android:digits="1234567890"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
+        android:maxLength="5"
         app:layout_constraintEnd_toStartOf="@+id/editTextStreetnumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextStreet"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextStreet" />
 
     <EditText
         android:id="@+id/editTextCity"
@@ -141,11 +142,11 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/newContactActivity_CityHint"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/editTextStreetnumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPostcode"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPostcode" />
 
     <Button
         android:id="@+id/btnStore"
@@ -155,6 +156,7 @@
         android:layout_marginTop="60dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
+        android:background="@color/colorPrimary"
         android:text="@string/newContactActivity_BtnStore"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

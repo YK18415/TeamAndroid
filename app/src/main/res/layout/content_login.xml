@@ -35,8 +35,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textViewDecision_Headline"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDecision_Headline"
         app:layout_constraintVertical_bias="0.06" />
 
     <RadioGroup
@@ -77,7 +77,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewDecision_Headline"
         android:layout_width="350dp"
         android:layout_height="71dp"
         android:layout_marginStart="8dp"

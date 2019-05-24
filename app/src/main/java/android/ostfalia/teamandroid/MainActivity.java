@@ -1,17 +1,22 @@
 package android.ostfalia.teamandroid;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +30,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -116,11 +123,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
          */
         @Override
         protected void onResume() {
+            //SharedPreferences settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
             super.onResume();
 
         this.loadContactList();
         String[] names = this.convertPersonListToNamesArray();
         this.setSpinnerAdapter(names);
+
+       /* Boolean b = settings.getBoolean("imagePreferance", false);
+        if(b) {
+            Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+            String role;
+            savedData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+            role = savedData.getString("role","");
+            intent.putExtra("role", role);
+            intent.putExtra("IS_PAUSED", true);
+            startActivity(intent);
+        }*/
     }
 
     /**Saving personList as json
@@ -195,14 +214,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    /**
+     * Handle outgoing call, start & Default Call Screen to Background
+     * Replace actual call() Method
+     */
     private void call() {
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + textViewReceiver.getText()));
-        try {
-            startActivity(intent);
-        } catch(SecurityException se) {
-            se.printStackTrace();
-            Toast.makeText(MainActivity.this, "Es gab einen Fehler", Toast.LENGTH_SHORT).show();
+        final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
+        handlerThread.start();
+        Looper looper = handlerThread.getLooper();
+        final Handler handler = new Handler(looper);
+
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+                String role;
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                role = settings.getString("role","");
+                intent.putExtra("role", role);
+                startActivity(intent);
+                handlerThread.quit();
+            }
+        }, 1000);
+
+        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+        new BackgroundTask().execute(textViewReceiver.getText().toString());
+    }
+
+    /**
+     * AsyncTask: start Call and printStackTrace in case of failure.
+     */
+    private class BackgroundTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String ... strings) {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + strings[0]));
+            try {
+                startActivity(intent);
+            } catch(SecurityException se) {
+                se.printStackTrace();
+                Toast.makeText(MainActivity.this, "Es gab einen Fehler beim Anrufversuch.", Toast.LENGTH_SHORT).show();
+            }
+            return null;
+        }
+
     }
 
 /*    private void chooseReceiver() {

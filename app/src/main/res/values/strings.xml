@@ -45,4 +45,15 @@
     <string name="betreuer_ndern">Betreuer Ändern</string>
     <string name="changeBetrHelpText">Um den Betreuer auf dem Gerät des Betreuten zu ändern, ... und geben sie das beim Einrichten der App festgelegte Passwort ein.</string>
 
+    <!-- CallActivity -->
+    <string name="callActivity_auflegen">auflegen</string>
+    <string name="callActivity_Picture_Headline">Das Bild des Partners:</string>
+    <string name="callActivity_Button_Camera">Bild aufnehmen</string>
+    <string name="callActivity_Headline">Anrufansicht</string>
+
+    <!-- CallActivity - Betreuter -->
+    <string name="callActivity_Picture_Betreuter_Headline">Ihr Bild:</string>
+    <string name="callActivity_Decision_Headline">Genehmigt:</string>
+    <string name="callActivity_Decision">---------------</string>
+
 </resources>

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -17,11 +18,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,8 +66,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Contact> contactList = new ArrayList<>();
     SharedPreferences.Editor editor;
     SharedPreferences savedData;
+    private boolean isActivityActive;
+    private boolean isThreadActive;
 
     private static final int REQUEST_PHONE_CALL = 123; // TODO: Wofür ist das?
+    int counter = 0;
+    int secreteCounter = 0;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +140,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 textViewBetreuerStreetNumber = findViewById(R.id.textViewBetreuerStreetNumber);
                 textViewBetreuerPostcode = findViewById(R.id.textViewBetreuerPostcode);
                 textViewBetreuerCity = findViewById(R.id.textViewBetreuerCity);*/
+                isActivityActive = true;
+                isThreadActive = false;
+
+                textViewBetreuerName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startTime = System.currentTimeMillis();
+                        isThreadActive = true;
+                        counter++;
+                        System.out.println(counter);
+                        if(counter > 3) {
+                            changeBetreuerContact();
+                        }
+                        // thread timer restart:
+                        secreteCounter = 0;
+                    }
+                });
+                startTime = System.currentTimeMillis();
+                startSecretTimerChangeBetreuer(isActivityActive);
             break;
         }
         this.toolbar = findViewById(R.id.toolbar);
@@ -140,6 +170,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 call();
             }
         });
+    }
+
+    private void startSecretTimerChangeBetreuer(final Boolean isActivityActive) {
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while(isActivityActive) {
+                    while (isThreadActive) {
+                        long millis = System.currentTimeMillis() - startTime;
+                        secreteCounter += millis;
+                        startTime = System.currentTimeMillis();
+                        if(secreteCounter  > 2000){
+                            counter = 0;
+                            isThreadActive = false;
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
+    }
+
+    private void editContact() {
+        // TODO
+    }
+
+    private void changeBetreuerContact() {
+        android.app.AlertDialog dialog;
+        final android.app.AlertDialog.Builder passwordDialog = new android.app.AlertDialog.Builder(MainActivity.this);
+        passwordDialog.setTitle("Es muss das Sicherheitspasswort des Betreuers angegeben werden.");
+
+        final EditText input = new EditText(MainActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        passwordDialog.setView(input);
+
+        passwordDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences logindata = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); //lesen
+                String passwordSaved = logindata.getString("password", "");
+                String passwordInput = String.valueOf(input.getText());
+                if(passwordInput.equals(passwordSaved)) {
+                    Intent intent = new Intent(MainActivity.this, NewContact.class);
+                    intent.putExtra("CONTACT", contactList.get(0));
+                    contactList.clear();
+                    startActivityForResult(intent, 1);
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Sie haben das falsche Password eingegeben.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        dialog = passwordDialog.create();
+        dialog.show();
     }
 
     /**
@@ -219,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onPause() {
         super.onPause();
+        isActivityActive = false;
         this.saveContactList();
     }
 

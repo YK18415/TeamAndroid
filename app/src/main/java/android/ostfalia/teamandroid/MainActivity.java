@@ -1,10 +1,7 @@
 package android.ostfalia.teamandroid;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -40,9 +39,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -55,11 +51,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spinnerContactList;
     private TextView textViewReceiver;
 
+    LinearLayout contactInfo;
+    TextView street;
+    TextView houseNo;
+    TextView post;
+    TextView city;
+
     private TextView textViewBetreuerName;
-    private TextView textViewBetreuerPhonenumber;
+    /*private TextView textViewBetreuerPhonenumber;
     private TextView textViewBetreuerStreetNumber;
     private TextView textViewBetreuerPostcode;
-    private TextView textViewBetreuerCity;
+    private TextView textViewBetreuerCity;*/
 
     private List<Contact> contactList = new ArrayList<>();
     SharedPreferences.Editor editor;
@@ -80,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
+        contactInfo=findViewById(R.id.contactInfo);
+        street = findViewById(R.id.street);
+        houseNo = findViewById(R.id.houseNo);
+        post = findViewById(R.id.post);
+        city = findViewById(R.id.city);
+
         // Validate, that user has allowed the Call-Permission before:
         this.validatePhoneCallPermission();
         // Validate, that the user has logged in before:
@@ -91,24 +99,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // initialize Content
             this.initContent();
         }
+
+        setDefaultText();
         // Default-Betreute:
 
 //        contactList.add(new Contact("Max", "Mustermann", "01234567891011"));
 //        contactList.add(new Contact("Hallo", "Duda", "12343212121"));
-
-
     }
 
     /**
      * Initialize View content
      */
     private void initView() {
+        this.textViewReceiver = findViewById(R.id.textViewReceiver);
         switch(this.role) {
             case BETREUER:
                 this.spinnerContactList = findViewById(R.id.spinnerContactList);
                 Button btnAddPerson = findViewById(R.id.btnAddPerson);
                 ImageButton btnDeleteContact = findViewById(R.id.btnDeleteContact);
-                this.textViewReceiver = findViewById(R.id.textViewReceiver);
 
                 this.spinnerContactList.setOnItemSelectedListener(this);
                 btnAddPerson.setOnClickListener(new View.OnClickListener() {
@@ -128,10 +136,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case BETREUTER:
                 textViewBetreuerName = findViewById(R.id.textViewBetreuerName);
-                textViewBetreuerPhonenumber = findViewById(R.id.textViewBetreuerPhonenumber);
+                /*textViewBetreuerPhonenumber = findViewById(R.id.textViewBetreuerPhonenumber);
                 textViewBetreuerStreetNumber = findViewById(R.id.textViewBetreuerStreetNumber);
                 textViewBetreuerPostcode = findViewById(R.id.textViewBetreuerPostcode);
-                textViewBetreuerCity = findViewById(R.id.textViewBetreuerCity);
+                textViewBetreuerCity = findViewById(R.id.textViewBetreuerCity);*/
                 isActivityActive = true;
                 isThreadActive = false;
 
@@ -343,15 +351,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(!contactList.isEmpty()) {
                     Contact contact = contactList.get(0);
 
-                    String buffer = contact.getFirstname()+" "+contact.getLastname();
-                    textViewBetreuerName.setText(buffer);
-                    textViewBetreuerPhonenumber.setText(contact.getTelephonenumber());
-
-                    buffer = contact.getStreet()+" "+contact.getHousenumber();
-                    textViewBetreuerStreetNumber.setText(buffer);
-
-                    textViewBetreuerPostcode.setText(String.valueOf(contact.getPostcode()));
-                    textViewBetreuerCity.setText(contact.getCity());
+                    setContactText(contact);
                 }
             break;
         }
@@ -421,12 +421,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(!this.initialState)
+            setContactText(contactList.get(position));
+        /*
+        if(!this.initialState) {
             textViewReceiver.setText(contactList.get(position).getTelephonenumber());
+            street.setText(contactList.get(position).getStreet() != null ? getString(R.string.contactStreet) + " " + contactList.get(position).getStreet() : getString(R.string.contactNoStreet));
+            houseNo.setText(contactList.get(position).getHousenumber() != 0 ? getString(R.string.contactHouseNo) + " " + contactList.get(position).getHousenumber() : getString(R.string.contactNoHouseNo));
+            post.setText(contactList.get(position).getPostcode() != 0 ? getString(R.string.contactPostal) + " " + contactList.get(position).getPostcode() : getString(R.string.contactNoPostal));
+            city.setText(contactList.get(position).getCity() != null ? getString(R.string.contactCity) + " " + contactList.get(position).getCity() : getString(R.string.contactNoCity));
+        }*/
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        contactInfo.setVisibility(View.GONE);
     }
 
     /**
@@ -446,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             contactList.remove(spinnerContactList.getSelectedItemPosition());
                             setSpinnerAdapter(convertContactListToNamesArray());
                             if (contactList.isEmpty()) {
-                                textViewReceiver.setText(R.string.TextView_Receiver);
+                                setDefaultText();
                                 fillSpinnerInitial();
                             }
                         }
@@ -461,6 +469,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     });
             dialog = builder.create();
             dialog.show();
+        }
+    }
+
+    public void setDefaultText(){
+        textViewReceiver.setText(R.string.TextView_Receiver);
+        //street, houseNo, post, city
+        street.setText("Straße: -");
+        houseNo.setText("Hausnummer: -");
+        post.setText("Plz: -");
+        city.setText("Ort: -");
+    }
+
+    public void setContactText(Contact contact){
+
+        if(role==Role.BETREUTER) {
+            String buffer = contact.getFirstname() + " " + contact.getLastname();
+
+            textViewBetreuerName.setText(buffer);
+        }
+        /*
+        textViewReceiver.setText(contact.getTelephonenumber());
+        //textViewBetreuerPhonenumber.setText(contact.getTelephonenumber());
+
+        buffer = contact.getStreet()+" "+contact.getHousenumber();
+        street.setText(contact.getStreet());
+        houseNo.setText(contact.getHousenumber());
+        //textViewBetreuerStreetNumber.setText(buffer);
+
+        //textViewBetreuerPostcode.setText(String.valueOf(contact.getPostcode()));
+        //textViewBetreuerCity.setText(contact.getCity());
+        post.setText(String.valueOf(contact.getPostcode()));
+        city.setText(String.valueOf(contact.getCity()));
+        */
+        if(!this.initialState) {
+            textViewReceiver.setText("Telefonnummer: " + contact.getTelephonenumber());
+            street.setText(contact.getStreet() != null ? getString(R.string.contactStreet) + " " + contact.getStreet() : getString(R.string.contactNoStreet));
+            houseNo.setText(contact.getHousenumber() != 0 ? getString(R.string.contactHouseNo) + " " + contact.getHousenumber() : getString(R.string.contactNoHouseNo));
+            post.setText(contact.getPostcode() != 0 ? getString(R.string.contactPostal) + " " + contact.getPostcode() : getString(R.string.contactNoPostal));
+            city.setText(contact.getCity() != null ? getString(R.string.contactCity) + " " + contact.getCity() : getString(R.string.contactNoCity));
         }
     }
 
@@ -494,7 +541,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         switch(this.role) {
             case BETREUER:  new BackgroundTask().execute(textViewReceiver.getText().toString());               break;
-            case BETREUTER: new BackgroundTask().execute(textViewBetreuerPhonenumber.getText().toString());    break;
+            case BETREUTER:  new BackgroundTask().execute(textViewReceiver.getText().toString());               break;
+            //case BETREUTER: new BackgroundTask().execute(textViewBetreuerPhonenumber.getText().toString());    break;
         }
     }
 
@@ -570,4 +618,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
     }
 
+
+    /**
+     * Shows a popup window that explains how to change the "Betreuer" on the device of the "Betreuter"
+     */
+    public void showChangeBetrInfo(){
+
+        android.app.AlertDialog dialog;
+        android.app.AlertDialog.Builder helpDialog = new android.app.AlertDialog.Builder(this);
+        helpDialog.setTitle("Betreuer ändern");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.change_betreuer_help, null);
+
+        helpDialog.setView(view);
+        helpDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog = helpDialog.create();
+        dialog.show();
+    }
 }

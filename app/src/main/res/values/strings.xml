@@ -21,7 +21,7 @@
     <string name="TextView_Receiver_Headline">Telefonnummer:</string>
     <string name="showContactDetails">Kontakt anzeigen</string>
     <string name="btnDeleteContact">Aktuellen Kontakt entfernen</string>
-    <string name="TextView_Receiver">---------------</string>
+    <string name="TextView_Receiver">Telefonnummer: -</string>
 
     <string-array name="spinnerContactInit">
         <item>Kein Kontakt vorhanden</item>

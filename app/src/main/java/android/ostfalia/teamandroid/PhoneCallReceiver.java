@@ -18,7 +18,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
 
 
 
-    /*@Override
+    @Override
     public void onReceive(final Context context, final Intent intent) {
 
         //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
@@ -49,7 +49,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
         intent1.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent1);
 
-    }*/
+    }
 
     //Derived classes should override these to respond to specific events of interest
     protected abstract void onIncomingCallReceived(Context ctx, String number, Date start);

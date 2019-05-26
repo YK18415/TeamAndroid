@@ -15,7 +15,7 @@
         android:layout_marginStart="66dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorBtnCamera"
         android:src="@drawable/ic_baseline_check_24px"
         app:layout_constraintBottom_toTopOf="@+id/btnCallEnd"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorBtnCamera"
         android:src="@drawable/ic_baseline_close_24px"
         app:layout_constraintBottom_toTopOf="@+id/btnCallEnd"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,8 +58,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPictureHeadline"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPictureHeadline" />
 
     <TextView
         android:id="@+id/textViewPictureHeadline"
@@ -75,15 +74,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCamera" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/callActivity_Button_Camera"
+        android:background="@color/colorBtnCamera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

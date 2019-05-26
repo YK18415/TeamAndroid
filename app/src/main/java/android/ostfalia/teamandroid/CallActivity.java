@@ -60,6 +60,7 @@ public class CallActivity extends AppCompatActivity {
     String currentPhotoPath;
     File photoFile;
     Bitmap bitmap;
+    String imageFileName;
 
     // Layout components for Betreuer:
     ImageButton imageButtonAccept;
@@ -74,43 +75,12 @@ public class CallActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // do your stuff
-        } else {
-            signInAnonymously();
-        }
-    }
-
-    private void signInAnonymously() {
-        mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-               Toast.makeText(CallActivity.this, "Eingeloggt. Juhuu.", Toast.LENGTH_LONG).show();
-            }
-        })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.e(TAG, "signInAnonymously:FAILURE", exception);
-                    }
-                });
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLayout();
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
-
-
-        setLayout();
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar);
 
         //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
         /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
@@ -127,9 +97,7 @@ public class CallActivity extends AppCompatActivity {
         imageView.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
         btnCamera.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
         btnCamera.setVisibility(View.GONE);
-        // Layout components for Betreuer:
-        imageButtonAccept = findViewById(R.id.imageButtonAccept);
-        imageButtonDecline =  findViewById(R.id.imageButtonDecline);
+
         // Layout component for Betreuter:
         TextView textViewDecision = findViewById(R.id.textViewDecision);
 
@@ -153,7 +121,8 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar);
     }
 
     private void setLayout() {
@@ -162,6 +131,8 @@ public class CallActivity extends AppCompatActivity {
         switch (role) {
             case "Betreuer":
                 setContentView(R.layout.activity_call_betreuer);
+                imageButtonAccept = findViewById(R.id.imageButtonAccept);
+                imageButtonDecline =  findViewById(R.id.imageButtonDecline);
 
                 // ClickListener:
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +218,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
-        StorageReference riversRef = mStorageRef.child("images/test.jpg");
+        StorageReference riversRef = mStorageRef.child("images/" + imageFileName);
 
 
         riversRef.putFile(fileUri)
@@ -273,7 +244,7 @@ public class CallActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -281,6 +252,7 @@ public class CallActivity extends AppCompatActivity {
                 storageDir      /* directory */
         );
 
+        imageFileName = imageFileName + ".jpg";
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
@@ -330,11 +302,38 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    private void signInAnonymously() {
+        mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                Toast.makeText(CallActivity.this, "Eingeloggt. Juhuu.", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e(TAG, "signInAnonymously:FAILURE", exception);
+                    }
+                });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         setImageViewClickListener();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // do your stuff
+        } else {
+            signInAnonymously();
+        }
+    }
+
 
    /* @Override
     protected void onPause() {

@@ -7,4 +7,6 @@
     <color name="colorDialNumber">#709B00</color>
     <color name="colorHangUpCall">#ff0024</color>
     <color name="colorBtnCamera">#7aabff</color>
+    <color name="colorBtnFab">#0f71bc</color>
+
 </resources>

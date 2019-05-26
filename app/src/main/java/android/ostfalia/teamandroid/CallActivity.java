@@ -56,11 +56,16 @@ public class CallActivity extends AppCompatActivity {
 
     // Layout components for both:
     ImageView imageView;
-
+    ImageButton btnCamera;
     String currentPhotoPath;
     File photoFile;
     Bitmap bitmap;
 
+    // Layout components for Betreuer:
+    ImageButton imageButtonAccept;
+    ImageButton imageButtonDecline;
+
+    Boolean isPictureTaken = false;
     /*//Storage:
     SharedPreferences settings;*/
 
@@ -116,12 +121,15 @@ public class CallActivity extends AppCompatActivity {
         }*/
 
         // Layout components for both:
-        Button btnCamera = findViewById(R.id.btnCamera);
+        btnCamera = findViewById(R.id.btnCamera);
         ImageButton btnCallEnd = findViewById(R.id.btnCallEnd);
         imageView = findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
+        btnCamera.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
+        btnCamera.setVisibility(View.GONE);
         // Layout components for Betreuer:
-        ImageButton imageButtonAccept = findViewById(R.id.imageButtonAccept);
-        ImageButton imageButtonDecline =  findViewById(R.id.imageButtonDecline);
+        imageButtonAccept = findViewById(R.id.imageButtonAccept);
+        imageButtonDecline =  findViewById(R.id.imageButtonDecline);
         // Layout component for Betreuter:
         TextView textViewDecision = findViewById(R.id.textViewDecision);
 
@@ -132,12 +140,7 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPictureInPopup();
-            }
-        });
+        setImageViewClickListener();
 
         btnCallEnd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,19 +153,7 @@ public class CallActivity extends AppCompatActivity {
             }
         });
 
-       /* imageButtonAccept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO
-            }
-        });*/
 
-       /* imageButtonDecline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO
-            }
-        });*/
     }
 
     private void setLayout() {
@@ -171,6 +162,23 @@ public class CallActivity extends AppCompatActivity {
         switch (role) {
             case "Betreuer":
                 setContentView(R.layout.activity_call_betreuer);
+
+                // ClickListener:
+                imageButtonAccept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
+                        // TODO
+                    }
+                });
+
+                imageButtonDecline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
+                        // TODO
+                    }
+                });
                 break;
             case "Betreuter":
                 setContentView(R.layout.activity_call_betreuter);
@@ -230,6 +238,8 @@ public class CallActivity extends AppCompatActivity {
             if(file.exists()) {
                 bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 imageView.setImageBitmap(bitmap);
+                isPictureTaken = true;
+                btnCamera.setVisibility(View.VISIBLE);
                 sendPhotoToFirebase(file);
             }
         }
@@ -245,7 +255,6 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
-
                         Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
 
                         //Uri downloadUrl = taskSnapshot.getDownloadUrl();
@@ -254,6 +263,7 @@ public class CallActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Toast, Toast.LENGTH_LONG).show();
                         exception.printStackTrace();
                     }
                 });
@@ -300,6 +310,30 @@ public class CallActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private void setImageViewClickListener() {
+        if(isPictureTaken) {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPictureInPopup();
+                }
+            });
+        } else {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    takeAPicture();
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setImageViewClickListener();
     }
 
    /* @Override

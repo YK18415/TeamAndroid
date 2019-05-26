@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void setDefaultText(){
-        textViewReceiver.setText(R.string.TextView_Receiver);
+        //textViewReceiver.setText(R.string.TextView_Receiver);
         //street, houseNo, post, city
         street.setText("Straße: -");
         houseNo.setText("Hausnummer: -");

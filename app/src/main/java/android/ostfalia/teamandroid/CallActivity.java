@@ -1,6 +1,7 @@
 package android.ostfalia.teamandroid;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,14 +40,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +71,7 @@ public class CallActivity extends AppCompatActivity {
     String imageFileName;
     String fileUrl;
     Task<Uri> firebaseUri;
+    ProgressBar progressBar;
 
     // Layout components for Betreuer:
     ImageButton imageButtonAccept;
@@ -84,7 +92,7 @@ public class CallActivity extends AppCompatActivity {
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
+        progressBar.setVisibility(View.GONE);
         //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
         /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
 
@@ -139,7 +147,7 @@ public class CallActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
                 imageButtonDecline =  findViewById(R.id.imageButtonDecline);
-
+                progressBar = findViewById(R.id.progressBar);
                 // ClickListener:
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -160,6 +168,7 @@ public class CallActivity extends AppCompatActivity {
                 break;
             case "Betreuter":
                 setContentView(R.layout.activity_call_betreuter);
+                progressBar = findViewById(R.id.progressBar);
                 break;
         }
     }
@@ -233,7 +242,11 @@ public class CallActivity extends AppCompatActivity {
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
         StorageReference riversRef = mStorageRef.child("images/" + imageFileName);
+        progressBar.setVisibility(View.VISIBLE);
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Hochladen zum Firebase-Storage");
+        progressDialog.show();
 
         riversRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -241,8 +254,8 @@ public class CallActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
                         firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
-
-                        //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        progressDialog.dismiss();
+                        Toast.makeText(CallActivity.this, "Foto erfolgreich hochgeladen.", Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -251,77 +264,74 @@ public class CallActivity extends AppCompatActivity {
                         Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Upload_Toast, Toast.LENGTH_LONG).show();
                         exception.printStackTrace();
                     }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        updateProgress(taskSnapshot, progressDialog, "Hochgeladen zu ");
+                    }
                 });
+
+
+    }
+
+    // TODO: Generisch.
+    public void updateProgress(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        progressBar.setProgress((int) progress);
+        progressDialog.setMessage(message + ((int) progress) + "%...");
+        if(progress == 100) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        progressBar.setProgress((int) progress);
+        progressDialog.setMessage(message + ((int) progress) + "%...");
+        if(progress == 100) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void downloadPhotoFromFirebase() {
         final StorageReference riversRef = mStorageRef.child("images/test.jpg" /*+ imageFileName*/);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Herunterladen vom Firebase-Storage");
+        progressDialog.show();
 
         try {
-            //final File localFile = File.createTempFile("images/", ".jgp");
+            final File localFile = File.createTempFile("images", "jgp");
 
-
-
-            mStorageRef.child("images/test.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    // Got the download URL for 'users/me/profile.png'
-                    Toast.makeText(CallActivity.this, "Download complete", Toast.LENGTH_LONG).show();
-                    imageView.setImageURI(Uri.(uri));
-                    imageView.setImageURI(uri);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-
-
-
-
-
-
-           /* riversRef.getFile(localFile).addOnSuccessListener(
+            riversRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(CallActivity.this, "Download complete", Toast.LENGTH_LONG).show();
-                            imageView.setImageResource();
+                            Toast.makeText(CallActivity.this, "Foto erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
+                            bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                            imageView.setImageBitmap(bitmap);
+                            progressDialog.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
-            });*/
+            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    updateProgress2(taskSnapshot, progressDialog, "Heruntergeladen zu ");
+                }
+            });
         } catch (Exception e) {
             Toast.makeText(CallActivity.this,"Failed to create temp file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
         }
-
-        /*
-        File localFile = null;
-        try {
-            localFile = File.createTempFile("images", "jpg");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        riversRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Successfully downloaded data to local file
-                        Toast.makeText(CallActivity.this, "Gedownloaded.", Toast.LENGTH_LONG).show();
-                         //taskSnapshot.getTask().getResult().getStorage().getFile(filep)
-                        bitmap = BitmapFactory.decodeFile(fileUrl);
-                        imageView.setImageBitmap(bitmap);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Download_Toast, Toast.LENGTH_LONG).show();
-            }
-        });*/
     }
 
     /**

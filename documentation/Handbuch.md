@@ -81,7 +81,7 @@ nach dem Ausfüllen aller relevanten Informationen mit dem Fab-Button
 Daraufhin ist die Einrichtung des Betreuten abgeschlossen und sie
 befinden sich auf der Startseite. Die Startseite wird von nun an bei
 jedem Starten der App als Startseite angezeigt, wenn Sie sich
-erfolgreich angemeldet haben. 
+erfolgreich angemeldet haben.
 
 #### 2.3 Anmerkungen
 Wenn sie die falsche Rolle eingelogt haben kommen Sie auf normalen Wegen
@@ -91,4 +91,33 @@ Rollenverteilung vertan haben folgen Sie bitte diesen folgenden Weg:
 
 // Zurücksetzen aller Daten von der App in den Eisntellungen // mit
 Bildern
+
+## 3 Hauptseite
+#### 3.1 Betreuer 
+Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite sind sehen sie drei Wesentliche Komponenten:
+
+Mit dem Button oben rechts kann ein Betreuter hinzugefügt oder ausgewält werden. Wenn ein Betreuter ausgewählt worden ist füllen sich die Kontaktinformationen  des Betreute.
+
+Mitte links ist werden allgemeine Informationen von dem oben ausgewählten Betreutem angezeigt. Dort stehen Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der Betreute lebt.
+
+Ein grüner Button mit der Beschriftung "Anrufen" steht unten links. Wenn Sie diesen Button drücken starten Sie einen Anruf zu dem  oben ausgewählten Betreuten. Von dort aus können Sie sich mit ihm... 
+
+//Fotos schicken von Betreuer aus???
+
+unterhalten und auch Fotos an dem Betreuer senden, die Sie wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen 4.1 (Anrufsbildschirm) an.
+
+//Bild einfügen
+
+#### 3.2 Betreuter
+Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite sind sehen sie zwei Wesentliche Komponenten:
+ 
+ Die Eine ist die allgemiene Information über den Betreuer. Dort stehen Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der Betreuer lebt.
+ 
+ Ein grüner Button mit der Beschriftung "Anrufen". Wenn Sie diesen Button drücken starten Sie einen Anruf zu dem Betreuers. Von dort aus können Sie sich mit ihm unterhalten und auch Fotos an dem Betreuer senden, die Sie wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen 4.2 (Anrufsbildschirm) an.
+ 
+ //Bild einfügen
+ 
+## 4 Anrufsbildschirm
+#### 4.1 Betreuer
+
 

@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -61,6 +62,8 @@ public class CallActivity extends AppCompatActivity {
     File photoFile;
     Bitmap bitmap;
     String imageFileName;
+    String fileUrl;
+    Task<Uri> firebaseUri;
 
     // Layout components for Betreuer:
     ImageButton imageButtonAccept;
@@ -125,6 +128,9 @@ public class CallActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.actionbar);
     }
 
+    /**
+     * Sets the layout depending on the role of the user and sets the clickListener for the Betreuer (Accept/Decline-Button).
+     */
     private void setLayout() {
         Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();
@@ -139,6 +145,7 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
+                        downloadPhotoFromFirebase();
                         // TODO
                     }
                 });
@@ -157,6 +164,9 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * If the user taps the imageView, then the picture is shown in a popup (Except the first tab - then the user can take a photo).
+     */
     private void showPictureInPopup() {
         if(imageView.getDrawable() != null) {
             AlertDialog dialog;
@@ -183,6 +193,10 @@ public class CallActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * The (system) camera-app is opening, so the user can take a photo.
+     * Also a File with this taken photo will be created with the filepath.
+     */
     private void takeAPicture() {
         Intent intentTakePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(intentTakePicture.resolveActivity(getPackageManager()) != null) {
@@ -226,7 +240,7 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // Get a URL to the uploaded content
-                        Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                        firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
 
                         //Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     }
@@ -234,12 +248,87 @@ public class CallActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Toast, Toast.LENGTH_LONG).show();
+                        Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Upload_Toast, Toast.LENGTH_LONG).show();
                         exception.printStackTrace();
                     }
                 });
     }
 
+    private void downloadPhotoFromFirebase() {
+        final StorageReference riversRef = mStorageRef.child("images/test.jpg" /*+ imageFileName*/);
+
+        try {
+            //final File localFile = File.createTempFile("images/", ".jgp");
+
+
+
+            mStorageRef.child("images/test.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
+                    Toast.makeText(CallActivity.this, "Download complete", Toast.LENGTH_LONG).show();
+                    imageView.setImageURI(Uri.(uri));
+                    imageView.setImageURI(uri);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+
+
+
+
+
+
+           /* riversRef.getFile(localFile).addOnSuccessListener(
+                    new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(CallActivity.this, "Download complete", Toast.LENGTH_LONG).show();
+                            imageView.setImageResource();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            });*/
+        } catch (Exception e) {
+            Toast.makeText(CallActivity.this,"Failed to create temp file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+        }
+
+        /*
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("images", "jpg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        riversRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Successfully downloaded data to local file
+                        Toast.makeText(CallActivity.this, "Gedownloaded.", Toast.LENGTH_LONG).show();
+                         //taskSnapshot.getTask().getResult().getStorage().getFile(filep)
+                        bitmap = BitmapFactory.decodeFile(fileUrl);
+                        imageView.setImageBitmap(bitmap);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Toast.makeText(CallActivity.this, R.string.callActivity_Firebase_Exception_Download_Toast, Toast.LENGTH_LONG).show();
+            }
+        });*/
+    }
+
+    /**
+     * Create the image-file and the path to the local storage from the image/picture.
+     * @return Image-/Picture-File
+     * @throws IOException
+     */
     // Code by google from 'https://developer.android.com/training/camera/photobasics':
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -259,6 +348,9 @@ public class CallActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Ends the current active call if the user tabs the endCall-Button.
+     */
     private void endCall() {
         try {
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -275,6 +367,11 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @return true if a call is active (current in use), otherwise false.
+     */
     // Code by Mauricio Manoel and slfan from StackOverflow:
     public static boolean isCallActive(Context context){
         AudioManager manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -284,6 +381,11 @@ public class CallActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * set the onClickListener for the imageView depending on the 'first-photo-take'.
+     * First tab: The user can take a photo.
+     * Otherwise: A popup with the current picture is shown.
+     */
     private void setImageViewClickListener() {
         if(isPictureTaken) {
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -302,6 +404,9 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sign in to Firebase (anonymously).
+     */
     private void signInAnonymously() {
         mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
             @Override
@@ -328,7 +433,6 @@ public class CallActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            // do your stuff
         } else {
             signInAnonymously();
         }

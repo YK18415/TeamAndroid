@@ -3,6 +3,7 @@ package android.ostfalia.teamandroid;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import java.util.Date;
@@ -16,6 +17,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     private static Date callStartTime;
 
+    public static String INCOMING_NUMBER=null;
 
 
     @Override
@@ -48,6 +50,17 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
         Intent intent1 = new Intent(context, CallActivity.class);
         intent1.setFlags(FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent1);
+
+        TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        telephony.listen(new PhoneStateListener(){
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                super.onCallStateChanged(state, incomingNumber);
+
+                INCOMING_NUMBER = incomingNumber;
+
+            }
+        }, PhoneStateListener.LISTEN_CALL_STATE);
 
     }
 

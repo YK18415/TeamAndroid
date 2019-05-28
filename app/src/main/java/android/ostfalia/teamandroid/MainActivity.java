@@ -554,6 +554,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(String ... strings) {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + strings[0]));
+            PhoneCallReceiver.INCOMING_NUMBER=strings[0];
             try {
                 startActivity(intent);
             } catch (SecurityException se) {

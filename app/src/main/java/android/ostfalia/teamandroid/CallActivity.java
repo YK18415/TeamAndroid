@@ -1,11 +1,13 @@
 package android.ostfalia.teamandroid;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +17,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -145,7 +148,7 @@ public class CallActivity extends AppCompatActivity {
             case "Betreuer":
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
-                imageButtonDecline =  findViewById(R.id.imageButtonDecline);
+                imageButtonDecline = findViewById(R.id.imageButtonDecline);
                 // ClickListener:
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -174,7 +177,7 @@ public class CallActivity extends AppCompatActivity {
      * If the user taps the imageView, then the picture is shown in a popup (Except the first tab - then the user can take a photo).
      */
     private void showPictureInPopup() {
-        if(imageView.getDrawable() != null) {
+        if (imageView.getDrawable() != null) {
             AlertDialog dialog;
             AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
             imageDialog.setTitle("Bild vergrößert");
@@ -205,10 +208,10 @@ public class CallActivity extends AppCompatActivity {
      */
     private void takeAPicture() {
         Intent intentTakePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(intentTakePicture.resolveActivity(getPackageManager()) != null) {
+        if (intentTakePicture.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             try {
-               photoFile = createImageFile();
+                photoFile = createImageFile();
             } catch (IOException ex) {
                 Toast.makeText(this, "Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.", Toast.LENGTH_LONG).show();
             }
@@ -223,10 +226,10 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CAPTURE_PICTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CAPTURE_PICTURE && resultCode == RESULT_OK) {
             File file = new File(photoFile.toString());
 
-            if(file.exists()) {
+            if (file.exists()) {
                 bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 imageView.setImageBitmap(bitmap);
                 isPictureTaken = true;
@@ -238,7 +241,12 @@ public class CallActivity extends AppCompatActivity {
 
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
-        StorageReference riversRef = mStorageRef.child("images/" + imageFileName);
+
+        if(CallReceiver.INCOMING_NUMBER==null){
+            System.out.println("Keine Nummer gespeichert!");
+        }
+
+        StorageReference riversRef = mStorageRef.child("images/" + PhoneCallReceiver.INCOMING_NUMBER + ".jpg");
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Hochladen zum Firebase-Storage");
@@ -295,7 +303,18 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void downloadPhotoFromFirebase() {
-        final StorageReference riversRef = mStorageRef.child("images/test.jpg" /*+ imageFileName*/);
+
+        TelephonyManager phoneManager = (TelephonyManager)
+                getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        //todo testen, ob es crasht, wenn der user nicht die permission gibt
+        //Wenn die eigene Telefonnummer nicht auf der SIM karte gespeichert ist, dann funktioniert das vielleicht nicht
+        String fileName = "images/" + phoneManager.getLine1Number() + ".jpg";
+
+        final StorageReference riversRef = mStorageRef.child(fileName);
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Herunterladen vom Firebase-Storage");
         progressDialog.show();

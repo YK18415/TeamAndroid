@@ -113,6 +113,8 @@ Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite sind se
  
  Die Eine ist die allgemiene Information über den Betreuer. Dort stehen Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der Betreuer lebt.
  
+ //exakt drei mal auf betreuer klicken um ihn zu ändern; masterpasswortt abfrage
+ 
  Ein grüner Button mit der Beschriftung "Anrufen". Wenn Sie diesen Button drücken starten Sie einen Anruf zu dem Betreuers. Von dort aus können Sie sich mit ihm unterhalten und auch Fotos an dem Betreuer senden, die Sie wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen 4.2 (Anrufsbildschirm) an.
  
  //Bild einfügen

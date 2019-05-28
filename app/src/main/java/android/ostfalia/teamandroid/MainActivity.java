@@ -150,7 +150,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         isThreadActive = true;
                         counter++;
                         System.out.println(counter);
-                        if(counter > 3) {
+                        if(counter == 3) {
+                            counter=0;
                             changeBetreuerContact();
                         }
                         // thread timer restart:

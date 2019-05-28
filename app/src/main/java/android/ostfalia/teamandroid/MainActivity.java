@@ -541,8 +541,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         switch(this.role) {
-            case BETREUER:  new BackgroundTask().execute(textViewReceiver.getText().toString());               break;
-            case BETREUTER:  new BackgroundTask().execute(textViewReceiver.getText().toString());               break;
+            case BETREUER:  new BackgroundTask().execute(contactList.get(spinnerContactList.getSelectedItemPosition()).getTelephonenumber());               break;
+            case BETREUTER:  new BackgroundTask().execute(contactList.get(0).getTelephonenumber());               break;
             //case BETREUTER: new BackgroundTask().execute(textViewBetreuerPhonenumber.getText().toString());    break;
         }
     }

@@ -490,4 +490,14 @@ public class CallActivity extends AppCompatActivity {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }*/
+
+    /**
+     * Close call after touching Back-Button
+     */
+    @Override
+    public void onBackPressed() {
+        endCall();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }

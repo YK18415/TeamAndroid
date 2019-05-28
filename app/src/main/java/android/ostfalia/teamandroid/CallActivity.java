@@ -92,7 +92,6 @@ public class CallActivity extends AppCompatActivity {
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        progressBar.setVisibility(View.GONE);
         //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
         /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
 
@@ -147,7 +146,6 @@ public class CallActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
                 imageButtonDecline =  findViewById(R.id.imageButtonDecline);
-                progressBar = findViewById(R.id.progressBar);
                 // ClickListener:
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -168,7 +166,6 @@ public class CallActivity extends AppCompatActivity {
                 break;
             case "Betreuter":
                 setContentView(R.layout.activity_call_betreuter);
-                progressBar = findViewById(R.id.progressBar);
                 break;
         }
     }
@@ -242,7 +239,6 @@ public class CallActivity extends AppCompatActivity {
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
         StorageReference riversRef = mStorageRef.child("images/" + imageFileName);
-        progressBar.setVisibility(View.VISIBLE);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Hochladen zum Firebase-Storage");
@@ -277,7 +273,6 @@ public class CallActivity extends AppCompatActivity {
     // TODO: Generisch.
     public void updateProgress(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-        progressBar.setProgress((int) progress);
         progressDialog.setMessage(message + ((int) progress) + "%...");
         if(progress == 100) {
             try {
@@ -289,11 +284,10 @@ public class CallActivity extends AppCompatActivity {
     }
     public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-        progressBar.setProgress((int) progress);
         progressDialog.setMessage(message + ((int) progress) + "%...");
         if(progress == 100) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(20000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

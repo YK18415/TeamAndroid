@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -22,6 +23,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
@@ -64,6 +67,7 @@ public class CallActivity extends AppCompatActivity {
 
     private static String TAG = "CallActivity";
     protected static final int REQUEST_CAPTURE_PICTURE = 1;
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     // Layout components for both:
     ImageView imageView;
@@ -242,7 +246,7 @@ public class CallActivity extends AppCompatActivity {
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
 
-        if(CallReceiver.INCOMING_NUMBER==null){
+        if (CallReceiver.INCOMING_NUMBER == null) {
             System.out.println("Keine Nummer gespeichert!");
         }
 
@@ -269,11 +273,11 @@ public class CallActivity extends AppCompatActivity {
                         exception.printStackTrace();
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        updateProgress(taskSnapshot, progressDialog, "Hochgeladen zu ");
-                    }
-                });
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                updateProgress(taskSnapshot, progressDialog, "Hochgeladen zu ");
+            }
+        });
 
 
     }
@@ -282,7 +286,7 @@ public class CallActivity extends AppCompatActivity {
     public void updateProgress(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         progressDialog.setMessage(message + ((int) progress) + "%...");
-        if(progress == 100) {
+        if (progress == 100) {
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -290,10 +294,11 @@ public class CallActivity extends AppCompatActivity {
             }
         }
     }
+
     public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         progressDialog.setMessage(message + ((int) progress) + "%...");
-        if(progress == 100) {
+        if (progress == 100) {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
@@ -302,17 +307,64 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+
     private void downloadPhotoFromFirebase() {
 
-        TelephonyManager phoneManager = (TelephonyManager)
-                getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+       /* TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         //todo testen, ob es crasht, wenn der user nicht die permission gibt
         //Wenn die eigene Telefonnummer nicht auf der SIM karte gespeichert ist, dann funktioniert das vielleicht nicht
+        String fileName = "images/" + phoneManager.getLine1Number() + ".jpg";*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
+
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                System.out.println("############################################# returned");
+                return;
+            }
+            List<SubscriptionInfo> subscription = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+            for (int i = 0; i < subscription.size(); i++) {
+                SubscriptionInfo info = subscription.get(i);
+                Log.d(TAG, "number " + info.getNumber());
+                Log.d(TAG, "network name : " + info.getCarrierName());
+                Log.d(TAG, "country iso " + info.getCountryIso());
+            }
+        }
+        TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         String fileName = "images/" + phoneManager.getLine1Number() + ".jpg";
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
 
         final StorageReference riversRef = mStorageRef.child(fileName);
         final ProgressDialog progressDialog = new ProgressDialog(this);

@@ -517,6 +517,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Replace actual call() Method
      */
     private void call() {
+        if(contactList.size() == 0 ) {
+            Toast.makeText(this, "Sie haben keinen Kontakt ausgewählt.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
         handlerThread.start();
         Looper looper = handlerThread.getLooper();

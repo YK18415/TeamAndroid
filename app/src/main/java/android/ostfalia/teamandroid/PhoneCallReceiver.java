@@ -5,12 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 import java.util.Date;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-public abstract class PhoneCallReceiver extends BroadcastReceiver {
+public class PhoneCallReceiver extends BroadcastReceiver {
 
     private static String savedNumber;  //because the passed incoming is only valid in ringing
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
@@ -64,17 +65,6 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
 
     }
 
-    //Derived classes should override these to respond to specific events of interest
-    protected abstract void onIncomingCallReceived(Context ctx, String number, Date start);
-    protected abstract void onIncomingCallAnswered(Context ctx, String number, Date start);
-    protected abstract void onIncomingCallEnded(Context ctx, String number, Date start, Date end);
-
-    protected abstract void onOutgoingCallStarted(Context ctx, String number, Date start);
-    protected abstract void onOutgoingCallEnded(Context ctx, String number, Date start, Date end);
-
-    protected abstract void onMissedCall(Context ctx, String number, Date start);
-
-
     //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
     public void onCallStateChanged(Context context, int state, String number) {
@@ -119,5 +109,41 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                 break;
         }
         lastState = state;
+    }
+
+    protected void onIncomingCallReceived(Context ctx, String number, Date start)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onIncomingCallReceived");
+    }
+
+    protected void onIncomingCallAnswered(Context ctx, String number, Date start)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onIncomingCallAnswered ------------------------------------------------------------------------");
+    }
+
+    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onIncomingCallEnded");
+    }
+
+    protected void onOutgoingCallStarted(Context ctx, String number, Date start)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onOutgoingCallStarted");
+    }
+
+    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onOutgoingCallEnded");
+    }
+
+    protected void onMissedCall(Context ctx, String number, Date start)
+    {
+        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        System.out.println("onMissedCall");
     }
 }

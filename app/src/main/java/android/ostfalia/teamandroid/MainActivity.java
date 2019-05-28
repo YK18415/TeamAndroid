@@ -611,7 +611,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Locks relogin possibility
+     * Minimize App when pressed Back
      */
     @Override
     public void onBackPressed() {
@@ -644,6 +644,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog.show();
     }
 
+    /**
+     * Minimize a Activity and go to startscreen
+     */
     public void minimizeApp() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);

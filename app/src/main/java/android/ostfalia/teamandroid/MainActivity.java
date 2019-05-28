@@ -615,9 +615,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onBackPressed() {
-        // TODO: Minimize the app.
+        //Issue #14
+        minimizeApp();
 
-        Toast.makeText(this, "Sie sind bereits eingeloggt", Toast.LENGTH_LONG).show();
+        //finish(); //Close App hard, no rocovery!!!
     }
 
 
@@ -641,5 +642,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
         dialog = helpDialog.create();
         dialog.show();
+    }
+
+    public void minimizeApp() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 }

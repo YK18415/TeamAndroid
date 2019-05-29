@@ -42,10 +42,10 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private enum Role {BETREUER, BETREUTER}
+
 
     private boolean initialState = false;
-    private Role role;
+    public static Role role;
 
     private Toolbar toolbar;
     private Spinner spinnerContactList;
@@ -531,10 +531,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void run() {
                 Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
-                String role;
+                //String role;
                 SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-                role = settings.getString("role","");
-                intent.putExtra("role", role);
+                //role = settings.getString("role","");
+                switch(settings.getString("role","")) {
+                    case "BETREUER":
+                        role = Role.BETREUER;
+                        break;
+                    case "BETREUTER":
+                        role = Role.BETREUTER;
+                        break;
+                }
+                //intent.putExtra("role", role);
                 startActivity(intent);
                 handlerThread.quit();
             }

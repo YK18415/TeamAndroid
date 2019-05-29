@@ -146,10 +146,10 @@ public class CallActivity extends AppCompatActivity {
      * Sets the layout depending on the role of the user and sets the clickListener for the Betreuer (Accept/Decline-Button).
      */
     private void setLayout() {
-        Bundle bundle = getIntent().getExtras();
-        String role = bundle.get("role").toString();
-        switch (role) {
-            case "Betreuer":
+       /* Bundle bundle = getIntent().getExtras();
+        String role = bundle.get("role").toString();*/
+        switch (MainActivity.role) {
+            case BETREUER:
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
                 imageButtonDecline = findViewById(R.id.imageButtonDecline);
@@ -171,7 +171,7 @@ public class CallActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case "Betreuter":
+            case BETREUTER:
                 setContentView(R.layout.activity_call_betreuter);
                 break;
         }

@@ -69,6 +69,10 @@ public class CallActivity extends AppCompatActivity {
     protected static final int REQUEST_CAPTURE_PICTURE = 1;
     private static final int PERMISSION_REQUEST_CODE = 1;
 
+
+    SharedPreferences savedData;
+
+
     // Layout components for both:
     ImageView imageView;
     ImageButton btnCamera;
@@ -96,6 +100,9 @@ public class CallActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLayout();
+        signInAnonymously();
+        //todo refactor name of the sharedpreferencesy
+        savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE);
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -140,6 +147,19 @@ public class CallActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
+                return;
+            }
+            List<SubscriptionInfo> _sb = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+            for (int i = 0; i < _sb.size(); i++) {
+                SubscriptionInfo info = _sb.get(i);
+                System.out.println("Mobile_number " + info.getNumber());
+                Log.d(TAG, "Mobile_number " + info.getNumber());
+            }
+        }
     }
 
     /**
@@ -246,11 +266,15 @@ public class CallActivity extends AppCompatActivity {
     private void sendPhotoToFirebase(File file) {
         Uri fileUri = Uri.fromFile(file);
 
-        if (CallReceiver.INCOMING_NUMBER == null) {
+        /*if (CallReceiver.INCOMING_NUMBER == null) {
             System.out.println("Keine Nummer gespeichert!");
         }
 
         StorageReference riversRef = mStorageRef.child("images/" + PhoneCallReceiver.INCOMING_NUMBER + ".jpg");
+        */
+
+
+        StorageReference riversRef = mStorageRef.child("images/" + savedData.getString("PHONE_NUMBER", "") + ".jpg");
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Hochladen zum Firebase-Storage");
@@ -313,6 +337,15 @@ public class CallActivity extends AppCompatActivity {
             case PERMISSION_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    List<SubscriptionInfo> _sb = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
+                    for (int i = 1; i < _sb.size(); i++) {
+                        SubscriptionInfo info = _sb.get(i);
+                        System.out.println("Mobile_number " + info.getNumber());
+                        Log.d(TAG, "Mobile_number " + info.getNumber());
+                    }
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -363,7 +396,7 @@ public class CallActivity extends AppCompatActivity {
             }
         }
         TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String fileName = "images/" + phoneManager.getLine1Number() + ".jpg";
+        String fileName = "images/" + PhoneCallReceiver.INCOMING_NUMBER + ".jpg";
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
 
         final StorageReference riversRef = mStorageRef.child(fileName);

@@ -43,7 +43,6 @@ public class NewContact extends AppCompatActivity {
                 } else {
                     addNewContact();
 
-                    // TODO: Refactoren.
                     if(!TextUtils.isEmpty(editTextStreet.getText())) {
                         newContact.setStreet(editTextStreet.getText().toString());
                     }

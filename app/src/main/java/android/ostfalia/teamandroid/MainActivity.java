@@ -218,10 +218,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String passwordSaved = logindata.getString("password", "");
                 String passwordInput = String.valueOf(input.getText());
                 if(passwordInput.equals(passwordSaved)) {
-                    Intent intent = new Intent(MainActivity.this, NewContact.class);
+                    dialog.dismiss();
+                    openChoicePopup();
+                   /* Intent intent = new Intent(MainActivity.this, NewContact.class);
                     intent.putExtra("CONTACT", contactList.get(0));
                     contactList.clear();
-                    startActivityForResult(intent, 1);
+                    startActivityForResult(intent, 1);*/
                 } else {
                     dialog.dismiss();
                     Toast.makeText(MainActivity.this, "Sie haben das falsche Password eingegeben.", Toast.LENGTH_LONG).show();
@@ -229,6 +231,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         dialog = passwordDialog.create();
+        dialog.show();
+    }
+
+    private void openChoicePopup() {
+        android.app.AlertDialog dialog;
+        final android.app.AlertDialog.Builder choiceDialog = new android.app.AlertDialog.Builder(MainActivity.this);
+        choiceDialog.setTitle("Wählen Sie aus:");
+
+        choiceDialog.setPositiveButton("Betreuer ändern", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, NewContact.class);
+                intent.putExtra("CONTACT", contactList.get(0));
+                contactList.clear();
+                startActivityForResult(intent, 1);
+            }
+        }).setNegativeButton("Eigene Nummer ändern", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, ChangeOwnPhonenumberActivity.class);
+                startActivityForResult(intent, 2);
+            }
+        }).setNeutralButton("Abbrechen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog = choiceDialog.create();
         dialog.show();
     }
 
@@ -619,6 +651,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(newContact != null && !contactList.contains(newContact)) {
                     contactList.add(newContact);
                 }
+            }
+        }
+
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                String newPhonenumber = Objects.requireNonNull(data.getExtras()).getString("PHONE_NUMBER", "");
+                editor.putString("PHONE_NUMBER", newPhonenumber);
+                editor.commit();
             }
         }
     }

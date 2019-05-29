@@ -20,6 +20,7 @@ import java.util.Objects;
 public class LoginActivity extends AppCompatActivity {
 
     EditText editTextPassword;
+    EditText editTextOwnPhonenumber;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -32,20 +33,34 @@ public class LoginActivity extends AppCompatActivity {
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
         final ImageButton imageButtonInfoPassword = findViewById(R.id.imageButtonInfoPassword);
+        final ImageButton imageButtonInfoOwnPhonenumber = findViewById(R.id.imageButtonInfoOwnPhonenumber);
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextOwnPhonenumber = findViewById(R.id.editTextOwnPhonenumber);
+
 
         editTextPassword.setVisibility(View.GONE);
         imageButtonInfoPassword.setVisibility(View.GONE);
+        editTextOwnPhonenumber.setVisibility(View.GONE);
+        imageButtonInfoOwnPhonenumber.setVisibility(View.GONE);
 
         radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.VISIBLE);
                 imageButtonInfoPassword.setVisibility(View.VISIBLE);
+                editTextOwnPhonenumber.setVisibility(View.VISIBLE);
+                imageButtonInfoOwnPhonenumber.setVisibility(View.VISIBLE);
+
                 imageButtonInfoPassword.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //TODO: add infos about masterpassword
+                    }
+                });
+                imageButtonInfoOwnPhonenumber.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: add infos about phone number usage
                     }
                 });
             }
@@ -56,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.GONE);
                 imageButtonInfoPassword.setVisibility(View.GONE);
+                editTextOwnPhonenumber.setVisibility(View.GONE);
+                imageButtonInfoOwnPhonenumber.setVisibility(View.GONE);
             }
         });
 
@@ -66,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 login(radioButtonRoleBetreuer, radioButtonRoleBetreuter);
             }
         });
+
     }
 
     /**Login onClickListener - checks which role is chosen and logs in
@@ -81,15 +99,14 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
             Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
             startActivity(intent);
-        } else {
-            if(!TextUtils.isEmpty(editTextPassword.getText())) {
-                editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
-                editor.putString("password", String.valueOf(editTextPassword.getText()));
+        } else if (!TextUtils.isEmpty(editTextPassword.getText()) && !TextUtils.isEmpty(editTextOwnPhonenumber.getText())) {
+            editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
+            editor.putString("password", String.valueOf(editTextPassword.getText()));
+            editor.putString("PHONE_NUMBER", editTextOwnPhonenumber.getText().toString());
 
-                // Add Betreuer:
-                Intent intent = new Intent(LoginActivity.this, NewContact.class);
-                startActivityForResult(intent, 1);
-            }
+            // Add Betreuer:
+            Intent intent = new Intent(LoginActivity.this, NewContact.class);
+            startActivityForResult(intent, 1);
         }
         editor.commit();
     }

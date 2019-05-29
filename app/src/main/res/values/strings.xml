@@ -71,4 +71,9 @@
     <string name="callActivity_Decision">---------------</string>
     <string name="callActivity_Firebase_Exception_Upload_Toast">Es gab einen Fehler beim Hochladen des Bildes zur Cloud. Möglicherweise verfügen Sie nicht über die nötigen Berechtigungen. Bitte sagen Sie das Ihrem Betreuer.</string>
 
+    <!-- ChangeOwnPhonenumberActivity - Betreuter -->
+    <string name="changeOwnPhonenumberActivity_textViewPhonenumber_Headline">Bitte geben Sie die neue Nummer des Betreuten ein:</string>
+    <string name="loginActivity_own_telephonnumber">Eigene Telefonnummer</string>
+
+
 </resources>

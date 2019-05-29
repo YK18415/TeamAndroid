@@ -3,6 +3,10 @@ package android.ostfalia.teamandroid;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -18,7 +22,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     private static Date callStartTime;
 
-    public static String INCOMING_NUMBER=null;
+    public static String INCOMING_NUMBER = null;
 
 
     @Override
@@ -48,9 +52,44 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
         //check the flag
         //open your activity immediately after a call
-        Intent intent1 = new Intent(context, CallActivity.class);
+        /*Intent intent1 = new Intent(context, CallActivity.class);
         intent1.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent1);
+        context.startActivity(intent1);*/
+
+
+
+
+        /*
+        final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
+        handlerThread.start();
+        Looper looper = handlerThread.getLooper();
+        final Handler handler = new Handler(looper);
+
+        handler.postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+                //String role;
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                //role = settings.getString("role","");
+                switch(settings.getString("role","")) {
+                    case "BETREUER":
+                        role = Role.BETREUER;
+                        break;
+                    case "BETREUTER":
+                        role = Role.BETREUTER;
+                        break;
+                }
+                //intent.putExtra("role", role);
+                startActivity(intent);
+                handlerThread.quit();
+            }
+        }, 1000);*/
+
+
+
+
+
 
         TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         telephony.listen(new PhoneStateListener(){
@@ -58,7 +97,11 @@ public class PhoneCallReceiver extends BroadcastReceiver {
             public void onCallStateChanged(int state, String incomingNumber) {
                 super.onCallStateChanged(state, incomingNumber);
 
+
+                //Toast.makeText(CallActivity.this, "hjgredtrzguhijztrjiuhzgtfzujikuztgfghzujiuhzgf", Toast.LENGTH_LONG).show();
+
                 INCOMING_NUMBER = incomingNumber;
+                System.out.println("äääääääääääääääääääääääääääääääääääääää "+incomingNumber);
 
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);

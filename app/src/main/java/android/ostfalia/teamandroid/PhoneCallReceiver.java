@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.Date;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class PhoneCallReceiver extends BroadcastReceiver {
@@ -59,7 +60,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
 
 
-        /*
+/*
         final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
         handlerThread.start();
         Looper looper = handlerThread.getLooper();
@@ -68,23 +69,22 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         handler.postDelayed(new Runnable(){
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
-                //String role;
-                SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-                //role = settings.getString("role","");
-                switch(settings.getString("role","")) {
+                Intent intent = new Intent(context, CallActivity.class); // TODO: Change that with Enum.
+                SharedPreferences settings = context.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                String role = settings.getString("role","");
+                switch(role) {
                     case "BETREUER":
-                        role = Role.BETREUER;
+                        MainActivity.role = Role.BETREUER;
                         break;
                     case "BETREUTER":
-                        role = Role.BETREUTER;
+                        MainActivity.role = Role.BETREUTER;
                         break;
                 }
-                //intent.putExtra("role", role);
-                startActivity(intent);
+                context.startActivity(intent);
                 handlerThread.quit();
             }
-        }, 1000);*/
+        }, 1000);
+*/
 
 
 
@@ -156,37 +156,50 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallReceived(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, "Anruf onIncomingCallReceived", Toast.LENGTH_LONG).show();
         System.out.println("onIncomingCallReceived");
     }
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        String role = settings.getString("role","");
+        switch(role) {
+            case "BETREUER":
+                MainActivity.role = Role.BETREUER;
+                break;
+            case "BETREUTER":
+                MainActivity.role = Role.BETREUTER;
+                break;
+        }
+        Toast.makeText(ctx, "Anruf kommt onIncomingCallAnswered", Toast.LENGTH_LONG).show();
         System.out.println("onIncomingCallAnswered ------------------------------------------------------------------------");
+        Intent intent = new Intent(ctx, CallActivity.class); // TODO: Change that with Enum.
+
+        ctx.startActivity(intent);
     }
 
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, "Anruf kommt onIncomingCallEnded", Toast.LENGTH_LONG).show();
         System.out.println("onIncomingCallEnded");
     }
 
     protected void onOutgoingCallStarted(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, "Anruf kommt onOutgoingCallStarted", Toast.LENGTH_LONG).show();
         System.out.println("onOutgoingCallStarted");
     }
 
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, "Anruf kommt onOutgoingCallEnded", Toast.LENGTH_LONG).show();
         System.out.println("onOutgoingCallEnded");
     }
 
     protected void onMissedCall(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt", Toast.LENGTH_LONG).show();
+        Toast.makeText(ctx, "Anruf kommt onMissedCall", Toast.LENGTH_LONG).show();
         System.out.println("onMissedCall");
     }
 }

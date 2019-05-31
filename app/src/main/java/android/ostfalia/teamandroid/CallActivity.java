@@ -168,8 +168,11 @@ public class CallActivity extends AppCompatActivity {
     private void setLayout() {
        /* Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();*/
-        switch (MainActivity.role) {
-            case BETREUER:
+        SharedPreferences settings = getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        String role = settings.getString("role","");
+        switch (role) {
+            case "Betreuer":
+                MainActivity.role = Role.BETREUER;
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
                 imageButtonDecline = findViewById(R.id.imageButtonDecline);
@@ -191,7 +194,8 @@ public class CallActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case BETREUTER:
+            case "Betreuter":
+                MainActivity.role = Role.BETREUTER;
                 setContentView(R.layout.activity_call_betreuter);
                 break;
         }

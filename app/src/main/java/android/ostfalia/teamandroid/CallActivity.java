@@ -104,8 +104,7 @@ public class CallActivity extends AppCompatActivity {
         this.setPictureTakenInsteadRole();
         setLayout();
         signInAnonymously();
-        //todo refactor name of the sharedpreferencesy
-        savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE);
+        savedData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE);
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -181,7 +180,7 @@ public class CallActivity extends AppCompatActivity {
     private void setLayout() {
        /* Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();*/
-        SharedPreferences settings = getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        SharedPreferences settings = getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
         String role = settings.getString("role","");
         switch (role) {
             case "Betreuer":
@@ -297,7 +296,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void sendFileToFirebase(File file, boolean isText) {
         Uri fileUri = Uri.fromFile(file);
-        StorageReference riversRef = null;
+        StorageReference riversRef;
         /*if (CallReceiver.partnerNumber == null) {
             System.out.println("Keine Nummer gespeichert!");
         }
@@ -314,7 +313,7 @@ public class CallActivity extends AppCompatActivity {
         System.out.println("################################################# " + PhoneCallReceiver.partnerNumber);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-
+        progressbarVisible=false;
         riversRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -343,17 +342,6 @@ public class CallActivity extends AppCompatActivity {
 
     // TODO: Generisch.
     public void updateProgress(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
-        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-        progressDialog.setMessage(message + ((int) progress) + "%...");
-        if (progress == 100) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         if(!progressbarVisible) {
             progressbarVisible = true;
             progressDialog.setTitle("Hochladen zum Firebase-Storage");
@@ -361,9 +349,25 @@ public class CallActivity extends AppCompatActivity {
         }
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         progressDialog.setMessage(message + ((int) progress) + "%...");
-        if (progress == 100) {
+        if (progress >= 99.9) {
             try {
-                Thread.sleep(20000);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        if(!progressbarVisible && progress>1.0) {
+            progressbarVisible = true;
+            progressDialog.setTitle("Herunterladen vom Firebase-Storage");
+            progressDialog.show();
+        }
+        progressDialog.setMessage(message + ((int) progress) + "%...");
+        if (progress >= 99.9) {
+            try {
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -401,7 +405,6 @@ public class CallActivity extends AppCompatActivity {
 
 
     private void downloadPhotoFromFirebase() {
-        progressbarVisible = false;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -415,9 +418,7 @@ public class CallActivity extends AppCompatActivity {
 
         final StorageReference imageRef = mStorageRef.child(fileName);
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Herunterladen vom Firebase-Storage");
-        progressDialog.show();
-
+        progressbarVisible=false;
         try {
             final File localFile = File.createTempFile("images", "jgp");
             downloading=true;

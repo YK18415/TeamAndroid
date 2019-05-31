@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        savedData = getApplicationContext().getSharedPreferences("contactList", MODE_PRIVATE); //lesen
+        savedData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
         contactInfo=findViewById(R.id.contactInfo);
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         passwordDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences logindata = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); //lesen
+                SharedPreferences logindata = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); //lesen
                 String passwordSaved = logindata.getString("password", "");
                 String passwordInput = String.valueOf(input.getText());
                 if(passwordInput.equals(passwordSaved)) {
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private Boolean validateFirstLogin() {
         String role;
-        SharedPreferences loginData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+        SharedPreferences loginData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
         role = loginData.getString("role","");
 
         if(TextUtils.isEmpty(role)) {
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void run() {
                 Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
                 //String role;
-                SharedPreferences settings = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
                 //role = settings.getString("role","");
                 switch(settings.getString("role","")) {
                     case "BETREUER":

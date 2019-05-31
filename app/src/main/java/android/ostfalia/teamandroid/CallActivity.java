@@ -34,8 +34,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +50,13 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -83,7 +85,6 @@ public class CallActivity extends AppCompatActivity {
     String imageFileName;
     String fileUrl;
     Task<Uri> firebaseUri;
-    ProgressBar progressBar;
     boolean progressbarVisible = false;
 
     // Layout components for Betreuer:
@@ -102,7 +103,7 @@ public class CallActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setPictureTakenInsteadRole();
-        setLayout();
+        handleLayout();
         signInAnonymously();
         savedData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE);
 
@@ -144,6 +145,7 @@ public class CallActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(CallActivity.this, "Kein Anruf ist aktiv.", Toast.LENGTH_LONG).show();
                 }
+                //downloadAndReadFileFromFirebase();
             }
         });
 
@@ -154,12 +156,6 @@ public class CallActivity extends AppCompatActivity {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
                 return;
-            }
-            List<SubscriptionInfo> _sb = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
-            for (int i = 0; i < _sb.size(); i++) {
-                SubscriptionInfo info = _sb.get(i);
-                System.out.println("Mobile_number " + info.getNumber());
-                Log.d(TAG, "Mobile_number " + info.getNumber());
             }
         }
     }
@@ -177,7 +173,7 @@ public class CallActivity extends AppCompatActivity {
     /**
      * Sets the layout depending on the role of the user and sets the clickListener for the Betreuer (Accept/Decline-Button).
      */
-    private void setLayout() {
+    private void handleLayout() {
        /* Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();*/
         SharedPreferences settings = getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
@@ -224,6 +220,14 @@ public class CallActivity extends AppCompatActivity {
             case "Betreuter":
                 MainActivity.role = Role.BETREUTER;
                 setContentView(R.layout.activity_call_betreuter);
+                TextView textViewDeciion = findViewById(R.id.textViewDecision);
+                textViewDeciion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        downloadAndReadFileFromFirebase();
+                    }
+                });
+                // Start Thread to downoad the text-file.
                 break;
         }
     }
@@ -403,7 +407,9 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Download a photo from Firebase and show a progressbar for the percentage of the downloaded file.
+     */
     private void downloadPhotoFromFirebase() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -452,6 +458,86 @@ public class CallActivity extends AppCompatActivity {
             downloading=false;
         }
     }
+
+    /**
+     * Download a textfile from Firebase, which contains the answer of the Betreuer according a sent picture.
+     */
+    private void downloadAndReadFileFromFirebase() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
+                return;
+            }
+        }
+        TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String fileName = "documents/" + PhoneCallReceiver.partnerNumber + ".txt";
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
+
+        final StorageReference riversRef = mStorageRef.child(fileName);
+
+        try {
+            final File localFile = File.createTempFile(PhoneCallReceiver.partnerNumber, "txt");
+
+            riversRef.getFile(localFile).addOnSuccessListener(
+                    new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(CallActivity.this, "Textdatei erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
+
+                            String text = null;
+                            try {
+                                text = getStringFromFile(localFile.getAbsolutePath());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß " + text);
+                            Toast.makeText(CallActivity.this, text, Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(CallActivity.this,"Failed to download text-file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     *
+     * @param filePath String. The path from Firebase.
+     * @return returns the content of the text-file.
+     */
+    public static String getStringFromFile (String filePath) {
+        File fl = new File(filePath);
+        String ret = null;
+        try(FileInputStream fin = new FileInputStream(fl)) {
+            ret = convertStreamToString(fin);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @param is InputStream (from the textfile from Firebase)
+     * @return returns the content of the textfile
+     * @throws Exception
+     */
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
 
     /**
      * Create the image-file and the path to the local storage from the image/picture.
@@ -592,6 +678,7 @@ public class CallActivity extends AppCompatActivity {
                             if(!downloading) {
                                 System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                                 downloadPhotoFromFirebase();
+                                downloadAndReadFileFromFirebase();
                             } else {
                                 System.out.println("****************************");
                             }

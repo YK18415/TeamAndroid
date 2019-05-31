@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText editTextPassword;
     EditText editTextOwnPhonenumber;
-
+    //todo it is possible for the betreuter to save his own number with a 0 or a +49 at the beginning. this influences filenames on the firebase servers and we do not currently handle this.
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

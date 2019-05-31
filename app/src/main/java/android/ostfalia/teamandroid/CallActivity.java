@@ -12,8 +12,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +35,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +65,10 @@ public class CallActivity extends AppCompatActivity {
     private static String TAG = "CallActivity";
     protected static final int REQUEST_CAPTURE_PICTURE = 1;
     private static final int PERMISSION_REQUEST_CODE = 1;
+
+    private boolean downloading = false;
+
+    private boolean isActivityActive;
 
 
     SharedPreferences savedData;
@@ -401,19 +410,18 @@ public class CallActivity extends AppCompatActivity {
                 return;
             }
         }
-        TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         String fileName = "images/" + PhoneCallReceiver.partnerNumber + ".jpg";
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
 
-        final StorageReference riversRef = mStorageRef.child(fileName);
+        final StorageReference imageRef = mStorageRef.child(fileName);
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Herunterladen vom Firebase-Storage");
         progressDialog.show();
 
         try {
             final File localFile = File.createTempFile("images", "jgp");
-
-            riversRef.getFile(localFile).addOnSuccessListener(
+            downloading=true;
+            imageRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -421,13 +429,16 @@ public class CallActivity extends AppCompatActivity {
                             bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                             imageView.setImageBitmap(bitmap);
                             progressDialog.dismiss();
-                            // TODO: Delete Photo from Firebase.
+                            downloading=false;
+                            imageRef.delete();
+                            System.out.println("downloaddownloaddownloaddownloaddownloaddownloaddownloaddownloaddownload");
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
+                    downloading=false;
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
@@ -437,6 +448,7 @@ public class CallActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             Toast.makeText(CallActivity.this,"Failed to create temp file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+            downloading=false;
         }
     }
 
@@ -542,6 +554,8 @@ public class CallActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setImageViewClickListener();
+        downloading = false;
+        startDownloadThread();
     }
 
     @Override
@@ -555,10 +569,63 @@ public class CallActivity extends AppCompatActivity {
     }
 
 
-   /* @Override
+    @Override
     protected void onPause() {
         super.onPause();
-        SharedPreferences.Editor editor = settings.edit(); // For writing.
+        isActivityActive = false;
+    }
+
+    private void startDownloadThread(){
+        isActivityActive = true;
+        switch(MainActivity.role){
+            case BETREUER:
+                final HandlerThread handlerThread = new HandlerThread("DownloadThread");
+                handlerThread.start();
+                Looper looper = handlerThread.getLooper();
+                final Handler handler = new Handler(looper);
+
+                handler.post(new Runnable(){
+                    @Override
+                    public void run() {
+                        while(isActivityActive){
+                            if(!downloading) {
+                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                                downloadPhotoFromFirebase();
+                            } else {
+                                System.out.println("****************************");
+                            }
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        handlerThread.quit();
+                    }
+                });
+
+                break;
+            case BETREUTER:
+                Thread downloadThreadAnswer = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while(isActivityActive){
+
+                            //todo add function to read acceptance state from firebase
+
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                downloadThreadAnswer.start();
+                break;
+        }
+    }
+        /*SharedPreferences.Editor editor = settings.edit(); // For writing.
 
         // Store the data:
         editor.putBoolean("IS_CALL_ACTIVE", isCallActive(this));

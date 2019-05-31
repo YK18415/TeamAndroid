@@ -81,7 +81,7 @@ public class CallActivity extends AppCompatActivity {
     ImageButton imageButtonAccept;
     ImageButton imageButtonDecline;
 
-    Boolean isPictureTaken = false;
+    Boolean isPictureTaken;
     /*//Storage:
     SharedPreferences settings;*/
 
@@ -92,6 +92,7 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setPictureTakenInsteadRole();
         setLayout();
         signInAnonymously();
         //todo refactor name of the sharedpreferencesy
@@ -152,6 +153,16 @@ public class CallActivity extends AppCompatActivity {
                 System.out.println("Mobile_number " + info.getNumber());
                 Log.d(TAG, "Mobile_number " + info.getNumber());
             }
+        }
+    }
+
+    /**
+     * set boolean isPictureTaken instead of the role
+     */
+    private void setPictureTakenInsteadRole() {
+        switch(MainActivity.role) {
+            case BETREUER:  this.isPictureTaken = true;     break;
+            case BETREUTER: this.isPictureTaken = false;    break;
         }
     }
 

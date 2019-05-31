@@ -11,6 +11,8 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -162,21 +164,42 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
-        SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-        String role = settings.getString("role","");
-        switch(role) {
-            case "BETREUER":
-                MainActivity.role = Role.BETREUER;
-                break;
-            case "BETREUTER":
-                MainActivity.role = Role.BETREUTER;
-                break;
+        SharedPreferences contactList = ctx.getSharedPreferences("contactList", MODE_PRIVATE);
+        String contactListString = contactList.getString("contactList", "");
+        Gson gson = new Gson();
+        if(contactListString.isEmpty()) {
+            return;
         }
-        Toast.makeText(ctx, "Anruf kommt onIncomingCallAnswered", Toast.LENGTH_LONG).show();
-        System.out.println("onIncomingCallAnswered ------------------------------------------------------------------------");
-        Intent intent = new Intent(ctx, CallActivity.class); // TODO: Change that with Enum.
+        Contact[] contactArray = gson.fromJson(contactListString, Contact[].class);
 
-        ctx.startActivity(intent);
+        String formattedIncomingNumber = number.charAt(0)=='0'?"+49" + number.substring(1):number;
+
+        for (Contact contact: contactArray) {
+            String contactNumber = contact.getTelephonenumber();
+            String formattedNumber = contactNumber.charAt(0)=='0'?"+49" + contactNumber.substring(1):contactNumber;
+            System.out.println("ööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööö" + formattedNumber);
+            if(formattedNumber.equals(formattedIncomingNumber)) {
+                SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
+                String role = settings.getString("role","");
+
+                switch(role) {
+                    case "Betreuer":
+                        MainActivity.role = Role.BETREUER;
+                        break;
+                    case "Betreuter":
+                        MainActivity.role = Role.BETREUTER;
+                        break;
+                }
+                Toast.makeText(ctx, "Anruf kommt onIncomingCallAnswered", Toast.LENGTH_LONG).show();
+                System.out.println("onIncomingCallAnswered ------------------------------------------------------------------------");
+                Intent intent = new Intent(ctx, CallActivity.class); // TODO: Change that with Enum.
+
+                ctx.startActivity(intent);
+                break;
+            }
+        }
+
+
     }
 
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)

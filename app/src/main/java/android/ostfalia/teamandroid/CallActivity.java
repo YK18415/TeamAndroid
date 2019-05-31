@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -26,11 +25,9 @@ import android.os.Bundle;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -49,16 +46,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +75,7 @@ public class CallActivity extends AppCompatActivity {
     String fileUrl;
     Task<Uri> firebaseUri;
     ProgressBar progressBar;
+    boolean progressbarVisible = false;
 
     // Layout components for Betreuer:
     ImageButton imageButtonAccept;
@@ -181,7 +174,22 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
-                        downloadPhotoFromFirebase();
+
+                        TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+                        String fileName = "documents/" + PhoneCallReceiver.partnerNumber + ".jpg";
+
+                        File path = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                        File file = new File(path, "answer.txt");
+
+
+                        try (FileOutputStream stream = new FileOutputStream(file)) {
+                            stream.write("text-to-write".getBytes());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        sendFileToFirebase(file, true);
+
+                        //downloadPhotoFromFirebase();
                         // TODO
                     }
                 });
@@ -262,27 +270,30 @@ public class CallActivity extends AppCompatActivity {
                 imageView.setImageBitmap(bitmap);
                 isPictureTaken = true;
                 btnCamera.setVisibility(View.VISIBLE);
-                sendPhotoToFirebase(file);
+                sendFileToFirebase(file, false);
             }
         }
     }
 
-    private void sendPhotoToFirebase(File file) {
+    private void sendFileToFirebase(File file, boolean isText) {
         Uri fileUri = Uri.fromFile(file);
-
-        /*if (CallReceiver.INCOMING_NUMBER == null) {
+        StorageReference riversRef = null;
+        /*if (CallReceiver.partnerNumber == null) {
             System.out.println("Keine Nummer gespeichert!");
         }
 
-        StorageReference riversRef = mStorageRef.child("images/" + PhoneCallReceiver.INCOMING_NUMBER + ".jpg");
+        StorageReference riversRef = mStorageRef.child("images/" + PhoneCallReceiver.partnerNumber + ".jpg");
         */
 
+        if(isText) {
+            riversRef = mStorageRef.child("documents/" + PhoneCallReceiver.partnerNumber + ".txt");
+        } else {
+            riversRef = mStorageRef.child("images/" + savedData.getString("PHONE_NUMBER", "") + ".jpg");
+        }
 
-        StorageReference riversRef = mStorageRef.child("images/" + savedData.getString("PHONE_NUMBER", "") + ".jpg");
+        System.out.println("################################################# " + PhoneCallReceiver.partnerNumber);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Hochladen zum Firebase-Storage");
-        progressDialog.show();
 
         riversRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -322,8 +333,12 @@ public class CallActivity extends AppCompatActivity {
             }
         }
     }
-
     public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+        if(!progressbarVisible) {
+            progressbarVisible = true;
+            progressDialog.setTitle("Hochladen zum Firebase-Storage");
+            progressDialog.show();
+        }
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         progressDialog.setMessage(message + ((int) progress) + "%...");
         if (progress == 100) {
@@ -366,41 +381,17 @@ public class CallActivity extends AppCompatActivity {
 
 
     private void downloadPhotoFromFirebase() {
-
-       /* TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        //todo testen, ob es crasht, wenn der user nicht die permission gibt
-        //Wenn die eigene Telefonnummer nicht auf der SIM karte gespeichert ist, dann funktioniert das vielleicht nicht
-        String fileName = "images/" + phoneManager.getLine1Number() + ".jpg";*/
+        progressbarVisible = false;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
-
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                System.out.println("############################################# returned");
                 return;
-            }
-            List<SubscriptionInfo> subscription = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
-            for (int i = 0; i < subscription.size(); i++) {
-                SubscriptionInfo info = subscription.get(i);
-                Log.d(TAG, "number " + info.getNumber());
-                Log.d(TAG, "network name : " + info.getCarrierName());
-                Log.d(TAG, "country iso " + info.getCountryIso());
             }
         }
         TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String fileName = "images/" + PhoneCallReceiver.INCOMING_NUMBER + ".jpg";
+        String fileName = "images/" + PhoneCallReceiver.partnerNumber + ".jpg";
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
 
         final StorageReference riversRef = mStorageRef.child(fileName);
@@ -419,11 +410,13 @@ public class CallActivity extends AppCompatActivity {
                             bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                             imageView.setImageBitmap(bitmap);
                             progressDialog.dismiss();
+                            // TODO: Delete Photo from Firebase.
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override

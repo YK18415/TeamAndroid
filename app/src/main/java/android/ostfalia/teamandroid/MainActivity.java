@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -18,16 +17,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -599,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(String ... strings) {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + strings[0]));
-            PhoneCallReceiver.INCOMING_NUMBER=strings[0];
+            PhoneCallReceiver.partnerNumber = strings[0];
             try {
                 startActivity(intent);
             } catch (SecurityException se) {

@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -16,7 +13,6 @@ import com.google.gson.Gson;
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class PhoneCallReceiver extends BroadcastReceiver {
 
@@ -25,7 +21,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     private static Date callStartTime;
 
-    public static String INCOMING_NUMBER = null;
+    public static String partnerNumber = null;
 
 
     @Override
@@ -53,46 +49,6 @@ public class PhoneCallReceiver extends BroadcastReceiver {
             onCallStateChanged(context, state, number);
         }
 
-        //check the flag
-        //open your activity immediately after a call
-        /*Intent intent1 = new Intent(context, CallActivity.class);
-        intent1.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent1);*/
-
-
-
-
-/*
-        final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
-        handlerThread.start();
-        Looper looper = handlerThread.getLooper();
-        final Handler handler = new Handler(looper);
-
-        handler.postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                Intent intent = new Intent(context, CallActivity.class); // TODO: Change that with Enum.
-                SharedPreferences settings = context.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-                String role = settings.getString("role","");
-                switch(role) {
-                    case "BETREUER":
-                        MainActivity.role = Role.BETREUER;
-                        break;
-                    case "BETREUTER":
-                        MainActivity.role = Role.BETREUTER;
-                        break;
-                }
-                context.startActivity(intent);
-                handlerThread.quit();
-            }
-        }, 1000);
-*/
-
-
-
-
-
-
         TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         telephony.listen(new PhoneStateListener(){
             @Override
@@ -102,8 +58,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
                 //Toast.makeText(CallActivity.this, "hjgredtrzguhijztrjiuhzgtfzujikuztgfghzujiuhzgf", Toast.LENGTH_LONG).show();
 
-                INCOMING_NUMBER = incomingNumber;
-                System.out.println("äääääääääääääääääääääääääääääääääääääää "+incomingNumber);
+               System.out.println("äääääääääääääääääääääääääääääääääääääää "+incomingNumber);
 
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
@@ -164,6 +119,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
+        partnerNumber = number;
         SharedPreferences contactList = ctx.getSharedPreferences("contactList", MODE_PRIVATE);
         String contactListString = contactList.getString("contactList", "");
         Gson gson = new Gson();
@@ -177,8 +133,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         for (Contact contact: contactArray) {
             String contactNumber = contact.getTelephonenumber();
             String formattedNumber = contactNumber.charAt(0)=='0'?"+49" + contactNumber.substring(1):contactNumber;
-            System.out.println("ööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööö" + formattedNumber);
             if(formattedNumber.equals(formattedIncomingNumber)) {
+                PhoneCallReceiver.partnerNumber = formattedNumber;
                 SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
                 String role = settings.getString("role","");
 

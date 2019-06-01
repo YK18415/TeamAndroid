@@ -144,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         startTime = System.currentTimeMillis();
                         isThreadActive = true;
                         counter++;
-                        System.out.println(counter);
                         if(counter == 3) {
                             counter=0;
                             changeBetreuerContact();

@@ -197,11 +197,6 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
-                        /*
-                        Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
-                        File textFile = createTextFile("yes");
-
-                        sendFileToFirebase(textFile, true);*/
                     }
                 });
 
@@ -209,9 +204,6 @@ public class CallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
-                        /*Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
-                        File textFile = createTextFile("no");
-                        sendFileToFirebase(textFile, true);*/
                     }
                 });
 
@@ -322,23 +314,15 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
-    private void sendFileToFirebase(File file, boolean isText) {
+    private void sendFileToFirebase(File file, final boolean isText) {
         Uri fileUri = Uri.fromFile(file);
         StorageReference imageRef;
-        /*if (CallReceiver.partnerNumber == null) {
-            System.out.println("Keine Nummer gespeichert!");
-        }
-
-        StorageReference riversRef = mStorageRef.child("images/" + PhoneCallReceiver.partnerNumber + ".jpg");
-        */
 
         if(isText) {
             imageRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(PhoneCallReceiver.partnerNumber) + ".txt");
         } else {
             imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
         }
-
-        System.out.println("################################################# " + PhoneCallReceiver.partnerNumber);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressbarVisible=false;
@@ -349,7 +333,7 @@ public class CallActivity extends AppCompatActivity {
                         // Get a URL to the uploaded content
                         firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
                         progressDialog.dismiss();
-                        Toast.makeText(CallActivity.this, "Foto erfolgreich hochgeladen.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CallActivity.this, isText?"Antwort erfolgreich hochgeladen.":"Foto erfolgreich hochgeladen.", Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -417,23 +401,9 @@ public class CallActivity extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
-                    List<SubscriptionInfo> _sb = SubscriptionManager.from(getApplicationContext()).getActiveSubscriptionInfoList();
-                    for (int i = 1; i < _sb.size(); i++) {
-                        SubscriptionInfo info = _sb.get(i);
-                        System.out.println("Mobile_number " + info.getNumber());
-                        Log.d(TAG, "Mobile_number " + info.getNumber());
-                    }
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 
@@ -450,7 +420,6 @@ public class CallActivity extends AppCompatActivity {
             }
         }
         String fileName = "images/" + PhoneCallReceiver.partnerNumber + ".jpg";
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
 
         final StorageReference imageRef = mStorageRef.child(fileName);
         //final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -480,7 +449,7 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this,"Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     //progressDialog.dismiss();
                     downloading=false;
                     progressDialog.dismiss();
@@ -535,7 +504,6 @@ public class CallActivity extends AppCompatActivity {
             }
         }
         String fileName = "documents/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".txt";
-        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" + fileName);
 
         final StorageReference answerRef = mStorageRef.child(fileName);
 
@@ -570,7 +538,7 @@ public class CallActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     downloading=false;
                     progressbarVisible=false;
-                    Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this,"Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         } catch (Exception e) {
@@ -653,7 +621,7 @@ public class CallActivity extends AppCompatActivity {
             telephony.endCall();
 
         } catch (Exception e) {
-            Toast.makeText(CallActivity.this, "FATALER ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen.", Toast.LENGTH_LONG).show();
+            Toast.makeText(CallActivity.this, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -701,7 +669,6 @@ public class CallActivity extends AppCompatActivity {
         mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(CallActivity.this, "Eingeloggt. Juhuu.", Toast.LENGTH_LONG).show();
             }
         })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -736,59 +703,6 @@ public class CallActivity extends AppCompatActivity {
         super.onPause();
         //isActivityActive = false;
     }
-
-    /*private void startDownloadThread(){
-        isActivityActive = true;
-        switch(MainActivity.role){
-            case BETREUER:
-                final HandlerThread handlerThreadImage = new HandlerThread("DownloadThread");
-                handlerThreadImage.start();
-                Looper looperImage = handlerThreadImage.getLooper();
-                final Handler handlerImage = new Handler(looperImage);
-
-                handlerImage.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        while(isActivityActive){
-                            if(!downloading) {
-                                downloadPhotoFromFirebase();
-                            }
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        handlerThreadImage.quit();
-                    }
-                });
-
-                break;
-            case BETREUTER:
-                final HandlerThread handlerThreadAnswer = new HandlerThread("DownloadThread");
-                handlerThreadAnswer.start();
-                Looper looperAnswer = handlerThreadAnswer.getLooper();
-                final Handler handlerAnswer = new Handler(looperAnswer);
-
-                handlerAnswer.post(new Runnable(){
-                    @Override
-                    public void run() {
-                        while(isActivityActive){
-                            if(!downloading) {
-                                downloadAndReadFileFromFirebase();
-                            }
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        handlerThreadAnswer.quit();
-                    }
-                });
-                break;
-        }
-    }*/
         /*SharedPreferences.Editor editor = settings.edit(); // For writing.
 
         // Store the data:

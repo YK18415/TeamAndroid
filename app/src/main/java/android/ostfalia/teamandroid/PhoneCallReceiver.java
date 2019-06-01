@@ -122,9 +122,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
-        partnerNumber = number;
-        SharedPreferences contactList = ctx.getSharedPreferences("contactList", MODE_PRIVATE);
-        String contactListString = contactList.getString("contactList", "");
+        SharedPreferences settings = ctx.getSharedPreferences("betreuapp", MODE_PRIVATE);
+        String contactListString = settings.getString("contactList", "");
         Gson gson = new Gson();
         if(contactListString.isEmpty()) {
             return;
@@ -132,13 +131,13 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         Contact[] contactArray = gson.fromJson(contactListString, Contact[].class);
 
         String formattedIncomingNumber = formatPhoneNumber(number);
+        partnerNumber = formattedIncomingNumber;
 
         for (Contact contact: contactArray) {
             String contactNumber = contact.getTelephonenumber();
             String formattedNumber = formatPhoneNumber(contactNumber);
             if(formattedNumber.equals(formattedIncomingNumber)) {
                 PhoneCallReceiver.partnerNumber = formattedNumber;
-                SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
                 String role = settings.getString("role","");
 
                 switch(role) {

@@ -562,10 +562,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 SharedPreferences settings = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
                 //role = settings.getString("role","");
                 switch(settings.getString("role","")) {
-                    case "BETREUER":
+                    case "Betreuer":
                         role = Role.BETREUER;
                         break;
-                    case "BETREUTER":
+                    case "Betreuter":
                         role = Role.BETREUTER;
                         break;
                 }
@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(intent);
                 handlerThread.quit();
             }
-        }, 1000);
+        }, 1500);
 
         if (ActivityCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

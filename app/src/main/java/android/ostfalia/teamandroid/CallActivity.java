@@ -34,6 +34,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,7 +85,6 @@ public class CallActivity extends AppCompatActivity {
     File photoFile;
     Bitmap bitmap;
     String imageFileName;
-    String fileUrl;
     Task<Uri> firebaseUri;
     boolean progressbarVisible = false;
 
@@ -145,7 +146,6 @@ public class CallActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(CallActivity.this, "Kein Anruf ist aktiv.", Toast.LENGTH_LONG).show();
                 }
-                //downloadAndReadFileFromFirebase();
             }
         });
 
@@ -203,9 +203,6 @@ public class CallActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         sendFileToFirebase(file, true);
-
-                        //downloadPhotoFromFirebase();
-                        // TODO
                     }
                 });
 
@@ -227,7 +224,6 @@ public class CallActivity extends AppCompatActivity {
                         downloadAndReadFileFromFirebase();
                     }
                 });
-                // Start Thread to downoad the text-file.
                 break;
         }
     }
@@ -470,19 +466,20 @@ public class CallActivity extends AppCompatActivity {
                 return;
             }
         }
-        TelephonyManager phoneManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         String fileName = "documents/" + PhoneCallReceiver.partnerNumber + ".txt";
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++" + fileName);
+        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" + fileName);
 
-        final StorageReference riversRef = mStorageRef.child(fileName);
+        final StorageReference answerRef = mStorageRef.child(fileName);
 
         try {
             final File localFile = File.createTempFile(PhoneCallReceiver.partnerNumber, "txt");
-
-            riversRef.getFile(localFile).addOnSuccessListener(
+            downloading=true;
+            answerRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            //todo answerRef.delete();
+                            downloading=false;
                             Toast.makeText(CallActivity.this, "Textdatei erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
 
                             String text = null;
@@ -497,10 +494,12 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    downloading=false;
                     Toast.makeText(CallActivity.this,"Download failed: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         } catch (Exception e) {
+            downloading=false;
             Toast.makeText(CallActivity.this,"Failed to download text-file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
         }
     }
@@ -530,7 +529,7 @@ public class CallActivity extends AppCompatActivity {
     public static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null) {
             sb.append(line).append("\n");
         }
@@ -666,21 +665,17 @@ public class CallActivity extends AppCompatActivity {
         isActivityActive = true;
         switch(MainActivity.role){
             case BETREUER:
-                final HandlerThread handlerThread = new HandlerThread("DownloadThread");
-                handlerThread.start();
-                Looper looper = handlerThread.getLooper();
-                final Handler handler = new Handler(looper);
+                final HandlerThread handlerThreadImage = new HandlerThread("DownloadThread");
+                handlerThreadImage.start();
+                Looper looperImage = handlerThreadImage.getLooper();
+                final Handler handlerImage = new Handler(looperImage);
 
-                handler.post(new Runnable(){
+                handlerImage.post(new Runnable(){
                     @Override
                     public void run() {
                         while(isActivityActive){
                             if(!downloading) {
-                                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                                 downloadPhotoFromFirebase();
-                                downloadAndReadFileFromFirebase();
-                            } else {
-                                System.out.println("****************************");
                             }
                             try {
                                 Thread.sleep(2000);
@@ -688,28 +683,33 @@ public class CallActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        handlerThread.quit();
+                        handlerThreadImage.quit();
                     }
                 });
 
                 break;
             case BETREUTER:
-                Thread downloadThreadAnswer = new Thread(new Runnable() {
+                final HandlerThread handlerThreadAnswer = new HandlerThread("DownloadThread");
+                handlerThreadAnswer.start();
+                Looper looperAnswer = handlerThreadAnswer.getLooper();
+                final Handler handlerAnswer = new Handler(looperAnswer);
+
+                handlerAnswer.post(new Runnable(){
                     @Override
                     public void run() {
                         while(isActivityActive){
-
-                            //todo add function to read acceptance state from firebase
-
+                            if(!downloading) {
+                                downloadAndReadFileFromFirebase();
+                            }
                             try {
                                 Thread.sleep(2000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
+                        handlerThreadAnswer.quit();
                     }
                 });
-                downloadThreadAnswer.start();
                 break;
         }
     }

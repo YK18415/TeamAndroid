@@ -23,6 +23,9 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     public static String partnerNumber = null;
 
+    public static String formatPhoneNumber(String number){
+        return number.charAt(0)=='0'?"+49" + number.substring(1):number;
+    }
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -128,11 +131,11 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         }
         Contact[] contactArray = gson.fromJson(contactListString, Contact[].class);
 
-        String formattedIncomingNumber = number.charAt(0)=='0'?"+49" + number.substring(1):number;
+        String formattedIncomingNumber = formatPhoneNumber(number);
 
         for (Contact contact: contactArray) {
             String contactNumber = contact.getTelephonenumber();
-            String formattedNumber = contactNumber.charAt(0)=='0'?"+49" + contactNumber.substring(1):contactNumber;
+            String formattedNumber = formatPhoneNumber(contactNumber);
             if(formattedNumber.equals(formattedIncomingNumber)) {
                 PhoneCallReceiver.partnerNumber = formattedNumber;
                 SharedPreferences settings = ctx.getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;

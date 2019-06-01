@@ -18,8 +18,8 @@ Steigernung der Lebensqualität mindestens für den Betreuten.
 
 Anzumerken ist noch, dass diese App ein Szenario durchspielt, welches
 Rechtlich nicht der Gesetzgebung entspricht. Daher ist dieses Projekt
-ein Gedankenprojekt und **DARF BEI DIESER RECHTSPRECHUNG NICHT IM REALEN
-LEBEN ZU EINSATZ KOMMEN!**
+ein Gedankenprojekt und ***DARF BEI DIESER RECHTSPRECHUNG NICHT IM
+REALEN LEBEN ZU EINSATZ KOMMEN!***
 
 ## 2. Wie richte ich diese App ein?
 Das Einrichten dierer App findet vom Betreuer statt. Beim erstmaligen
@@ -32,11 +32,12 @@ Entscheidungsmöglichkeiten:
 Dierse werden auf zwei verschiedene Weisen korrigiert.
 
 #### 2.1 Einrichtung des Betreuers
-Wählen Sie aus dem Radio-Button-Menü den Punkt "Betreuer" aus.
+Wählen Sie aus dem Radio-Button-Menü den Punkt "Betreuer" aus. Tippen
+Sie daraufhin auf den Fab-Button (der runde Button unten-rechts mit dem
+Pfeil) um auf die nächste Seite zu gelangen. Sie werden daraufhin auf
+die zukünftige Startseite weitergeleitet.
 
  // Bild einfügen
- 
- // Muss noch spezifiziert werden
 
 #### 2.2 Einrichtung des Betreuten
 Wählen Sie aus dem Radio-Button-Menü den Punkt "Betreuter" aus.
@@ -57,13 +58,17 @@ bei der Erstellung eines Passwortes beachten sollten können Sie
 nachlesen.
 
 Bestimmen Sie das Passwort und schreiben Sie es sich gut auf, denn
-dieses lässt sich nicht ohne dieses Passwort ändern. Wenn Sie dieses
-Passwort ausgesucht haben halten Sie bitte mit einem Finger auf dem
-Eingabebereich. Dieses wird dann so lange Klartext angezeigt bis Sie den
-Finger davon weg nehmen. Dies gibt Ihnen die Möglichkeit das Passwort zu
-Überprüfen. Wenn Sie mit dem Passwort zufrieden sind können Sie auf den
-Fab-Button drücken (der runde Button unten-rechts mit dem Pfeil). Mit
-diesem Button kommen Sie auf die nächste Seite.
+dieses lässt sich nicht mehr ändern. Wenn Sie dieses Passwort
+ausgesucht haben halten Sie bitte mit einem Finger auf dem
+Eingabebereich. 
+
+??? Dieses wird dann so lange Klartext angezeigt bis Sie den Finger
+davon weg nehmen.
+
+Dies gibt Ihnen die Möglichkeit das Passwort zu Überprüfen.
+Wenn Sie mit dem Passwort zufrieden sind können Sie auf den Fab-Button
+drücken (der runde Button unten-rechts mit dem Pfeil). Mit diesem Button
+kommen Sie auf die nächste Seite.
 
 Die nun weitergeleitete Seite ist für die Einstellung der Kontaktdaten
 des Betreuers da. Diese sind wichtig, da für ein Anruf des Betreuers
@@ -89,37 +94,80 @@ nicht wieder auf den Login zurück. Das ist beabsichtigt, da sonst der
 Betreute seine Rolle ändern könnte. Wenn Sie aber sich bei der
 Rollenverteilung vertan haben folgen Sie bitte diesen folgenden Weg:
 
-// Zurücksetzen aller Daten von der App in den Eisntellungen // mit
-Bildern
+??? Gehen Sie auf die Einstellungen von Ihrem Handy. Wählen Sie dann
+Apps aus. Suchen Sie diese App auf. Löschen sie alle Hashs. Dies
+Bedeuteet, dass alle Nutzerinformationen gelöscht werden. Daraufhin
+können Sie die App neu Starten und beginnen wieder mit dem Login.
 
 ## 3 Hauptseite
 #### 3.1 Betreuer 
-Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite sind sehen sie drei Wesentliche Komponenten:
+Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite
+sind sehen sie drei Wesentliche Komponenten:
 
-Mit dem Button oben rechts kann ein Betreuter hinzugefügt oder ausgewält werden. Wenn ein Betreuter ausgewählt worden ist füllen sich die Kontaktinformationen  des Betreute.
+Mit dem Button oben rechts kann ein Betreuter hinzugefügt oder ausgewält
+werden. Wenn ein Betreuter ausgewählt worden ist füllen sich die
+Kontaktinformationen des Betreute.
 
-Mitte links ist werden allgemeine Informationen von dem oben ausgewählten Betreutem angezeigt. Dort stehen Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der Betreute lebt.
+Mitte links ist werden allgemeine Informationen von dem oben
+ausgewählten Betreutem angezeigt. Dort stehen Informationen wie der Name
+der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der
+Betreute lebt.
 
-Ein grüner Button mit der Beschriftung "Anrufen" steht unten links. Wenn Sie diesen Button drücken starten Sie einen Anruf zu dem  oben ausgewählten Betreuten. Von dort aus können Sie sich mit ihm... 
-
-//Fotos schicken von Betreuer aus???
-
-unterhalten und auch Fotos an dem Betreuer senden, die Sie wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen 4.1 (Anrufsbildschirm) an.
+Ein grüner Button mit der Beschriftung "Anrufen" steht unten links. Wenn
+Sie diesen Button drücken starten Sie einen Anruf zu dem oben
+ausgewählten Betreuten und das Genehmigungsverfahren beginnt. Sehen Sie
+sich bei genaueren Informationen 4.1 (Anrufsbildschirm) an. Durch das
+Drücken des "Anrufen"-Button wechsel Sie dann auf den Anrufsbildschirm.
 
 //Bild einfügen
 
 #### 3.2 Betreuter
-Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite sind sehen sie zwei Wesentliche Komponenten:
+Diese Anscicht ist Ihr normale Startansicht. Wenn Sie auf der Startseite
+sind sehen sie zwei Wesentliche Komponenten:
  
- Die Eine ist die allgemiene Information über den Betreuer. Dort stehen Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der Name der Stadt, wodrinn der Betreuer lebt.
- 
- //exakt drei mal auf betreuer klicken um ihn zu ändern; masterpasswortt abfrage
- 
- Ein grüner Button mit der Beschriftung "Anrufen". Wenn Sie diesen Button drücken starten Sie einen Anruf zu dem Betreuers. Von dort aus können Sie sich mit ihm unterhalten und auch Fotos an dem Betreuer senden, die Sie wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen 4.2 (Anrufsbildschirm) an.
+Die Eine sind die allgemiene Information über den Betreuer. Dort stehen
+Informationen wie der Name der Straße, Hausnummer, Postleitzahl und der
+Name der Stadt, wodrinn der Betreuer lebt. Beim dreimaligen Klicken mit
+maximal einr Sekunde Abstand auf den Namen des Betreurers und das
+Eingeben des Masterpassworts können Sie die Informationen über den
+Betreuer ändern. Durch das reguläre Schließen des Fensters werden diese
+änderungen auch gespeichert.
+
+Ein grüner Button mit der Beschriftung "Anrufen". Wenn Sie diesen Button
+drücken starten Sie einen Anruf zu dem Betreuer. Von dort aus können Sie
+sich mit ihm unterhalten und auch Fotos an dem Betreuer senden, die Sie
+wärend des Anrufes aufnehmen. Sehen Sie sich bei genaueren Informationen
+4.2 (Anrufsbildschirm) an. Durch das Drücken des "Anrufen"-Button
+wechsel Sie dann auf den Anrufsbildschirm.
  
  //Bild einfügen
  
 ## 4 Anrufsbildschirm
 #### 4.1 Betreuer
+Beim aufgebauten Anruf sehen Sie folgende Elemente:
 
+Ein Kammerasymbol. Dieser ist ein Platzhalter. Wenn der Betreute ein
+Foto absendet erscheint es an der Stelle des Platzhalters.
 
+Zwei Buttons. Ein Ablehn-Button und ein Annehm-Button. Wenn ein Bild vom
+Beterten gesendert werden kann die dargestellte Ware entweder genehmigt
+oder Abgelehnt werden. ??? Dies entscheidung wird visuell übermittelt.
+
+Ein roter Button. Wenn Sie diesen Button drücken schließt sich dieses
+Fenster und das Startfenster öffnet sich.
+
+//Bild einfügen
+
+#### 4.2 Betreuter
+Beim aufgebauten Anruf sehen Sie folgende Elemente:
+
+Ein Kammerasymbol. Dieser ist ein Platzhalter. Wenn Sie auf dieses Bild
+drücken öffnet sich die Kammera. Daraufhin können Sie ein Bild schießen
+und es mit dem Harken bestätigen. Daraufin wird das Bild zu Ihrem
+Betreuer gesendet. Er darf dann den Inhalt des Bildes genehmigen oder
+ablehnen.
+
+Ein roter Button. Wenn Sie diesen Button drücken schließt sich dieses
+Fenster und das Startfenster öffnet sich.
+
+//Bild einfügen

@@ -13,11 +13,11 @@
         android:layout_width="66dp"
         android:layout_height="54dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="80dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="80dp"
         android:background="@color/colorBtnCamera"
-        app:layout_constraintBottom_toTopOf="@+id/textViewDecision_Headline2"
+        app:layout_constraintBottom_toTopOf="@+id/textViewDecision_Headline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,18 +25,15 @@
         app:srcCompat="@drawable/ic_sync" />
 
     <TextView
-        android:id="@+id/textViewDecision_Headline2"
+        android:id="@+id/textViewDecision_Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/callActivity_Decision_Headline"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/btnCallEnd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.502" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewDecision"
@@ -45,9 +42,9 @@
         android:layout_marginStart="8dp"
         android:text="@string/callActivity_Decision"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewDecision_Headline2"
-        app:layout_constraintStart_toEndOf="@+id/textViewDecision_Headline2"
-        app:layout_constraintTop_toTopOf="@+id/textViewDecision_Headline2" />
+        app:layout_constraintBottom_toBottomOf="@+id/textViewDecision_Headline"
+        app:layout_constraintStart_toEndOf="@+id/textViewDecision_Headline"
+        app:layout_constraintTop_toTopOf="@+id/textViewDecision_Headline" />
 
     <ImageButton
         android:id="@+id/btnCallEnd"
@@ -79,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="@string/callActivity_Picture_Betreuter_Headline"
         android:textSize="18sp"
@@ -93,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:background="@color/colorBtnCamera"
         app:layout_constraintEnd_toEndOf="parent"

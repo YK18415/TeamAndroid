@@ -1,6 +1,9 @@
 package android.ostfalia.teamandroid;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,11 +12,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import java.util.Objects;
 
@@ -32,37 +36,30 @@ public class LoginActivity extends AppCompatActivity {
 
         final RadioButton radioButtonRoleBetreuer = findViewById(R.id.radioButton_Role_Betreuer);
         final RadioButton radioButtonRoleBetreuter = findViewById(R.id.radioButton_Role_Betreuter);
-        final ImageButton imageButtonInfoPassword = findViewById(R.id.imageButtonInfoPassword);
-        final ImageButton imageButtonInfoOwnPhonenumber = findViewById(R.id.imageButtonInfoOwnPhonenumber);
+        final ImageButton imageButtonInfoLogin = findViewById(R.id.imageButtonInfoLogin);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextOwnPhonenumber = findViewById(R.id.editTextOwnPhonenumber);
 
 
         editTextPassword.setVisibility(View.GONE);
-        imageButtonInfoPassword.setVisibility(View.GONE);
+        imageButtonInfoLogin.setVisibility(View.GONE);
         editTextOwnPhonenumber.setVisibility(View.GONE);
-        imageButtonInfoOwnPhonenumber.setVisibility(View.GONE);
+        imageButtonInfoLogin.setVisibility(View.GONE);
 
         radioButtonRoleBetreuter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.VISIBLE);
-                imageButtonInfoPassword.setVisibility(View.VISIBLE);
+                imageButtonInfoLogin.setVisibility(View.VISIBLE);
                 editTextOwnPhonenumber.setVisibility(View.VISIBLE);
-                imageButtonInfoOwnPhonenumber.setVisibility(View.VISIBLE);
 
-                imageButtonInfoPassword.setOnClickListener(new View.OnClickListener() {
+                imageButtonInfoLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //TODO: add infos about masterpassword
+                        showPopupInfo();
                     }
                 });
-                imageButtonInfoOwnPhonenumber.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO: add infos about phone number usage
-                    }
-                });
+
             }
         });
 
@@ -70,9 +67,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editTextPassword.setVisibility(View.GONE);
-                imageButtonInfoPassword.setVisibility(View.GONE);
+                imageButtonInfoLogin.setVisibility(View.GONE);
                 editTextOwnPhonenumber.setVisibility(View.GONE);
-                imageButtonInfoOwnPhonenumber.setVisibility(View.GONE);
             }
         });
 
@@ -84,6 +80,27 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * Shows information about the masterpassword and the phonenumber in a popup-menu.
+     */
+    private void showPopupInfo() {
+        android.app.AlertDialog dialog;
+        android.app.AlertDialog.Builder imageDialog = new AlertDialog.Builder(this);
+        imageDialog.setTitle("Informationen");
+        LayoutInflater inflater = this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
+        View view = inflater.inflate(R.layout.info_popup, null);
+
+        imageDialog.setView(view);
+        imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog = imageDialog.create();
+        dialog.show();
     }
 
     /**Login onClickListener - checks which role is chosen and logs in

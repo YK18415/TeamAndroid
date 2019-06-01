@@ -186,6 +186,7 @@ public class CallActivity extends AppCompatActivity {
                 imageButtonSync = findViewById(R.id.imageButtonSyncBetreuer);
                 imageButtonAccept = findViewById(R.id.imageButtonAccept);
                 imageButtonDecline = findViewById(R.id.imageButtonDecline);
+
                 // ClickListener:
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -218,6 +219,8 @@ public class CallActivity extends AppCompatActivity {
             case "Betreuter":
                 MainActivity.role = Role.BETREUTER;
                 setContentView(R.layout.activity_call_betreuter);
+                /*btnCamera.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
+                btnCamera.setVisibility(View.GONE);*/
                 imageButtonSync = findViewById(R.id.imageButtonSyncBetreuter);
                 textViewDecision = findViewById(R.id.textViewDecision);
 
@@ -229,7 +232,6 @@ public class CallActivity extends AppCompatActivity {
                         }
                     }
                 });
-
                 break;
         }
     }
@@ -357,17 +359,6 @@ public class CallActivity extends AppCompatActivity {
         });
 
 
-    }
-
-    private AlertDialog createDownloadProgressDialog(){
-        AlertDialog dialog;
-        AlertDialog.Builder progressDialog = new AlertDialog.Builder(CallActivity.this);
-        progressDialog.setTitle("Download Progress");
-        LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
-        View view = inflater.inflate(R.layout.download_progress_popup, null);
-        progressDialog.setView(view);
-        dialog = progressDialog.create();
-        return dialog;
     }
 
     // TODO: Generisch.

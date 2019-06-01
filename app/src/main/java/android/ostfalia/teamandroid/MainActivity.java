@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 this.spinnerContactList = findViewById(R.id.spinnerContactList);
                 Button btnAddPerson = findViewById(R.id.btnAddPerson);
                 ImageButton btnDeleteContact = findViewById(R.id.btnDeleteContact);
+                ImageButton btnImageInfoMain = findViewById(R.id.imageButtonInfoMain);
 
                 this.spinnerContactList.setOnItemSelectedListener(this);
                 btnAddPerson.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +126,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(View v) {
                         deleteContact();
+                    }
+                });
+
+                btnImageInfoMain.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopupInfo();
                     }
                 });
             break;
@@ -166,6 +174,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 call();
             }
         });
+    }
+
+    private void showPopupInfo() {
+        android.app.AlertDialog dialog;
+        android.app.AlertDialog.Builder imageDialog = new android.app.AlertDialog.Builder(this);
+        imageDialog.setTitle("Informationen");
+        LayoutInflater inflater = this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
+        View view = inflater.inflate(R.layout.info_popup, null);
+
+        imageDialog.setView(view);
+        imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog = imageDialog.create();
+        dialog.show();
     }
 
     private void startSecretTimerChangeBetreuer(final Boolean isActivityActive) {

@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         startTime = System.currentTimeMillis();
                         isThreadActive = true;
                         counter++;
-                        System.out.println(counter);
                         if(counter == 3) {
                             counter=0;
                             changeBetreuerContact();
@@ -689,33 +688,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     @Override
     public void onBackPressed() {
-        //Issue #14
         minimizeApp();
-
-        //finish(); //Close App hard, no rocovery!!!
-    }
-
-
-    /**
-     * Shows a popup window that explains how to change the "Betreuer" on the device of the "Betreuter"
-     */
-    public void showChangeBetrInfo(){
-
-        android.app.AlertDialog dialog;
-        android.app.AlertDialog.Builder helpDialog = new android.app.AlertDialog.Builder(this);
-        helpDialog.setTitle("Betreuer ändern");
-        LayoutInflater inflater = this.getLayoutInflater();
-        View view = inflater.inflate(R.layout.change_betreuer_help, null);
-
-        helpDialog.setView(view);
-        helpDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog = helpDialog.create();
-        dialog.show();
     }
 
     /**

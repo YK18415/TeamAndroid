@@ -16,7 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class PhoneCallReceiver extends BroadcastReceiver {
 
-    private static String savedNumber;  //because the passed incoming is only valid in ringing
+    private static String savedNumber;
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
     private static boolean isIncoming;
     private static Date callStartTime;
@@ -24,7 +24,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
     public static String partnerNumber = null;
 
     public static String formatPhoneNumber(String number){
-        return number.charAt(0)=='0'?"+49" + number.substring(1):number;
+        return number.length()==0?number:number.charAt(0)=='0'?"+49" + number.substring(1):number;
     }
 
     @Override
@@ -57,11 +57,6 @@ public class PhoneCallReceiver extends BroadcastReceiver {
             @Override
             public void onCallStateChanged(int state, String incomingNumber) {
                 super.onCallStateChanged(state, incomingNumber);
-
-
-                //Toast.makeText(CallActivity.this, "hjgredtrzguhijztrjiuhzgtfzujikuztgfghzujiuhzgf", Toast.LENGTH_LONG).show();
-
-               System.out.println("äääääääääääääääääääääääääääääääääääääää "+incomingNumber);
 
             }
         }, PhoneStateListener.LISTEN_CALL_STATE);
@@ -116,8 +111,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallReceived(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf onIncomingCallReceived", Toast.LENGTH_LONG).show();
-        System.out.println("onIncomingCallReceived");
+
     }
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
@@ -148,9 +142,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                         MainActivity.role = Role.BETREUTER;
                         break;
                 }
-                Toast.makeText(ctx, "Anruf kommt onIncomingCallAnswered", Toast.LENGTH_LONG).show();
-                System.out.println("onIncomingCallAnswered ------------------------------------------------------------------------");
-                Intent intent = new Intent(ctx, CallActivity.class); // TODO: Change that with Enum.
+
+                Intent intent = new Intent(ctx, CallActivity.class);
 
                 ctx.startActivity(intent);
                 break;
@@ -162,25 +155,21 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)
     {
-        Toast.makeText(ctx, "Anruf kommt onIncomingCallEnded", Toast.LENGTH_LONG).show();
-        System.out.println("onIncomingCallEnded");
+
     }
 
     protected void onOutgoingCallStarted(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt onOutgoingCallStarted", Toast.LENGTH_LONG).show();
-        System.out.println("onOutgoingCallStarted");
+
     }
 
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end)
     {
-        Toast.makeText(ctx, "Anruf kommt onOutgoingCallEnded", Toast.LENGTH_LONG).show();
-        System.out.println("onOutgoingCallEnded");
+
     }
 
     protected void onMissedCall(Context ctx, String number, Date start)
     {
-        Toast.makeText(ctx, "Anruf kommt onMissedCall", Toast.LENGTH_LONG).show();
-        System.out.println("onMissedCall");
+
     }
 }

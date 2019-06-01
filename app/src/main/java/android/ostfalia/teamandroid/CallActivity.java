@@ -43,6 +43,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -58,6 +59,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.datatype.Duration;
+
 public class CallActivity extends AppCompatActivity {
 
     private static String TAG = "CallActivity";
@@ -66,11 +69,7 @@ public class CallActivity extends AppCompatActivity {
 
     private boolean downloading = false;
 
-    private boolean isActivityActive;
-
-
     SharedPreferences savedData;
-
 
     // Layout components for both:
     ImageView imageView;
@@ -116,6 +115,13 @@ public class CallActivity extends AppCompatActivity {
             String bitmapStr = settings.getString("imagePreferance", "");
             imageView.setImageBitmap(decodeBase64(bitmapStr));
         }*/
+
+        if(MainActivity.role==Role.BETREUTER){
+            StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
+            imageRef.delete();
+            StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".txt");
+            answerRef.delete();
+        }
 
         // Layout components for both:
         btnCamera = findViewById(R.id.btnCamera);
@@ -190,19 +196,22 @@ public class CallActivity extends AppCompatActivity {
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
+                        /*
                         Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
                         File textFile = createTextFile("yes");
 
-                        sendFileToFirebase(textFile, true);
+                        sendFileToFirebase(textFile, true);*/
                     }
                 });
 
                 imageButtonDecline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
+                        /*Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
                         File textFile = createTextFile("no");
-                        sendFileToFirebase(textFile, true);
+                        sendFileToFirebase(textFile, true);*/
                     }
                 });
 
@@ -315,7 +324,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void sendFileToFirebase(File file, boolean isText) {
         Uri fileUri = Uri.fromFile(file);
-        StorageReference riversRef;
+        StorageReference imageRef;
         /*if (CallReceiver.partnerNumber == null) {
             System.out.println("Keine Nummer gespeichert!");
         }
@@ -324,16 +333,16 @@ public class CallActivity extends AppCompatActivity {
         */
 
         if(isText) {
-            riversRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(PhoneCallReceiver.partnerNumber) + ".txt");
+            imageRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(PhoneCallReceiver.partnerNumber) + ".txt");
         } else {
-            riversRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
+            imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
         }
 
         System.out.println("################################################# " + PhoneCallReceiver.partnerNumber);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressbarVisible=false;
-        riversRef.putFile(fileUri)
+        imageRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -466,7 +475,7 @@ public class CallActivity extends AppCompatActivity {
                             //progressDialog.cancel();
                             progressDialog.dismiss();
                             imageRef.delete();
-                            System.out.println("downloaddownloaddownloaddownloaddownloaddownloaddownloaddownloaddownload");
+                            setAcceptAndDeclineOnClickListener();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -490,6 +499,28 @@ public class CallActivity extends AppCompatActivity {
             //progressbarVisible=false;
         }
         //progressDialog.show();
+    }
+
+    private void setAcceptAndDeclineOnClickListener(){
+
+        imageButtonAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
+                File textFile = createTextFile("yes");
+
+                sendFileToFirebase(textFile, true);
+            }
+        });
+
+        imageButtonDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
+                File textFile = createTextFile("no");
+                sendFileToFirebase(textFile, true);
+            }
+        });
     }
 
     /**

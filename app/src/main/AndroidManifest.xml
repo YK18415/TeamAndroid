@@ -29,7 +29,8 @@
         android:roundIcon="@mipmap/ic_telephone_approval"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChangeOwnPhonenumberActivity"></activity>
+        <activity android:name=".ChangeOwnPhonenumberActivity"
+            android:screenOrientation="portrait"/>
 
         <receiver android:name=".PhoneCallReceiver">
             <intent-filter>
@@ -60,17 +61,21 @@
 
         <activity
             android:name=".CallActivity"
-            android:label="@string/callActivity_Headline" />
+            android:label="@string/callActivity_Headline"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".NewContact"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

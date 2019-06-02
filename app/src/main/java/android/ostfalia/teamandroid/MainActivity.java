@@ -46,28 +46,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner spinnerContactList;
     private TextView textViewReceiver;
 
-    LinearLayout contactInfo;
-    TextView street;
-    TextView houseNo;
-    TextView post;
-    TextView city;
+    private LinearLayout contactInfo;
+    private TextView street;
+    private TextView houseNo;
+    private TextView post;
+    private TextView city;
 
     private TextView textViewBetreuerName;
-    /*private TextView textViewBetreuerPhonenumber;
-    private TextView textViewBetreuerStreetNumber;
-    private TextView textViewBetreuerPostcode;
-    private TextView textViewBetreuerCity;*/
 
     private List<Contact> contactList = new ArrayList<>();
-    SharedPreferences.Editor editor;
-    SharedPreferences savedData;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences savedData;
     private boolean isActivityActive;
     private boolean isThreadActive;
 
     private static final int REQUEST_PHONE_CALL = 123; // TODO: Wofür ist das?
-    int counter = 0;
-    int secreteCounter = 0;
+    private int counter = 0;
+    private int secreteCounter = 0;
     private long startTime;
+    private int editContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case BETREUER:
                 this.spinnerContactList = findViewById(R.id.spinnerContactList);
                 Button btnAddPerson = findViewById(R.id.btnAddPerson);
+                Button btnEditPerson = findViewById(R.id.btnEditPerson);
                 ImageButton btnDeleteContact = findViewById(R.id.btnDeleteContact);
                 ImageButton btnImageInfoMain = findViewById(R.id.imageButtonInfoMain);
 
@@ -119,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(View v) {
                         addNewPerson();
+                    }
+                });
+                btnEditPerson.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        editContact = spinnerContactList.getSelectedItemPosition();
+                        editPerson();
                     }
                 });
 
@@ -213,10 +218,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         thread.start();
-    }
-
-    private void editContact() {
-        // TODO
     }
 
     private void changeBetreuerContact() {
@@ -594,7 +595,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         role = Role.BETREUTER;
                         break;
                 }
-                //intent.putExtra("role", role);
                 startActivity(intent);
                 handlerThread.quit();
             }
@@ -608,7 +608,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch(this.role) {
             case BETREUER:  new BackgroundTask().execute(contactList.get(spinnerContactList.getSelectedItemPosition()).getTelephonenumber());               break;
             case BETREUTER:  new BackgroundTask().execute(contactList.get(0).getTelephonenumber());               break;
-            //case BETREUTER: new BackgroundTask().execute(textViewBetreuerPhonenumber.getText().toString());    break;
         }
     }
 
@@ -654,11 +653,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 */
 
     /**
-     * Open new Activity - NewContact
+     * Open new Activity - NewContact - to create a new contact
      */
     private void addNewPerson() {
         Intent intent = new Intent(MainActivity.this, NewContact.class);
         startActivityForResult(intent, 1);
+    }
+
+    /**
+     * Open new Activity - NewContact - to edit a contact
+     */
+    private void editPerson(){
+        Intent intent = new Intent(MainActivity.this, NewContact.class);
+        startActivityForResult(intent, 3);
     }
 
     @Override
@@ -679,6 +686,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String newPhonenumber = Objects.requireNonNull(data.getExtras()).getString("PHONE_NUMBER", "");
                 editor.putString("PHONE_NUMBER", newPhonenumber);
                 editor.commit();
+            }
+        }
+
+        if(requestCode==3){
+            if (resultCode == RESULT_OK) {
+                Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
+
+                // add the newContact, who was created by the user, to the benutzerList:
+                if(newContact != null) {
+                    contactList.set(editContact, newContact);
+                    //contactList.add(newContact);
+                }
             }
         }
     }

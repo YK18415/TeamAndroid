@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#384E80</color>
     <color name="colorPrimaryDark">#1C2740</color>
-    <color name="colorAccent">#70F1FF</color>
+    <color name="colorAccent">#067DCC</color>
     <color name="colorBackground">#D9EAFF</color>
     <color name="colorDialNumber">#709B00</color>
     <color name="colorHangUpCall">#ff0024</color>

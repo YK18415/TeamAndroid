@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnShowDetails"
+        android:id="@+id/btnEditPerson"
         android:layout_width="210dp"
         android:layout_height="55dp"
         android:layout_marginTop="20dp"

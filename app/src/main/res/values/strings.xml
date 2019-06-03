@@ -13,7 +13,7 @@
     <string name="anrufen">anrufen</string>
 
     <!-- MainActivity - Betreuer -->
-    <string name="label_overview_betreuer">Welcome</string>
+    <string name="label_overview_betreuer">Willkommen</string>
     <string name="app_name">TeamAndroid</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="ContactList">Person wählen</string>
@@ -28,7 +28,7 @@
     </string-array>
 
     <!-- MainActivity - Betreuter -->
-    <string name="label_overview_betreuter">Dein Betreuer:</string>
+    <string name="label_overview_betreuter">Ihr Betreuer</string>
     <string name="content_betreuter_NameHint">Name</string>
     <string name="content_betreuter_StreetHint">Straße + Hausnummer</string>
     <string name="content_betreuter_addressHint">Adresse</string>
@@ -68,7 +68,7 @@
     <!-- CallActivity - Betreuter -->
     <string name="callActivity_Picture_Betreuter_Headline">Ihr Bild:</string>
     <string name="callActivity_Decision_Headline">Genehmigt:</string>
-    <string name="callActivity_Decision">---------------</string>
+    <string name="callActivity_Decision">------------</string>
     <string name="callActivity_Firebase_Exception_Upload_Toast">Es gab einen Fehler beim Hochladen des Bildes zur Cloud. Möglicherweise verfügen Sie nicht über die nötigen Berechtigungen. Bitte sagen Sie das Ihrem Betreuer.</string>
 
     <!-- ChangeOwnPhonenumberActivity - Betreuter -->

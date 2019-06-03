@@ -60,13 +60,15 @@
 
         <activity
             android:name=".CallActivity"
-            android:label="@string/callActivity_Headline" />
+            android:label="@string/callActivity_Headline"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".NewContact"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/newContactActivity_textViewNewContactHeadline"/>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
+            android:label="@string/loginActivity_Headline"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"

@@ -4,34 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@color/colorBackground"
     tools:context=".NewContact">
 
-    <TextView
-        android:id="@+id/textViewNewContactHeadline"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/newContactActivity_textViewNewContactHeadline"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:theme="@style/AppTheme.AppBarOverlay"
+        tools:ignore="MissingConstraints">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:layout_gravity="center"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:textSize="24sp"/>
+
+    </android.support.design.widget.AppBarLayout>
+
 
     <TextView
         android:id="@+id/textViewMandatoryFields"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="32dp"
         android:text="@string/newContactActivity_textViewMandatoryFields"
-        app:layout_constraintEnd_toStartOf="@+id/textViewNewContactHeadline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNewContactHeadline" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <EditText
         android:id="@+id/editTextFirstName"

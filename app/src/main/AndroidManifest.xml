@@ -62,22 +62,18 @@
         <activity
             android:name=".CallActivity"
             android:label="@string/callActivity_Headline"
-            android:screenOrientation="portrait"/>
-            android:label="@string/callActivity_Headline"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".NewContact"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
-            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
             android:label="@string/newContactActivity_textViewNewContactHeadline"/>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
-            android:label="@string/loginActivity_Headline"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:label="@string/loginActivity_Headline" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorImageButtonBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_info_details" />
@@ -34,38 +34,40 @@
         android:popupBackground="@android:drawable/spinner_dropdown_background"
         android:spinnerMode="dialog"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/btnDeleteContact"
+        app:layout_constraintBottom_toTopOf="@+id/imageButtonDeleteContact"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnEditPerson"
+    <ImageButton
+        android:id="@+id/imageButtonEditPerson"
         android:layout_width="210dp"
         android:layout_height="55dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/showContactDetails"
-        app:layout_constraintBottom_toTopOf="@+id/btnAddPerson"
+        android:text="@string/editContact"
+        app:layout_constraintBottom_toTopOf="@+id/imageButtonAddPerson"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerContactList"
-        app:layout_constraintVertical_bias="0.444" />
+        app:layout_constraintVertical_bias="0.444"
+        app:srcCompat="@drawable/ic_sharp_edit_24px"/>
 
-    <Button
-        android:id="@+id/btnAddPerson"
+    <ImageButton
+        android:id="@+id/imageButtonAddPerson"
         android:layout_width="210dp"
         android:layout_height="55dp"
         android:layout_marginEnd="16dp"
         android:text="@string/AddPersonToCantactList"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_person_add_24px"/>
 
 
     <ImageButton
-        android:id="@+id/btnDeleteContact"
+        android:id="@+id/imageButtonDeleteContact"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_marginStart="16dp"
@@ -74,6 +76,6 @@
         android:contentDescription="@string/btnDeleteContact"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerContactList"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:srcCompat="@drawable/ic_sharp_delete_24px" />
 
 </android.support.constraint.ConstraintLayout>

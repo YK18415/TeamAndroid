@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch(this.role) {
             case BETREUER:
                 this.spinnerContactList = findViewById(R.id.spinnerContactList);
-                Button btnAddPerson = findViewById(R.id.btnAddPerson);
-                Button btnEditPerson = findViewById(R.id.btnEditPerson);
-                ImageButton btnDeleteContact = findViewById(R.id.btnDeleteContact);
+                ImageButton btnAddPerson = findViewById(R.id.imageButtonAddPerson);
+                ImageButton btnEditPerson = findViewById(R.id.imageButtonEditPerson);
+                ImageButton btnDeleteContact = findViewById(R.id.imageButtonDeleteContact);
                 ImageButton btnImageInfoMain = findViewById(R.id.imageButtonInfoMain);
 
                 this.spinnerContactList.setOnItemSelectedListener(this);
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             break;
         }
         this.toolbar = findViewById(R.id.toolbar);
-        Button btnCall = findViewById(R.id.btnCall);
+        ImageButton btnCall = findViewById(R.id.imageButtonCall);
 
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override

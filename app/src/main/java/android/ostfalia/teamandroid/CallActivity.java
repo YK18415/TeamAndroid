@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -120,10 +121,13 @@ public class CallActivity extends AppCompatActivity {
         }*/
 
         if(MainActivity.role==Role.BETREUTER){
-            StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
-            imageRef.delete();
-            StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".txt");
-            answerRef.delete();
+            String phoneNumber =savedData.getString("PHONE_NUMBER", "");
+            if(phoneNumber!=null) {
+                StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".jpg");
+                imageRef.delete();
+                StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".txt");
+                answerRef.delete();
+            }
         }
 
         // Layout components for both:

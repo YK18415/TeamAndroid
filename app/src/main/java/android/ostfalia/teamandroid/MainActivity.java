@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 btnEditPerson.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        editContact = spinnerContactList.getSelectedItemPosition();
                         editPerson();
                     }
                 });
@@ -264,7 +263,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(MainActivity.this, NewContact.class);
-                intent.putExtra("CONTACT", contactList.get(0));
+                intent.putExtra("firstName", contactList.get(0).getFirstname());
+                intent.putExtra("lastName", contactList.get(0).getLastname());
+                intent.putExtra("telephoneNumber", contactList.get(0).getTelephonenumber());
+                intent.putExtra("street", contactList.get(0).getStreet());
+                intent.putExtra("streetNumber", contactList.get(0).getHousenumber());
+                intent.putExtra("postCode", contactList.get(0).getPostcode());
+                intent.putExtra("city", contactList.get(0).getCity());
+                intent.putExtra("actionbarText", "Betreuer ändern");
                 contactList.clear();
                 startActivityForResult(intent, 1);
             }
@@ -664,7 +670,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Open new Activity - NewContact - to edit a contact
      */
     private void editPerson(){
+        editContact = spinnerContactList.getSelectedItemPosition();
+
         Intent intent = new Intent(MainActivity.this, NewContact.class);
+
+        Contact editedContact = contactList.get(editContact);
+
+        intent.putExtra("firstName", editedContact.getFirstname());
+        intent.putExtra("lastName", editedContact.getLastname());
+        intent.putExtra("telephoneNumber", editedContact.getTelephonenumber());
+        intent.putExtra("street", editedContact.getStreet());
+        intent.putExtra("streetNumber", editedContact.getHousenumber());
+        intent.putExtra("postCode", editedContact.getPostcode());
+        intent.putExtra("city", editedContact.getCity());
+        intent.putExtra("actionbarText", "Kontakt editieren");
+
         startActivityForResult(intent, 3);
     }
 

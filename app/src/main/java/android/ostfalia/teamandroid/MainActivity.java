@@ -143,10 +143,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             case BETREUTER:
                 textViewBetreuerName = findViewById(R.id.textViewBetreuerName);
-                /*textViewBetreuerPhonenumber = findViewById(R.id.textViewBetreuerPhonenumber);
-                textViewBetreuerStreetNumber = findViewById(R.id.textViewBetreuerStreetNumber);
-                textViewBetreuerPostcode = findViewById(R.id.textViewBetreuerPostcode);
-                textViewBetreuerCity = findViewById(R.id.textViewBetreuerCity);*/
                 isActivityActive = true;
                 isThreadActive = false;
 
@@ -480,16 +476,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(!this.initialState)
-            setContactText(contactList.get(position));
-        /*
         if(!this.initialState) {
-            textViewReceiver.setText(contactList.get(position).getTelephonenumber());
-            street.setText(contactList.get(position).getStreet() != null ? getString(R.string.contactStreet) + " " + contactList.get(position).getStreet() : getString(R.string.contactNoStreet));
-            houseNo.setText(contactList.get(position).getHousenumber() != 0 ? getString(R.string.contactHouseNo) + " " + contactList.get(position).getHousenumber() : getString(R.string.contactNoHouseNo));
-            post.setText(contactList.get(position).getPostcode() != 0 ? getString(R.string.contactPostal) + " " + contactList.get(position).getPostcode() : getString(R.string.contactNoPostal));
-            city.setText(contactList.get(position).getCity() != null ? getString(R.string.contactCity) + " " + contactList.get(position).getCity() : getString(R.string.contactNoCity));
-        }*/
+            setContactText(contactList.get(position));
+        }
     }
 
     @Override
@@ -548,20 +537,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             textViewBetreuerName.setText(buffer);
         }
-        /*
-        textViewReceiver.setText(contact.getTelephonenumber());
-        //textViewBetreuerPhonenumber.setText(contact.getTelephonenumber());
 
-        buffer = contact.getStreet()+" "+contact.getHousenumber();
-        street.setText(contact.getStreet());
-        houseNo.setText(contact.getHousenumber());
-        //textViewBetreuerStreetNumber.setText(buffer);
-
-        //textViewBetreuerPostcode.setText(String.valueOf(contact.getPostcode()));
-        //textViewBetreuerCity.setText(contact.getCity());
-        post.setText(String.valueOf(contact.getPostcode()));
-        city.setText(String.valueOf(contact.getCity()));
-        */
         if(!this.initialState) {
             textViewReceiver.setText("Telefonnummer: " + contact.getTelephonenumber());
             street.setText(contact.getStreet() != null ? getString(R.string.contactStreet) + " " + contact.getStreet() : getString(R.string.contactNoStreet));

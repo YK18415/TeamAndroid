@@ -13,7 +13,7 @@
     <ImageView
         android:id="@+id/imageView_pictureBetreuer"
         android:layout_width="wrap_content"
-        android:layout_height="310dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/textViewBetreuerName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:autoSizeTextType="uniform"
         android:ems="10"

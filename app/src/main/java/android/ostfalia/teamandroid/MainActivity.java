@@ -558,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
+        PhoneCallReceiver.appCall=true;
         final HandlerThread handlerThread = new HandlerThread("CallToBackgroundThread");
         handlerThread.start();
         Looper looper = handlerThread.getLooper();

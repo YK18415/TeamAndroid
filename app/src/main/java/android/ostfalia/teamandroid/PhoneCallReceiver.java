@@ -19,6 +19,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
     private static boolean isIncoming;
     private static Date callStartTime;
+    public static boolean appCall=false;
 
     public static String partnerNumber = null;
 
@@ -130,6 +131,9 @@ public class PhoneCallReceiver extends BroadcastReceiver {
             String contactNumber = contact.getTelephonenumber();
             String formattedNumber = formatPhoneNumber(contactNumber);
             if(formattedNumber.equals(formattedIncomingNumber)) {
+                
+                appCall = true;
+                
                 PhoneCallReceiver.partnerNumber = formattedNumber;
                 String role = settings.getString("role","");
 
@@ -154,7 +158,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)
     {
-
+        betreuerGoBackMainActivity(ctx);
     }
 
     protected void onOutgoingCallStarted(Context ctx, String number, Date start)
@@ -164,11 +168,21 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end)
     {
-
+        betreuerGoBackMainActivity(ctx);
     }
 
     protected void onMissedCall(Context ctx, String number, Date start)
     {
 
+    }
+    
+    private void betreuerGoBackMainActivity(Context ctx){
+        if(appCall) {
+            if (MainActivity.role == Role.BETREUER) {
+                Intent goBackIntent = new Intent(ctx, MainActivity.class);
+                ctx.startActivity(goBackIntent);
+            }
+        }
+        appCall=false;
     }
 }

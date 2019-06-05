@@ -14,6 +14,9 @@ public class ChangeOwnPhonenumberActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_own_phonenumber);
 
+        EditText ownPhoneNumber = findViewById(R.id.editTextTelephonenumber);
+
+        ownPhoneNumber.setText(getIntent().getStringExtra("defaultPhoneNumber"));
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra("PHONENUMBER", "");

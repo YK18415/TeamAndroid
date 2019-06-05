@@ -259,21 +259,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(MainActivity.this, NewContact.class);
-                intent.putExtra("firstName", contactList.get(0).getFirstname());
-                intent.putExtra("lastName", contactList.get(0).getLastname());
-                intent.putExtra("telephoneNumber", contactList.get(0).getTelephonenumber());
-                intent.putExtra("street", contactList.get(0).getStreet());
-                intent.putExtra("streetNumber", contactList.get(0).getHousenumber());
-                intent.putExtra("postCode", contactList.get(0).getPostcode());
-                intent.putExtra("city", contactList.get(0).getCity());
+                Contact editContact = contactList.get(0);
+                intent.putExtra("firstName", editContact.getFirstname());
+                intent.putExtra("lastName", editContact.getLastname());
+                intent.putExtra("telephoneNumber", editContact.getTelephonenumber());
+                intent.putExtra("street", editContact.getStreet());
+                intent.putExtra("streetNumber", Integer.toString(editContact.getHousenumber()));
+                intent.putExtra("postCode", editContact.getPostcode());
+                intent.putExtra("city", editContact.getCity());
                 intent.putExtra("actionbarText", "Betreuer ändern");
-                contactList.clear();
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, 4);
             }
         }).setNegativeButton("Eigene Nummer ändern", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(MainActivity.this, ChangeOwnPhonenumberActivity.class);
+                intent.putExtra("defaultPhoneNumber", getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE).getString("PHONE_NUMBER", ""));
                 startActivityForResult(intent, 2);
             }
         }).setNeutralButton("Abbrechen", new DialogInterface.OnClickListener() {
@@ -542,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             textViewReceiver.setText("Telefonnummer: " + contact.getTelephonenumber());
             street.setText(contact.getStreet() != null ? getString(R.string.contactStreet) + " " + contact.getStreet() : getString(R.string.contactNoStreet));
             houseNo.setText(contact.getHousenumber() != 0 ? getString(R.string.contactHouseNo) + " " + contact.getHousenumber() : getString(R.string.contactNoHouseNo));
-            post.setText(contact.getPostcode() != 0 ? getString(R.string.contactPostal) + " " + contact.getPostcode() : getString(R.string.contactNoPostal));
+            post.setText(contact.getPostcode() != null ? getString(R.string.contactPostal) + " " + contact.getPostcode() : getString(R.string.contactNoPostal));
             city.setText(contact.getCity() != null ? getString(R.string.contactCity) + " " + contact.getCity() : getString(R.string.contactNoCity));
         }
     }
@@ -656,7 +657,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("lastName", editedContact.getLastname());
         intent.putExtra("telephoneNumber", editedContact.getTelephonenumber());
         intent.putExtra("street", editedContact.getStreet());
-        intent.putExtra("streetNumber", editedContact.getHousenumber());
+        intent.putExtra("streetNumber", Integer.toString(editedContact.getHousenumber()));
         intent.putExtra("postCode", editedContact.getPostcode());
         intent.putExtra("city", editedContact.getCity());
         intent.putExtra("actionbarText", "Kontakt editieren");
@@ -696,6 +697,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }
+
+        if(requestCode==4){
+            if (resultCode == RESULT_OK) {
+                Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
+
+                // add the newContact, who was created by the user, to the benutzerList:
+                if(newContact != null) {
+                    contactList.clear();
+                    contactList.add(newContact);
+                }
+            }
+        }
+        saveContactList();
     }
 
     /**

@@ -9,7 +9,7 @@ public class Contact implements Serializable {
     private String telephonenumber;
     private String street;
     private int housenumber;
-    private long postcode;
+    private String postcode;
     private String City;
 
 
@@ -48,11 +48,11 @@ public class Contact implements Serializable {
         this.housenumber = housenumber;
     }
 
-    public long getPostcode() {
+    public String getPostcode() {
         return postcode;
     }
 
-    public void setPostcode(long postcode) {
+    public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 

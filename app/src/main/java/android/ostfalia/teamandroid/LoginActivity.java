@@ -123,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Add Betreuer:
             Intent intent = new Intent(LoginActivity.this, NewContact.class);
+            intent.putExtra("actionbarText", "Der Betreuer");
             startActivityForResult(intent, 1);
         }
         editor.commit();

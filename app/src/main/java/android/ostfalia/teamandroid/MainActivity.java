@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean isActivityActive;
     private boolean isThreadActive;
 
-    private static final int REQUEST_PHONE_CALL = 123; // TODO: Wofür ist das?
+    private static final int REQUEST_PHONE_CALL = 123;
     private int counter = 0;
     private int secreteCounter = 0;
     private long startTime;

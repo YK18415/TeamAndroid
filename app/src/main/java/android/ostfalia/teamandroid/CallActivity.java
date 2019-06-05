@@ -332,8 +332,10 @@ public class CallActivity extends AppCompatActivity {
         } else {
             imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
         }
-
         final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Hochladen");
+        progressDialog.show();
+
         progressbarVisible=false;
         imageRef.putFile(fileUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -354,7 +356,7 @@ public class CallActivity extends AppCompatActivity {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                updateProgress(taskSnapshot, progressDialog, "Hochgeladen zu ");
+                updateProgress(taskSnapshot, progressDialog, "Hochladen zum Firebase-Storage zu ");
             }
         });
 
@@ -366,10 +368,9 @@ public class CallActivity extends AppCompatActivity {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         if(!progressbarVisible && progress>1.0) {
             progressbarVisible = true;
-            progressDialog.setTitle("Hochladen zum Firebase-Storage");
             progressDialog.show();
         }
-        progressDialog.setMessage(message + ((int) progress) + "%...");
+        progressDialog.setMessage(message + ((int) progress) + " % fertig");
         if (progress >= 99.9) {
             try {
                 Thread.sleep(1000);
@@ -380,7 +381,11 @@ public class CallActivity extends AppCompatActivity {
     }
     public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-        progressDialog.setMessage(message + ((int) progress) + "%");
+        if(!progressbarVisible && progress>1.0) {
+            progressbarVisible = true;
+            progressDialog.show();
+        }
+        progressDialog.setMessage(message + ((int) progress) + "% fertig");
         if (progress >= 99.9) {
             try {
                 Thread.sleep(1000);
@@ -423,8 +428,8 @@ public class CallActivity extends AppCompatActivity {
         //final ProgressDialog progressDialog = new ProgressDialog(this);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Bild herunterladen von Firebase");
-        progressDialog.show();
+        progressDialog.setTitle("Herunterladen");
+
 
         try {
             final File localFile = File.createTempFile("images", "jgp");
@@ -451,19 +456,19 @@ public class CallActivity extends AppCompatActivity {
                     //progressDialog.dismiss();
                     downloading=false;
                     progressDialog.dismiss();
-                    //progressbarVisible=false;
+                    progressbarVisible=false;
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    updateProgress2(taskSnapshot, progressDialog, "Heruntergeladen zu ");
+                    updateProgress2(taskSnapshot, progressDialog, "Bild herunterladen vom Firebase-Storage zu ");
                 }
             });
         } catch (Exception e) {
             Toast.makeText(CallActivity.this,"Failed to create temp file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
             downloading=false;
             progressDialog.dismiss();
-            //progressbarVisible=false;
+            progressbarVisible=false;
         }
         //progressDialog.show();
     }
@@ -504,7 +509,8 @@ public class CallActivity extends AppCompatActivity {
         String fileName = "documents/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".txt";
 
         final StorageReference answerRef = mStorageRef.child(fileName);
-
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Herunterladen");
 
         try {
             final File localFile = File.createTempFile(PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")), "txt");
@@ -530,6 +536,7 @@ public class CallActivity extends AppCompatActivity {
                             } else if(text.contains("no")) {
                                 textViewDecision.setText("Nein");
                             }
+                            progressDialog.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -537,6 +544,11 @@ public class CallActivity extends AppCompatActivity {
                     downloading=false;
                     progressbarVisible=false;
                     Toast.makeText(CallActivity.this,"Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    updateProgress2(taskSnapshot, progressDialog, "Antwort vom Firebase-Storage herunterladen zu ");
                 }
             });
         } catch (Exception e) {

@@ -22,10 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +42,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -59,9 +55,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
-import javax.xml.datatype.Duration;
 
 public class CallActivity extends AppCompatActivity {
 
@@ -356,31 +349,21 @@ public class CallActivity extends AppCompatActivity {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                updateProgress(taskSnapshot, progressDialog, "Hochladen zum Firebase-Storage zu ");
+                updateProgressUpload(taskSnapshot, progressDialog, "Hochladen zum Firebase-Storage zu ");
             }
         });
-
-
     }
 
-    // TODO: Generisch.
-    public void updateProgress(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+    private void updateProgressUpload(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-        if(!progressbarVisible && progress>1.0) {
-            progressbarVisible = true;
-            progressDialog.show();
-        }
-        progressDialog.setMessage(message + ((int) progress) + " % fertig");
-        if (progress >= 99.9) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        updateProgressDialog(progress, progressDialog, message);
     }
-    public void updateProgress2(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
+    private void updateProgressDownload(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        updateProgressDialog(progress, progressDialog, message);
+    }
+
+    private void updateProgressDialog(double progress, ProgressDialog progressDialog, String message){
         if(!progressbarVisible && progress>1.0) {
             progressbarVisible = true;
             progressDialog.show();
@@ -461,7 +444,7 @@ public class CallActivity extends AppCompatActivity {
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    updateProgress2(taskSnapshot, progressDialog, "Bild herunterladen vom Firebase-Storage zu ");
+                    updateProgressDownload(taskSnapshot, progressDialog, "Bild herunterladen vom Firebase-Storage zu ");
                 }
             });
         } catch (Exception e) {
@@ -548,7 +531,7 @@ public class CallActivity extends AppCompatActivity {
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    updateProgress2(taskSnapshot, progressDialog, "Antwort vom Firebase-Storage herunterladen zu ");
+                    updateProgressDownload(taskSnapshot, progressDialog, "Antwort vom Firebase-Storage herunterladen zu ");
                 }
             });
         } catch (Exception e) {

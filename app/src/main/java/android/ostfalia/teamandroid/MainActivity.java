@@ -379,17 +379,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             this.loadContactList();
             this.initContent();
         }
-
-        /* Boolean b = settings.getBoolean("imagePreferance", false);
-        if(b) {
-            Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
-            String role;
-            savedData = getApplicationContext().getSharedPreferences("logindata", MODE_PRIVATE); // For reading.;
-            role = savedData.getString("role","");
-            intent.putExtra("role", role);
-            intent.putExtra("IS_PAUSED", true);
-            startActivity(intent);
-        }*/
     }
 
     /**
@@ -567,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         handler.postDelayed(new Runnable(){
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, CallActivity.class); // TODO: Change that with Enum.
+                Intent intent = new Intent(MainActivity.this, CallActivity.class);
                 //String role;
                 SharedPreferences settings = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
                 //role = settings.getString("role","");
@@ -612,29 +601,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return null;
         }
     }
-
-/*    private void chooseReceiver() {
-       // final List<String> contactListString = new ArrayList<String>();
-
-        final CharSequence[] contactListString = new CharSequence[contactList.size()];
-        for (int i = 0; i < contactList.size(); i++) {
-            contactListString[i] = contactList.get(i).getFirstname() + " " + contactList.get(i).getLastname();
-        }
-
-        Dialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Wählen Sie eine Person.");
-        // TODO: Dismissal sofort!
-        builder.setSingleChoiceItems(contactListString, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                textViewReceiver.setText(contactListString[which]);
-            }
-        });
-        dialog = builder.create();
-        dialog.show();
-    }
-*/
 
     /**
      * Open new Activity - NewContact - to create a new contact

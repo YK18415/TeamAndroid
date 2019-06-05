@@ -113,11 +113,11 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("betreuapp", MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
 
-            editor.putString("role", String.valueOf(radioButtonRoleBetreuer.getText()));
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class); // TODO: Refactoren
+            editor.putString("role", "Betreuer");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         } else if (!TextUtils.isEmpty(editTextPassword.getText()) && !TextUtils.isEmpty(editTextOwnPhonenumber.getText())) {
-            editor.putString("role", String.valueOf(radioButtonRoleBetreuter.getText()));
+            editor.putString("role", "Betreuter");
             editor.putString("password", String.valueOf(editTextPassword.getText()));
             editor.putString("PHONE_NUMBER", editTextOwnPhonenumber.getText().toString());
 
@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Contact newContact = (Contact) Objects.requireNonNull(data.getExtras()).getSerializable("CONTACT");
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);// TODO: Refactoren
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("BETREUER_CONTACT", newContact);
                 startActivity(intent);
             }

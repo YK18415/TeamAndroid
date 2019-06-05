@@ -68,7 +68,7 @@ public class NewContact extends AppCompatActivity {
                         newContact.setHousenumber(Integer.parseInt(editTextStreetnumber.getText().toString()));
                     }
                     if(!TextUtils.isEmpty(editTextPostcode.getText())) {
-                        newContact.setPostcode(Integer.parseInt(editTextPostcode.getText().toString()));
+                        newContact.setPostcode(editTextPostcode.getText().toString());
                     }
                     if(!TextUtils.isEmpty(editTextCity.getText())) {
                         newContact.setCity(editTextCity.getText().toString());

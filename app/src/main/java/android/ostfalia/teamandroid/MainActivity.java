@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This activity is used as a main menu from which several different actions can be taken
+ */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 });
                 startTime = System.currentTimeMillis();
-                startSecretTimerChangeBetreuer(isActivityActive);
+                startSecretTimerChangeBetreuer();
             break;
         }
         this.toolbar = findViewById(R.id.toolbar);
@@ -175,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+    /**
+     * Shows important information to the user (Betreuer) in an AlertDialog.
+     */
     private void showPopupInfo() {
         android.app.AlertDialog dialog;
         android.app.AlertDialog.Builder imageDialog = new android.app.AlertDialog.Builder(this);
@@ -193,7 +199,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog.show();
     }
 
-    private void startSecretTimerChangeBetreuer(final Boolean isActivityActive) {
+    /**
+     * Starts a timer that resets the amount of button presses the user has made to get into the secret menu
+     */
+    private void startSecretTimerChangeBetreuer() {
 
         Thread thread = new Thread(new Runnable() {
 
@@ -215,6 +224,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         thread.start();
     }
 
+    /**
+     * Opens a dialog that prompts the user to input the secret password that only the Betreuer should know.
+     * If it is put in correctly, the user gets to choose between several options that should be kept out of
+     * reach for the Betreuter.
+     */
     private void changeBetreuerContact() {
         android.app.AlertDialog dialog;
         final android.app.AlertDialog.Builder passwordDialog = new android.app.AlertDialog.Builder(MainActivity.this);
@@ -250,6 +264,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog.show();
     }
 
+    /**
+     * Opens a dialog that let's the user choose between changing the Betreuer and changing the saved phone number
+     * of the device
+     */
     private void openChoicePopup() {
         android.app.AlertDialog dialog;
         final android.app.AlertDialog.Builder choiceDialog = new android.app.AlertDialog.Builder(MainActivity.this);
@@ -264,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra("lastName", editContact.getLastname());
                 intent.putExtra("telephoneNumber", editContact.getTelephonenumber());
                 intent.putExtra("street", editContact.getStreet());
-                intent.putExtra("streetNumber", Integer.toString(editContact.getHousenumber()));
+                intent.putExtra("streetNumber", editContact.getHousenumber());
                 intent.putExtra("postCode", editContact.getPostcode());
                 intent.putExtra("city", editContact.getCity());
                 intent.putExtra("actionbarText", "Betreuer ändern");
@@ -309,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 if(this.role == Role.BETREUTER && contact != null) {
                     contactList.add(contact);
+                    saveContactList();
                 }
             }
 
@@ -390,8 +409,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(!contactList.isEmpty()) {
                     String[] names = this.convertContactListToNamesArray();
                     this.setSpinnerAdapter(names);
-                } else
+                } else {
                     this.fillSpinnerInitial();
+                }
             break;
             case BETREUTER:
                 if(!contactList.isEmpty()) {
@@ -487,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             builder.setCancelable(true);
 
             builder.setPositiveButton(
-                    "Yes",
+                    "Ja",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             contactList.remove(spinnerContactList.getSelectedItemPosition());
@@ -500,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     });
 
             builder.setNegativeButton(
-                    "No",
+                    "Nein",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
@@ -511,6 +531,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    /**
+     * Sets some default texts for some of the textViews
+     */
     public void setDefaultText(){
         //textViewReceiver.setText(R.string.TextView_Receiver);
         //street, houseNo, post, city
@@ -520,6 +543,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         city.setText("Ort: -");
     }
 
+    /**
+     * Sets all textViews texts to show the given  contacts information
+     * @param contact The given contact
+     */
     public void setContactText(Contact contact){
 
         if(role==Role.BETREUTER) {
@@ -529,9 +556,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         if(!this.initialState) {
-            textViewReceiver.setText("Telefonnummer: " + contact.getTelephonenumber());
+            textViewReceiver.setText("Tel: " + contact.getTelephonenumber());
             street.setText(contact.getStreet() != null ? getString(R.string.contactStreet) + " " + contact.getStreet() : getString(R.string.contactNoStreet));
-            houseNo.setText(contact.getHousenumber() != 0 ? getString(R.string.contactHouseNo) + " " + contact.getHousenumber() : getString(R.string.contactNoHouseNo));
+            houseNo.setText(contact.getHousenumber() != null ? getString(R.string.contactHouseNo) + " " + contact.getHousenumber() : getString(R.string.contactNoHouseNo));
             post.setText(contact.getPostcode() != null ? getString(R.string.contactPostal) + " " + contact.getPostcode() : getString(R.string.contactNoPostal));
             city.setText(contact.getCity() != null ? getString(R.string.contactCity) + " " + contact.getCity() : getString(R.string.contactNoCity));
         }
@@ -624,7 +651,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("lastName", editedContact.getLastname());
         intent.putExtra("telephoneNumber", editedContact.getTelephonenumber());
         intent.putExtra("street", editedContact.getStreet());
-        intent.putExtra("streetNumber", Integer.toString(editedContact.getHousenumber()));
+        intent.putExtra("streetNumber", editedContact.getHousenumber());
         intent.putExtra("postCode", editedContact.getPostcode());
         intent.putExtra("city", editedContact.getCity());
         intent.putExtra("actionbarText", "Kontakt editieren");

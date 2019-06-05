@@ -8,7 +8,7 @@ public class Contact implements Serializable {
     private String lastname;
     private String telephonenumber;
     private String street;
-    private int housenumber;
+    private String housenumber;
     private String postcode;
     private String City;
 
@@ -40,11 +40,11 @@ public class Contact implements Serializable {
         this.street = street;
     }
 
-    public int getHousenumber() {
+    public String getHousenumber() {
         return housenumber;
     }
 
-    public void setHousenumber(int housenumber) {
+    public void setHousenumber(String housenumber) {
         this.housenumber = housenumber;
     }
 

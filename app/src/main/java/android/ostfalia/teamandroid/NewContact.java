@@ -83,6 +83,9 @@ public class NewContact extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates contact with the current values of firstname, lastname, telephonenumber and saves it in newContact
+     */
     private void addNewContact() {
         newContact = new Contact(firstname,lastname, telephonenumber);
     }

@@ -23,6 +23,11 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     public static String partnerNumber = null;
 
+    /**
+     * Formats a given phone number to our conventions
+     * @param number The given phone number
+     * @return The formatted phone number
+     */
     public static String formatPhoneNumber(String number){
         return number.length()==0?number:number.charAt(0)=='0'?"+49" + number.substring(1):number;
     }
@@ -65,7 +70,14 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
-    public void onCallStateChanged(Context context, int state, String number) {
+
+    /**
+     * Is called when the state of the phone call is changed
+     * @param context The current context
+     * @param state The state of the call
+     * @param number The phone number of the partner
+     */
+    private void onCallStateChanged(Context context, int state, String number) {
         if(lastState == state){
             //No change, debounce extras
             return;
@@ -109,11 +121,23 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         lastState = state;
     }
 
+    /**
+     * Is called when the phone is called
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     */
     protected void onIncomingCallReceived(Context ctx, String number, Date start)
     {
 
     }
 
+    /**
+     * Is called when an incoming call is answered
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     */
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
         SharedPreferences settings = ctx.getSharedPreferences("betreuapp", MODE_PRIVATE);
@@ -156,26 +180,55 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     }
 
+    /**
+     * Is called when an ongoing call, in which this phone was called, has ended
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     * @param end When the phone call ended
+     */
     protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end)
     {
         betreuerGoBackMainActivity(ctx);
     }
 
+    /**
+     * Is called when this phone calls someone
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     */
     protected void onOutgoingCallStarted(Context ctx, String number, Date start)
     {
 
     }
 
+    /**
+     * Is called when an ongoing call, in which this phone has called, has ended
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     */
     protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end)
     {
         betreuerGoBackMainActivity(ctx);
     }
 
+    /**
+     * Is called, when the user misses a call
+     * @param ctx The current context
+     * @param number The phone number of the partner
+     * @param start When the phone call started
+     */
     protected void onMissedCall(Context ctx, String number, Date start)
     {
 
     }
-    
+
+    /**
+     * Sends the Betreuer back to the main activity
+     * @param ctx The current context
+     */
     private void betreuerGoBackMainActivity(Context ctx){
         if(appCall) {
             if (MainActivity.role == Role.BETREUER) {

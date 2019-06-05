@@ -116,7 +116,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
 
     protected void onIncomingCallAnswered(Context ctx, String number, Date start)
     {
-        SharedPreferences settings = ctx.getSharedPreferences("betreuapp", MODE_PRIVATE);
+        SharedPreferences settings = ctx.getSharedPreferences(ctx.getString(R.string.SharedPreferencesName), MODE_PRIVATE);
         String contactListString = settings.getString("contactList", "");
         Gson gson = new Gson();
         if(contactListString.isEmpty()) {

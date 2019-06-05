@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void login(RadioButton radioButtonRoleBetreuer, RadioButton radioButtonRoleBetreuter) {
         //Storage:
-        SharedPreferences.Editor editor = getSharedPreferences("betreuapp", MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE).edit();
         if(radioButtonRoleBetreuer.isChecked()) {
 
             editor.putString("role", "Betreuer");

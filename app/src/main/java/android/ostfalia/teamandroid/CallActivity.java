@@ -105,7 +105,7 @@ public class CallActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         signInAnonymously();
-        savedData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE);
+        savedData = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE);
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -138,7 +138,7 @@ public class CallActivity extends AppCompatActivity {
                 if (isCallActive(getApplicationContext())) {
                     endCall();
                 } else {
-                    Toast.makeText(CallActivity.this, "Kein Anruf ist aktiv.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_isCallActivive_No_Toast), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -159,11 +159,11 @@ public class CallActivity extends AppCompatActivity {
      */
     private void deleteFilesFromFirebase() {
         if(MainActivity.role==Role.BETREUTER){
-            String phoneNumber =savedData.getString("PHONE_NUMBER", "");
+            String phoneNumber =savedData.getString(getString(R.string.SharedPreferences_Phonenumber), "");
             if(phoneNumber!=null) {
-                StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".jpg");
+                StorageReference imageRef = mStorageRef.child(getString(R.string.callActivity_Firebase_ImagesPath) + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + getString(R.string.callActivity_fileExtension_JPG));
                 imageRef.delete();
-                StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".txt");
+                StorageReference answerRef = mStorageRef.child(getString(R.string.callActivity_Firebase_DocumentsPath) + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + getString(R.string.callActivity_fileExtension_TXT));
                 answerRef.delete();
             }
         }
@@ -184,12 +184,11 @@ public class CallActivity extends AppCompatActivity {
     private void handleLayout() {
        /* Bundle bundle = getIntent().getExtras();
         String role = bundle.get("role").toString();*/
-        SharedPreferences settings = getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
-        String role = settings.getString("role","");
-
+        SharedPreferences settings = getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.;
+        String role = settings.getString(getString(R.string.SharedPreferences_Key_RoleUser),"");
 
         switch (role) {
-            case "Betreuer":
+            case MainActivity.BETREUER:
                 MainActivity.role = Role.BETREUER;
                 setContentView(R.layout.activity_call_betreuer);
                 imageButtonSync = findViewById(R.id.imageButtonSyncBetreuer);
@@ -200,14 +199,14 @@ public class CallActivity extends AppCompatActivity {
                 imageButtonAccept.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.callActivity_NoImage_Toast), Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 imageButtonDecline.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Kein Bild vorhanden", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.callActivity_NoImage_Toast), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -220,7 +219,7 @@ public class CallActivity extends AppCompatActivity {
                     }
                 });
                 break;
-            case "Betreuter":
+            case MainActivity.BETREUTER:
                 MainActivity.role = Role.BETREUTER;
                 setContentView(R.layout.activity_call_betreuter);
                 imageButtonSync = findViewById(R.id.imageButtonSyncBetreuter);
@@ -245,7 +244,7 @@ public class CallActivity extends AppCompatActivity {
      */
     private File createTextFile(String message) {
         File path = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(path, "answer.txt");
+        File file = new File(path, getString(R.string.callActivity_Textfile_Name));
 
 
         try (FileOutputStream stream = new FileOutputStream(file)) {
@@ -263,15 +262,14 @@ public class CallActivity extends AppCompatActivity {
         if (imageView.getDrawable() != null) {
             AlertDialog dialog;
             AlertDialog.Builder imageDialog = new AlertDialog.Builder(CallActivity.this);
-            imageDialog.setTitle("Bild vergrößert");
+            imageDialog.setTitle(getString(R.string.callActivity_showPictureInPopup_Headline));
             LayoutInflater inflater = CallActivity.this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
             View view = inflater.inflate(R.layout.image_popup, null);
             ImageView imageViewPopup = view.findViewById(R.id.imageViewPopup);
-            //Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
             imageViewPopup.setImageBitmap(bitmap);
 
             imageDialog.setView(view);
-            imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+            imageDialog.setNegativeButton(getString(R.string.imageDialog_NegativeButton_Back), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -280,7 +278,7 @@ public class CallActivity extends AppCompatActivity {
             dialog = imageDialog.create();
             dialog.show();
         } else {
-            Toast.makeText(this, "Sie haben kein Bild aufgenommen.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.callActivity_showPictureInPopup_NoImage_Toast), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -296,10 +294,10 @@ public class CallActivity extends AppCompatActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Toast.makeText(this, "Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.callActivity_createImageFile_Exception_Toast), Toast.LENGTH_LONG).show();
             }
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                Uri photoURI = FileProvider.getUriForFile(this, getString(R.string.callActivity_FileProviderUri_Authority), photoFile);
                 intentTakePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(intentTakePicture, REQUEST_CAPTURE_PICTURE);
             }
@@ -332,12 +330,12 @@ public class CallActivity extends AppCompatActivity {
         StorageReference imageRef;
 
         if(isText) {
-            imageRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(PhoneCallReceiver.partnerNumber) + ".txt");
+            imageRef = mStorageRef.child(getString(R.string.callActivity_Firebase_DocumentsPath) + PhoneCallReceiver.formatPhoneNumber(PhoneCallReceiver.partnerNumber) + getString(R.string.callActivity_fileExtension_TXT));
         } else {
-            imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".jpg");
+            imageRef = mStorageRef.child(getText(R.string.callActivity_Firebase_ImagesPath) + PhoneCallReceiver.formatPhoneNumber(savedData.getString(getString(R.string.SharedPreferences_Phonenumber), "")) + getString(R.string.callActivity_fileExtension_JPG));
         }
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Hochladen");
+        progressDialog.setTitle(getString(R.string.callActivity_ProgressDialog_Upload_Headline));
         progressDialog.show();
 
         progressbarVisible=false;
@@ -348,7 +346,7 @@ public class CallActivity extends AppCompatActivity {
                         // Get a URL to the uploaded content
                         firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
                         progressDialog.dismiss();
-                        Toast.makeText(CallActivity.this, isText?"Antwort erfolgreich hochgeladen.":"Foto erfolgreich hochgeladen.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CallActivity.this, isText?getString(R.string.callActivity_Firebase_UploadAnswerCorrectly_Toast):getString(R.string.callActivity_Firebase_UploadPhotoCorrectly_Toast), Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -360,7 +358,7 @@ public class CallActivity extends AppCompatActivity {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                updateProgressUpload(taskSnapshot, progressDialog, "Hochladen zum Firebase-Storage zu ");
+                updateProgressUpload(taskSnapshot, progressDialog, getString(R.string.callActivity_Firebase_UploadUpdateProgress));
             }
         });
     }
@@ -398,7 +396,7 @@ public class CallActivity extends AppCompatActivity {
             progressbarVisible = true;
             progressDialog.show();
         }
-        progressDialog.setMessage(message + ((int) progress) + "% fertig");
+        progressDialog.setMessage(message + ((int) progress) + getString(R.string.callActivity_Firebase_ProgressPercentage));
         if (progress >= 99.9) {
             try {
                 Thread.sleep(1000);
@@ -435,28 +433,25 @@ public class CallActivity extends AppCompatActivity {
                 return;
             }
         }
-        String fileName = "images/" + PhoneCallReceiver.partnerNumber + ".jpg";
+        String fileName = getString(R.string.callActivity_Firebase_ImagesPath) + PhoneCallReceiver.partnerNumber + getString(R.string.callActivity_fileExtension_JPG);
 
         final StorageReference imageRef = mStorageRef.child(fileName);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Herunterladen");
+        progressDialog.setTitle(getString(R.string.callActivity_ProgressDialog_Download_Headline));
 
 
         try {
-            final File localFile = File.createTempFile("images", "jgp");
+            final File localFile = File.createTempFile(getString(R.string.callActivity_Firebase_CreateTempFilePrefix), getString(R.string.callActivity_fileExtension_TXT_WithoutPoint));
             downloading = true;
             imageRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(CallActivity.this, "Foto erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_DownloadPhoto_Success_Toast), Toast.LENGTH_LONG).show();
                             bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                             imageView.setImageBitmap(bitmap);
-                            //progressDialog.dismiss();
                             downloading = false;
-                            //progressbarVisible=false;
-                            //progressDialog.cancel();
                             progressDialog.dismiss();
                             imageRef.delete();
                             setAcceptAndDeclineOnClickListener();
@@ -464,7 +459,7 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CallActivity.this, "Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     //progressDialog.dismiss();
                     downloading = false;
                     progressDialog.dismiss();
@@ -473,11 +468,11 @@ public class CallActivity extends AppCompatActivity {
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    updateProgressDownload(taskSnapshot, progressDialog, "Bild herunterladen vom Firebase-Storage zu ");
+                    updateProgressDownload(taskSnapshot, progressDialog, getString(R.string.callActivity_Firebase_DownloadPhoto_UpdateProgress));
                 }
             });
         } catch (IOException e) {
-            Toast.makeText(CallActivity.this, "Failed to create temp file: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             downloading = false;
             progressDialog.dismiss();
             progressbarVisible = false;
@@ -492,8 +487,8 @@ public class CallActivity extends AppCompatActivity {
         imageButtonAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CallActivity.this, "Akzeptiert.", Toast.LENGTH_SHORT).show();
-                File textFile = createTextFile("yes");
+                Toast.makeText(CallActivity.this, getString(R.string.callActivity_Accept_Toast), Toast.LENGTH_SHORT).show();
+                File textFile = createTextFile(getString(R.string.callActivity_Accept_TextfileContent));
 
                 sendFileToFirebase(textFile, true);
             }
@@ -502,8 +497,8 @@ public class CallActivity extends AppCompatActivity {
         imageButtonDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CallActivity.this, "Nicht akzeptiert.", Toast.LENGTH_SHORT).show();
-                File textFile = createTextFile("no");
+                Toast.makeText(CallActivity.this, getString(R.string.callActivity_Decline_Toast), Toast.LENGTH_SHORT).show();
+                File textFile = createTextFile(getString(R.string.callActivity_Decline_TextfileContent));
                 sendFileToFirebase(textFile, true);
             }
         });
@@ -521,14 +516,14 @@ public class CallActivity extends AppCompatActivity {
                 return;
             }
         }
-        String fileName = "documents/" + PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")) + ".txt";
+        String fileName = getString(R.string.callActivity_Firebase_DocumentsPath) + PhoneCallReceiver.formatPhoneNumber(savedData.getString(getString(R.string.SharedPreferences_Phonenumber), "")) + getString(R.string.callActivity_fileExtension_TXT);
 
         final StorageReference answerRef = mStorageRef.child(fileName);
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Herunterladen");
+        progressDialog.setTitle(getString(R.string.callActivity_ProgressDialog_Download_Headline));
 
         try {
-            final File localFile = File.createTempFile(PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")), "txt");
+            final File localFile = File.createTempFile(PhoneCallReceiver.formatPhoneNumber(savedData.getString(getString(R.string.SharedPreferences_Phonenumber), "")), getString(R.string.callActivity_fileExtension_TXT_WithoutPoint));
             downloading = true;
             answerRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -537,20 +532,20 @@ public class CallActivity extends AppCompatActivity {
                             answerRef.delete();
                             downloading = false;
                             progressbarVisible = false;
-                            Toast.makeText(CallActivity.this, "Textdatei erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
+                            Toast.makeText(CallActivity.this, getString(R.string.callActivity_DownloadTextfile_Succeed_Toast), Toast.LENGTH_LONG).show();
                             String text = "";
 
                             try {
                                 text = getStringFromFile(localFile.getAbsolutePath());
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(CallActivity.this, "Die Antwort des Betreuers konnte nicht gelesen werden.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(CallActivity.this, getString(R.string.callActivity_DownloadTextfile_Exception), Toast.LENGTH_LONG).show();
                             }
                             Toast.makeText(CallActivity.this, text, Toast.LENGTH_LONG).show();
-                            if (text.contains("yes")) {
-                                textViewDecision.setText("Ja");
-                            } else if (text.contains("no")) {
-                                textViewDecision.setText("Nein");
+                            if (text.contains(getString(R.string.callActivity_Accept_TextfileContent))) {
+                                textViewDecision.setText(getString(R.string.callActivity_Accept_TextView));
+                            } else if (text.contains(getString(R.string.callActivity_Decline_TextfileContent))) {
+                                textViewDecision.setText(getString(R.string.callActivity_Decline_TextView));
                             }
                             progressDialog.dismiss();
                         }
@@ -559,18 +554,18 @@ public class CallActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     downloading = false;
                     progressbarVisible = false;
-                    Toast.makeText(CallActivity.this, "Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    updateProgressDownload(taskSnapshot, progressDialog, "Antwort vom Firebase-Storage herunterladen zu ");
+                    updateProgressDownload(taskSnapshot, progressDialog, getString(R.string.callActivity_Firebase_DownloadTextfile_UpdateProgress));
                 }
             });
         } catch (IOException e) {
             downloading = false;
             progressbarVisible = false;
-            Toast.makeText(CallActivity.this, "Failed to download text-file: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_DownloadTextfile_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -620,16 +615,16 @@ public class CallActivity extends AppCompatActivity {
     // Code by google from 'https://developer.android.com/training/camera/photobasics':
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd_HH:mm:ss").format(new Date());
-        imageFileName = "JPEG_" + timeStamp + "_";
+        String timeStamp = new SimpleDateFormat(getString(R.string.callActivity_CreateImage_SimpleDateFormat)).format(new Date());
+        imageFileName = getString(R.string.callActivity_fileExtension_JPEG_) + timeStamp + getString(R.string.callActivity_Underscore);
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                getString(R.string.callActivity_fileExtension_JPG),         /* suffix */
                 storageDir      /* directory */
         );
 
-        imageFileName = imageFileName + ".jpg";
+        imageFileName = imageFileName + getString(R.string.callActivity_fileExtension_JPG);
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
@@ -651,20 +646,20 @@ public class CallActivity extends AppCompatActivity {
             telephony.endCall();
 
         } catch (IllegalAccessException e) {
-            Toast.makeText(CallActivity.this, "Es konnte nicht auf ein Feld zugegriffen werden.", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalAccessException.");
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_endCall_IllegalAccessException_Toast), Toast.LENGTH_LONG).show();
+            Log.e(TAG, getString(R.string.callActivity_endCall_IllegalAccessException_Log));
         } catch (IllegalArgumentException e) {
-            Toast.makeText(CallActivity.this, "Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalArgumentException");
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_endCall_IllegalArgumentException_Toast), Toast.LENGTH_LONG).show();
+            Log.e(TAG, getString(R.string.callActivity_endCall_IllegalArgumentException_Log));
         } catch (NoSuchMethodException e) {
-            Toast.makeText(CallActivity.this, "Eine Funktion wurde nicht gefunden.", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. NoSuchMethodException. Eine Methode, die aufgerufen wurde, wurde nicht gefunden.");
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_endCall_NoSuchMethodException_Toast), Toast.LENGTH_LONG).show();
+            Log.e(TAG, getString(R.string.callActivity_endCall_NoSuchMethodException_Log));
         } catch (SecurityException e) {
-            Toast.makeText(CallActivity.this, "Es gab eine Sicherheitsverletzung.", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. SecurityException. Es gab eine Sicherheitsverletzung.");
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_endCall_SecurityException_Toast), Toast.LENGTH_LONG).show();
+            Log.e(TAG, getString(R.string.callActivity_endCall_SecurityException_Log));
         } catch (InvocationTargetException e) {
-            Toast.makeText(CallActivity.this, "Die Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.", Toast.LENGTH_LONG).show();
-            Log.e(TAG, "Verbindung zum Telephony-Subsystem ist fehlgeschlagen. InvocationTargetException. Eine Methode hat eine Methode aufgerufen, die eine Exception geworfen hat.");
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_endCall_InvocationTargetException_Toast), Toast.LENGTH_LONG).show();
+            Log.e(TAG, getString(R.string.callActivity_endCall_InvocationTargetException_Log));
         }
     }
 
@@ -718,7 +713,7 @@ public class CallActivity extends AppCompatActivity {
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Log.e(TAG, "signInAnonymously:FAILURE", exception);
+                        Log.e(TAG, getString(R.string.callActivity_SignInAnonymouslyException_Log), exception);
                     }
                 });
     }
@@ -747,6 +742,7 @@ public class CallActivity extends AppCompatActivity {
 
     // TODO: Copy this in the documentation.
 
+    //Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
     /* In der onCreate:
          //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
         /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");

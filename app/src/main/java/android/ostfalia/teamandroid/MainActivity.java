@@ -40,7 +40,8 @@ import java.util.Objects;
  */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-
+    public final static String BETREUER = "Betreuer";
+    public final static String BETREUTER = "Betreuter";
 
     private boolean initialState = false;
     public static Role role;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        savedData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); //lesen
+        savedData = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); //lesen
         editor = savedData.edit(); //schreiben
 
         contactInfo=findViewById(R.id.contactInfo);
@@ -189,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         View view = inflater.inflate(R.layout.info_popup, null);
 
         imageDialog.setView(view);
-        imageDialog.setNegativeButton("Zurück", new DialogInterface.OnClickListener() {
+        imageDialog.setNegativeButton(getString(R.string.imageDialog_NegativeButton_Back), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         passwordDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences logindata = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); //lesen
+                SharedPreferences logindata = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // reading
                 String passwordSaved = logindata.getString("password", "");
                 String passwordInput = String.valueOf(input.getText());
                 if(passwordInput.equals(passwordSaved)) {
@@ -292,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(MainActivity.this, ChangeOwnPhonenumberActivity.class);
-                intent.putExtra("defaultPhoneNumber", getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE).getString("PHONE_NUMBER", ""));
+                intent.putExtra("defaultPhoneNumber", getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE).getString("PHONE_NUMBER", ""));
                 startActivityForResult(intent, 2);
             }
         }).setNeutralButton("Abbrechen", new DialogInterface.OnClickListener() {
@@ -311,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private Boolean validateFirstLogin() {
         String role;
-        SharedPreferences loginData = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
+        SharedPreferences loginData = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading
         role = loginData.getString("role","");
 
         if(TextUtils.isEmpty(role)) {
@@ -585,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void run() {
                 Intent intent = new Intent(MainActivity.this, CallActivity.class);
                 //String role;
-                SharedPreferences settings = getApplicationContext().getSharedPreferences("betreuapp", MODE_PRIVATE); // For reading.;
+                SharedPreferences settings = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.;
                 //role = settings.getString("role","");
                 switch(settings.getString("role","")) {
                     case "Betreuer":

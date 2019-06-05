@@ -1,4 +1,9 @@
 <resources>
+    <!-- General -->
+    <string name="role_Betreuer">Betreuer</string>
+    <string name="role_Betreuter">Betreuter</string>
+    <string name="imageDialog_NegativeButton_Back">Zurück</string>
+
     <!-- LoginActivity -->
     <string name="loginActivity_Headline">Login</string>
     <string name="loginActivity_TextView_Description">Diese App ist für Menschen gedacht, die besondere Aufmerksamkeit benötigen. Diese App hat für diese Betreuung ein Rollensystem eingeführt. Dabei richtet der Betreuer die App für den Betreuten ein.</string>
@@ -37,7 +42,7 @@
     <string name="content_betreuter_postcodeHint">38302</string>
 
     <!-- NewContactActivity -->
-    <string name="newContactActivity_textViewNewContactHeadline">Neuer Kontakt</string>
+    <string name="newContactActivity_textViewNewContact_Headline">Neuer Kontakt</string>
     <string name="newContactActivity_textViewMandatoryFields">Pflichtfelder:</string>
     <string name="newContactActivity_textViewOptionalFields">Optionale Felder:</string>
     <string name="newContactActivity_BtnStore">speichern</string>
@@ -65,16 +70,70 @@
     <string name="callActivity_Button_Camera">Bild aufnehmen</string>
     <string name="callActivity_Headline">Anrufansicht</string>
     <string name="callActivity_Firebase_Exception_Download_Toast">Es gab einen Fehler beim Herunterladen des Bildes von der Cloud. Möglicherweise verfügen Sie nicht über die nötigen Berechtigungen. Bitte sagen Sie das Ihrem Betreuer.</string>
+    <string name="callActivity_showPictureInPopup_Headline">Bild vergrößert</string>
+    <string name="callActivity_showPictureInPopup_NoImage_Toast">Sie haben kein Bild aufgenommen.</string>
+    <string name="callActivity_isCallActivive_No_Toast">Kein Anruf ist aktiv.</string>
+    <string name="callActivity_Firebase_ImagesPath">images/</string>
+    <string name="callActivity_Firebase_DocumentsPath">documents/</string>
+    <string name="callActivity_NoImage_Toast">Kein Bild vorhanden</string>
+    <string name="callActivity_ProgressDialog_Upload_Headline">Hochladen</string>
+    <string name="callActivity_ProgressDialog_Download_Headline">Herunterladen</string>
+    <string name="callActivity_Firebase_UploadUpdateProgress">Hochladen zum Firebase-Storage zu</string>
+    <string name="callActivity_Firebase_ProgressPercentage">% fertig</string>
+    <string name="callActivity_createImageFile_Exception_Toast">Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.</string>
+    <string name="callActivity_Accept_TextfileContent">yes</string>
+    <string name="callActivity_Decline_TextfileContent">no</string>
+    <string name="callActivity_Firebase_Download_Exception">Download Fehlgeschlagen: </string>
+    <string name="callActivity_endCall_IllegalAccessException_Toast">Es konnte nicht auf ein Feld zugegriffen werden.</string>
+    <string name="callActivity_endCall_IllegalArgumentException_Toast">Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.</string>
+    <string name="callActivity_endCall_NoSuchMethodException_Toast">Eine Funktion wurde nicht gefunden.</string>
+    <string name="callActivity_endCall_SecurityException_Toast">Es gab eine Sicherheitsverletzung.</string>
+    <string name="callActivity_endCall_InvocationTargetException_Toast">Die Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.</string>
+    <string name="callActivity_endCall_IllegalAccessException_Log">FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalAccessException.</string>
+    <string name="callActivity_endCall_IllegalArgumentException_Log">FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalArgumentException</string>
+    <string name="callActivity_endCall_NoSuchMethodException_Log">FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. NoSuchMethodException. Eine Methode, die aufgerufen wurde, wurde nicht gefunden.</string>
+    <string name="callActivity_endCall_SecurityException_Log">FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. SecurityException. Es gab eine Sicherheitsverletzung.</string>
+    <string name="callActivity_endCall_InvocationTargetException_Log">Verbindung zum Telephony-Subsystem ist fehlgeschlagen. InvocationTargetException. Eine Methode hat eine Methode aufgerufen, die eine Exception geworfen hat.</string>
+    <string name="callActivity_SignInAnonymouslyException_Log">signInAnonymously:FAILURE</string>
+    <string name="callActivity_fileExtension_JPG">.jpg</string>
+    <string name="callActivity_fileExtension_TXT">.txt</string>
+    <string name="callActivity_fileExtension_TXT_WithoutPoint">txt</string>
 
     <!-- CallActivity - Betreuter -->
     <string name="callActivity_Picture_Betreuter_Headline">Ihr Bild:</string>
     <string name="callActivity_Decision_Headline">Genehmigt:</string>
     <string name="callActivity_Decision">------------</string>
     <string name="callActivity_Firebase_Exception_Upload_Toast">Es gab einen Fehler beim Hochladen des Bildes zur Cloud. Möglicherweise verfügen Sie nicht über die nötigen Berechtigungen. Bitte sagen Sie das Ihrem Betreuer.</string>
+    <string name="callActivity_Firebase_UploadPhotoCorrectly_Toast">Foto erfolgreich hochgeladen.</string>
+    <string name="callActivity_FileProviderUri_Authority">com.example.android.fileprovider</string>
+    <string name="callActivity_Accept_TextView">Ja</string>
+    <string name="callActivity_Decline_TextView">Nein</string>
+    <string name="callActivity_DownloadTextfile_Succeed_Toast">Textdatei erfolgreich heruntergeladen</string>
+    <string name="callActivity_DownloadTextfile_Exception">Die Antwort des Betreuers konnte nicht gelesen werden.</string>
+    <string name="callActivity_Firebase_DownloadTextfile_UpdateProgress">Antwort vom Firebase-Storage herunterladen zu</string>
+    <string name="callActivity_Firebase_DownloadTextfile_Exception">Failed to download text-file:</string>
+    <string name="callActivity_CreateImage_SimpleDateFormat">yyyy.MM.dd_HH:mm:ss</string>
+    <string name="callActivity_fileExtension_JPEG_">JPEG_</string>
+    <string name="callActivity_Underscore">_</string>
+
+    <!-- CallActivity - Betreuer -->
+    <string name="callActivity_Firebase_UploadAnswerCorrectly_Toast">Antwort erfolgreich hochgeladen.</string>
+    <string name="callActivity_Firebase_CreateTempFilePrefix">images</string>
+    <string name="callActivity_Firebase_DownloadPhoto_Success_Toast">Foto erfolgreich heruntergeladen</string>
+    <string name="callActivity_Firebase_DownloadPhoto_UpdateProgress">Bild herunterladen vom Firebase-Storage zu</string>
+    <string name="callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception">Failed to create temp file:</string>
+    <string name="callActivity_Accept_Toast">Akzeptiert.</string>
+    <string name="callActivity_Decline_Toast">Nicht akzeptiert.</string>
 
     <!-- ChangeOwnPhonenumberActivity - Betreuter -->
     <string name="changeOwnPhonenumberActivity_textViewPhonenumber_Headline">Bitte geben Sie die neue Nummer des Betreuten ein:</string>
     <string name="loginActivity_own_telephonnumber">Eigene Telefonnummer</string>
+    <string name="callActivity_Textfile_Name">answer.txt</string>
+
+    <!-- SharedPreferences -->
+    <string name="SharedPreferencesName">betreuapp</string>
+    <string name="SharedPreferences_Phonenumber">PHONE_NUMBER</string>
+    <string name="SharedPreferences_Key_RoleUser">role</string>
 
 
 </resources>

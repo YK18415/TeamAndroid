@@ -68,7 +68,7 @@
             android:name=".NewContact"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
-            android:label="@string/newContactActivity_textViewNewContactHeadline"/>
+            android:label="@string/newContactActivity_textViewNewContact_Headline"/>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"

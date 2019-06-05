@@ -48,14 +48,20 @@ import com.google.firebase.storage.UploadTask;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * The CallActivity. This class handles all operations during a phone call.
+ * Examples: endCall, camera-app-function, connection to Firebase-Storage etc.
+ */
 public class CallActivity extends AppCompatActivity {
 
     private static String TAG = "CallActivity";
@@ -85,8 +91,6 @@ public class CallActivity extends AppCompatActivity {
     TextView textViewDecision;
 
     Boolean isPictureTaken;
-    /*//Storage:
-    SharedPreferences settings;*/
 
     // Firebase - CloudStorage:
     private StorageReference mStorageRef;
@@ -105,23 +109,8 @@ public class CallActivity extends AppCompatActivity {
 
         // Firebase - CloudStorage:
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
-        /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
 
-        if(isCallActive(this) && wasPaused) {
-            String bitmapStr = settings.getString("imagePreferance", "");
-            imageView.setImageBitmap(decodeBase64(bitmapStr));
-        }*/
-
-        if(MainActivity.role==Role.BETREUTER){
-            String phoneNumber =savedData.getString("PHONE_NUMBER", "");
-            if(phoneNumber!=null) {
-                StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".jpg");
-                imageRef.delete();
-                StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".txt");
-                answerRef.delete();
-            }
-        }
+        deleteFilesFromFirebase();
 
         // Layout components for both:
         btnCamera = findViewById(R.id.btnCamera);
@@ -165,6 +154,20 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * If a phonecall was started, the files (images, textfiles) were deleted from Firebase.
+     */
+    private void deleteFilesFromFirebase() {
+        if(MainActivity.role==Role.BETREUTER){
+            String phoneNumber =savedData.getString("PHONE_NUMBER", "");
+            if(phoneNumber!=null) {
+                StorageReference imageRef = mStorageRef.child("images/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".jpg");
+                imageRef.delete();
+                StorageReference answerRef = mStorageRef.child("documents/" + PhoneCallReceiver.formatPhoneNumber(phoneNumber) + ".txt");
+                answerRef.delete();
+            }
+        }
+    }
     /**
      * set boolean isPictureTaken instead of the role
      */
@@ -220,8 +223,6 @@ public class CallActivity extends AppCompatActivity {
             case "Betreuter":
                 MainActivity.role = Role.BETREUTER;
                 setContentView(R.layout.activity_call_betreuter);
-                /*btnCamera.setImageResource(R.drawable.ic_sharp_photo_camera_24px);
-                btnCamera.setVisibility(View.GONE);*/
                 imageButtonSync = findViewById(R.id.imageButtonSyncBetreuter);
                 textViewDecision = findViewById(R.id.textViewDecision);
 
@@ -237,6 +238,11 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * When the Betreuer sends the answer to the Betreuter, a textfile will be created for Firebase. In this file is the answer 'yes' or 'no'.
+     * @param message The answer from the Betreuer to the Betreuter ('yes' or 'no').
+     * @return The textfile, which will be sended to Firebase.
+     */
     private File createTextFile(String message) {
         File path = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
         File file = new File(path, "answer.txt");
@@ -281,7 +287,7 @@ public class CallActivity extends AppCompatActivity {
 
     /**
      * The (system) camera-app is opening, so the user can take a photo.
-     * Also a File with this taken photo will be created with the filepath.
+     * Also a file with this taken photo will be created with the filepath.
      */
     private void takeAPicture() {
         Intent intentTakePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -316,6 +322,11 @@ public class CallActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sends the file (image or textfile) to the Firebase-Storage.
+     * @param file the file which should be send to the Firebase-Storage.
+     * @param isText true, if the file is a textfile, otherwise false.
+     */
     private void sendFileToFirebase(File file, final boolean isText) {
         Uri fileUri = Uri.fromFile(file);
         StorageReference imageRef;
@@ -354,15 +365,34 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * During upload a file (image or textfile) to the Firebase-Storage, a progressdialog is shown. In this method the calculation is made.
+     * @param taskSnapshot the instance of an UploadTask.TaskSnapshot.
+     * @param progressDialog the progressdialog, which is updated.
+     * @param message the message, which is shown in the progressdialog.
+     */
     private void updateProgressUpload(UploadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         updateProgressDialog(progress, progressDialog, message);
     }
+
+    /**
+     * During upload a file (image or textfile) to the Firebase-Storage, a progressdialog is shown. In this method the calculation is made.
+     * @param taskSnapshot the instance of an FileDownloadTask.TaskSnapshot.
+     * @param progressDialog the progressdialog, which is updated.
+     * @param message the message, which is shown in the progressdialog.
+     */
     private void updateProgressDownload(FileDownloadTask.TaskSnapshot taskSnapshot, ProgressDialog progressDialog, String message) {
         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
         updateProgressDialog(progress, progressDialog, message);
     }
 
+    /**
+     * Updates the progressdialog and shows it.
+     * @param progress the upload-/downloadprogress of the file (the percentage).
+     * @param progressDialog the progressdialog, which is updated.
+     * @param message the message, which is shown in the progressdialog.
+     */
     private void updateProgressDialog(double progress, ProgressDialog progressDialog, String message){
         if(!progressbarVisible && progress>1.0) {
             progressbarVisible = true;
@@ -394,7 +424,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     /**
-     * Download a photo from Firebase and show a progressbar for the percentage of the downloaded file.
+     * Downloads a photo from Firebase and shows a progressbar for the percentage of the downloaded file.
      */
     private void downloadPhotoFromFirebase() {
 
@@ -408,7 +438,6 @@ public class CallActivity extends AppCompatActivity {
         String fileName = "images/" + PhoneCallReceiver.partnerNumber + ".jpg";
 
         final StorageReference imageRef = mStorageRef.child(fileName);
-        //final ProgressDialog progressDialog = new ProgressDialog(this);
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Herunterladen");
@@ -416,7 +445,7 @@ public class CallActivity extends AppCompatActivity {
 
         try {
             final File localFile = File.createTempFile("images", "jgp");
-            downloading=true;
+            downloading = true;
             imageRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
@@ -425,7 +454,7 @@ public class CallActivity extends AppCompatActivity {
                             bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
                             imageView.setImageBitmap(bitmap);
                             //progressDialog.dismiss();
-                            downloading=false;
+                            downloading = false;
                             //progressbarVisible=false;
                             //progressDialog.cancel();
                             progressDialog.dismiss();
@@ -435,11 +464,11 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CallActivity.this,"Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, "Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     //progressDialog.dismiss();
-                    downloading=false;
+                    downloading = false;
                     progressDialog.dismiss();
-                    progressbarVisible=false;
+                    progressbarVisible = false;
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
@@ -447,15 +476,17 @@ public class CallActivity extends AppCompatActivity {
                     updateProgressDownload(taskSnapshot, progressDialog, "Bild herunterladen vom Firebase-Storage zu ");
                 }
             });
-        } catch (Exception e) {
-            Toast.makeText(CallActivity.this,"Failed to create temp file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
-            downloading=false;
+        } catch (IOException e) {
+            Toast.makeText(CallActivity.this, "Failed to create temp file: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            downloading = false;
             progressDialog.dismiss();
-            progressbarVisible=false;
+            progressbarVisible = false;
         }
-        //progressDialog.show();
     }
 
+    /**
+     * handles the clickListener for the buttons 'Accept' and 'Decline'. If the  user taps on one of them, an answer (textfile) will be send to the Firebase-Storage.
+     */
     private void setAcceptAndDeclineOnClickListener(){
 
         imageButtonAccept.setOnClickListener(new View.OnClickListener() {
@@ -480,6 +511,7 @@ public class CallActivity extends AppCompatActivity {
 
     /**
      * Download a textfile from Firebase, which contains the answer of the Betreuer according a sent picture.
+     * Besides, the answer is shown in a textView in the layout.
      */
     private void downloadAndReadFileFromFirebase() {
 
@@ -497,14 +529,14 @@ public class CallActivity extends AppCompatActivity {
 
         try {
             final File localFile = File.createTempFile(PhoneCallReceiver.formatPhoneNumber(savedData.getString("PHONE_NUMBER", "")), "txt");
-            downloading=true;
+            downloading = true;
             answerRef.getFile(localFile).addOnSuccessListener(
                     new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             answerRef.delete();
-                            downloading=false;
-                            progressbarVisible=false;
+                            downloading = false;
+                            progressbarVisible = false;
                             Toast.makeText(CallActivity.this, "Textdatei erfolgreich heruntergeladen", Toast.LENGTH_LONG).show();
                             String text = "";
 
@@ -512,11 +544,12 @@ public class CallActivity extends AppCompatActivity {
                                 text = getStringFromFile(localFile.getAbsolutePath());
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                Toast.makeText(CallActivity.this, "Die Antwort des Betreuers konnte nicht gelesen werden.", Toast.LENGTH_LONG).show();
                             }
                             Toast.makeText(CallActivity.this, text, Toast.LENGTH_LONG).show();
-                            if(text.contains("yes")) {
+                            if (text.contains("yes")) {
                                 textViewDecision.setText("Ja");
-                            } else if(text.contains("no")) {
+                            } else if (text.contains("no")) {
                                 textViewDecision.setText("Nein");
                             }
                             progressDialog.dismiss();
@@ -524,9 +557,9 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    downloading=false;
-                    progressbarVisible=false;
-                    Toast.makeText(CallActivity.this,"Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    downloading = false;
+                    progressbarVisible = false;
+                    Toast.makeText(CallActivity.this, "Download Fehlgeschlagen: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
@@ -534,37 +567,41 @@ public class CallActivity extends AppCompatActivity {
                     updateProgressDownload(taskSnapshot, progressDialog, "Antwort vom Firebase-Storage herunterladen zu ");
                 }
             });
-        } catch (Exception e) {
-            downloading=false;
-            progressbarVisible=false;
-            Toast.makeText(CallActivity.this,"Failed to download text-file: " + e.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            downloading = false;
+            progressbarVisible = false;
+            Toast.makeText(CallActivity.this, "Failed to download text-file: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     /**
      *
-     * @param filePath String. The path from Firebase.
+     * @param filePath String. The path from the Firebase-Photo.
      * @return returns the content of the text-file.
      */
     public static String getStringFromFile (String filePath) {
-        File fl = new File(filePath);
-        String ret = null;
-        try(FileInputStream fin = new FileInputStream(fl)) {
-            ret = convertStreamToString(fin);
+        File file = new File(filePath);
+        String answer = "";
+        try (FileInputStream fin = new FileInputStream(file)) {
+            answer = convertStreamToString(fin);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ret;
+        return answer;
     }
 
     /**
      *
-     * @param is InputStream (from the textfile from Firebase)
-     * @return returns the content of the textfile
+     * @param inputStream InputStream (from the textfile from Firebase).
+     * @return returns the content of the textfile.
      * @throws Exception
      */
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    public static String convertStreamToString(InputStream inputStream) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -576,8 +613,8 @@ public class CallActivity extends AppCompatActivity {
 
 
     /**
-     * Create the image-file and the path to the local storage from the image/picture.
-     * @return Image-/Picture-File
+     * Creates the image-file and the path to the local storage from the image/picture.
+     * @return returns image-/picture-File.
      * @throws IOException
      */
     // Code by google from 'https://developer.android.com/training/camera/photobasics':
@@ -613,15 +650,28 @@ public class CallActivity extends AppCompatActivity {
             ITelephony telephony = (ITelephony) iTelephony;
             telephony.endCall();
 
-        } catch (Exception e) {
-            Toast.makeText(CallActivity.this, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen.", Toast.LENGTH_LONG).show();
+        } catch (IllegalAccessException e) {
+            Toast.makeText(CallActivity.this, "Es konnte nicht auf ein Feld zugegriffen werden.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalAccessException.");
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(CallActivity.this, "Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. IllegalArgumentException");
+        } catch (NoSuchMethodException e) {
+            Toast.makeText(CallActivity.this, "Eine Funktion wurde nicht gefunden.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. NoSuchMethodException. Eine Methode, die aufgerufen wurde, wurde nicht gefunden.");
+        } catch (SecurityException e) {
+            Toast.makeText(CallActivity.this, "Es gab eine Sicherheitsverletzung.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "FATAL ERROR: Verbindung zum Telephony-Subsystem ist fehlgeschlagen. SecurityException. Es gab eine Sicherheitsverletzung.");
+        } catch (InvocationTargetException e) {
+            Toast.makeText(CallActivity.this, "Die Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Verbindung zum Telephony-Subsystem ist fehlgeschlagen. InvocationTargetException. Eine Methode hat eine Methode aufgerufen, die eine Exception geworfen hat.");
         }
     }
 
     /**
      *
-     * @param context
-     * @return true if a call is active (current in use), otherwise false.
+     * @param context the context of this activity.
+     * @return true, if a call is active (current in use), otherwise false.
      */
     // Code by Mauricio Manoel and slfan from StackOverflow:
     public static boolean isCallActive(Context context){
@@ -633,9 +683,10 @@ public class CallActivity extends AppCompatActivity {
     }
 
     /**
-     * set the onClickListener for the imageView depending on the 'first-photo-take'.
+     * Sets the onClickListener for the imageView depending on the 'first-photo-take'.
      * First tab: The user can take a photo.
      * Otherwise: A popup with the current picture is shown.
+     * Notice: The Beutreuer cannot take a photo. They can only see the photo in the popup.
      */
     private void setImageViewClickListener() {
         if(isPictureTaken) {
@@ -676,8 +727,6 @@ public class CallActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setImageViewClickListener();
-        //downloading = false;
-        //startDownloadThread();
     }
 
     @Override
@@ -694,8 +743,20 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //isActivityActive = false;
     }
+
+    // TODO: Copy this in the documentation.
+
+    /* In der onCreate:
+         //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
+        /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
+
+        if(isCallActive(this) && wasPaused) {
+            String bitmapStr = settings.getString("imagePreferance", "");
+            imageView.setImageBitmap(decodeBase64(bitmapStr));
+        }*/
+
+    // In onPause:
         /*SharedPreferences.Editor editor = settings.edit(); // For writing.
 
         // Store the data:
@@ -707,6 +768,7 @@ public class CallActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    // Eigene Methoden:
     public static String encodeTobase64(Bitmap image) {
         Bitmap immage = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -722,9 +784,6 @@ public class CallActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }*/
 
-    /**
-     * Close call after touching Back-Button
-     */
     @Override
     public void onBackPressed() {
         endCall();

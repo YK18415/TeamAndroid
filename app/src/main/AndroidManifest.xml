@@ -24,7 +24,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_telephone_approval"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_telephone_approval"
         android:supportsRtl="true"

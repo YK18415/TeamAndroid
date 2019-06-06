@@ -91,7 +91,7 @@
     <string name="callActivity_createImageFile_Exception_Toast">Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.</string>
     <string name="callActivity_Accept_TextfileContent">yes</string>
     <string name="callActivity_Decline_TextfileContent">no</string>
-    <string name="callActivity_Firebase_Download_Exception">Download Fehlgeschlagen: </string>
+    <string name="callActivity_Firebase_Download_Exception">Download Fehlgeschlagen </string>
     <string name="callActivity_endCall_IllegalAccessException_Toast">Es konnte nicht auf ein Feld zugegriffen werden.</string>
     <string name="callActivity_endCall_IllegalArgumentException_Toast">Verbindung zum Telephony-Subsystem ist fehlgeschlagen. Ein funktionaler Fehler ist aufgetreten.</string>
     <string name="callActivity_endCall_NoSuchMethodException_Toast">Eine Funktion wurde nicht gefunden.</string>
@@ -119,7 +119,7 @@
     <string name="callActivity_DownloadTextfile_Succeed_Toast">Textdatei erfolgreich heruntergeladen</string>
     <string name="callActivity_DownloadTextfile_Exception">Die Antwort des Betreuers konnte nicht gelesen werden.</string>
     <string name="callActivity_Firebase_DownloadTextfile_UpdateProgress">Antwort vom Firebase-Storage herunterladen zu</string>
-    <string name="callActivity_Firebase_DownloadTextfile_Exception">Failed to download text-file:</string>
+    <string name="callActivity_Firebase_DownloadTextfile_Exception">Download fehlgeschlagen</string>
     <string name="callActivity_CreateImage_SimpleDateFormat">yyyy.MM.dd_HH:mm:ss</string>
     <string name="callActivity_fileExtension_JPEG_">JPEG_</string>
     <string name="callActivity_Underscore">_</string>
@@ -129,7 +129,7 @@
     <string name="callActivity_Firebase_CreateTempFilePrefix">images</string>
     <string name="callActivity_Firebase_DownloadPhoto_Success_Toast">Foto erfolgreich heruntergeladen</string>
     <string name="callActivity_Firebase_DownloadPhoto_UpdateProgress">Bild herunterladen vom Firebase-Storage zu</string>
-    <string name="callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception">Failed to create temp file:</string>
+    <string name="callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception">Download fehlgeschlagen</string>
     <string name="callActivity_Accept_Toast">Akzeptiert.</string>
     <string name="callActivity_Decline_Toast">Nicht akzeptiert.</string>
 

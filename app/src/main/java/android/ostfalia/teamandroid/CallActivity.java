@@ -457,7 +457,7 @@ public class CallActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception), Toast.LENGTH_LONG).show();
                     //progressDialog.dismiss();
                     downloading = false;
                     progressDialog.dismiss();
@@ -470,7 +470,7 @@ public class CallActivity extends AppCompatActivity {
                 }
             });
         } catch (IOException e) {
-            Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_DownloadPhoto_CreateTempFile_Exception), Toast.LENGTH_LONG).show();
             downloading = false;
             progressDialog.dismiss();
             progressbarVisible = false;
@@ -552,7 +552,7 @@ public class CallActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Exception e) {
                     downloading = false;
                     progressbarVisible = false;
-                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception) + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CallActivity.this, getString(R.string.callActivity_Firebase_Download_Exception), Toast.LENGTH_LONG).show();
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override

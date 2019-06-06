@@ -12,7 +12,9 @@
     <string name="loginActivity_Role_Betreuter">Betreuter</string>
     <string name="loginActivity_Telephonenumber">Die Telefonnummer des Gegenüber ist …</string>
     <string name="loginActivity_TextView_Password">Sicherheitspasswort für Betreuer</string>
-    <string name="loginActivity_Info">Das Passwort wird für die Änderungen von einigen Informationen (z.B.&#160;Handynummer des Bereuers) benötigt. Schreiben Sie sich das Passwort gut auf!\nDie Informationen werden geändert, indem bei dem Betreuten drei Mal in einer bestimmten Zeit auf den Namen des Betreuers getippt wird.\n\nDie Telefonnummer des Betreuten wird benötigt, um eine Verbindung zwischen zwei Geräten aufbauen zu können.</string>
+    <string name="loginActivity_Info">Das Passwort wird für die Änderungen von einigen Informationen (z.B.&#160;Handynummer des Bereuers) benötigt. Schreiben Sie sich das Passwort gut auf!
+        \nDie Informationen werden geändert, indem bei dem Betreuten drei Mal in einer bestimmten Zeit auf den Namen des Betreuers getippt wird.
+        \n\nDie Telefonnummer des Betreuten wird benötigt, um eine Verbindung zwischen zwei Geräten aufbauen zu können.</string>
 
     <!-- MainActivity -->
     <string name="anrufen">anrufen</string>
@@ -28,6 +30,8 @@
     <string name="showContactDetails">Kontakt anzeigen</string>
     <string name="btnDeleteContact">Aktuellen Kontakt entfernen</string>
     <string name="TextView_Receiver">Telefonnummer: -</string>
+    <string name="mainActivity_Info">Das Passwort, was Sie beim Login des Betreuten angegeben haben, wird für die Änderungen Ihrer Informationen (z.B.&#160;Handynummer) auf dem Gerät des Betreuten benötigt.
+        \nDie Informationen werden geändert, indem bei dem Betreuten drei Mal in einer bestimmten Zeit auf den Namen des Betreuers getippt wird.</string>
 
     <string-array name="spinnerContactInit">
         <item>Kein Kontakt vorhanden</item>

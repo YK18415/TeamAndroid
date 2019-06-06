@@ -87,7 +87,6 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                 isIncoming = true;
                 callStartTime = new Date();
                 savedNumber = number;
-                onIncomingCallReceived(context, number, callStartTime);
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
@@ -121,16 +120,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         lastState = state;
     }
 
-    /**
-     * Is called when the phone is called
-     * @param ctx The current context
-     * @param number The phone number of the partner
-     * @param start When the phone call started
-     */
-    protected void onIncomingCallReceived(Context ctx, String number, Date start)
-    {
 
-    }
 
     /**
      * Is called when an incoming call is answered

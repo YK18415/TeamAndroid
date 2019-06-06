@@ -585,9 +585,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void run() {
                 Intent intent = new Intent(MainActivity.this, CallActivity.class);
-                //String role;
-                SharedPreferences settings = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.;
-                //role = settings.getString("role","");
+                SharedPreferences settings = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.
                 switch(settings.getString("role","")) {
                     case "Betreuer":
                         role = Role.BETREUER;

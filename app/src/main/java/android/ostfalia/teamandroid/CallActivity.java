@@ -394,7 +394,7 @@ public class CallActivity extends AppCompatActivity {
             progressbarVisible = true;
             progressDialog.show();
         }
-        progressDialog.setMessage(message + ((int) progress) + getString(R.string.callActivity_Firebase_ProgressPercentage));
+        progressDialog.setMessage(message + " " + ((int) progress) + getString(R.string.callActivity_Firebase_ProgressPercentage));
         if (progress >= 99.9) {
             try {
                 Thread.sleep(1000);

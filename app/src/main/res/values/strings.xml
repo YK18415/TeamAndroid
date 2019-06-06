@@ -82,7 +82,7 @@
     <string name="callActivity_NoImage_Toast">Kein Bild vorhanden</string>
     <string name="callActivity_ProgressDialog_Upload_Headline">Hochladen</string>
     <string name="callActivity_ProgressDialog_Download_Headline">Herunterladen</string>
-    <string name="callActivity_Firebase_UploadUpdateProgress">Hochladen zum Firebase-Storage zu </string>
+    <string name="callActivity_Firebase_UploadUpdateProgress">Hochladen zum Firebase-Storage zu</string>
     <string name="callActivity_Firebase_ProgressPercentage">% fertig</string>
     <string name="callActivity_createImageFile_Exception_Toast">Es konnte kein einzigartiger Speicherpfad für das Foto erstellt werden.</string>
     <string name="callActivity_Accept_TextfileContent">yes</string>

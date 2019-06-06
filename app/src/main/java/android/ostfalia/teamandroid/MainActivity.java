@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -97,10 +96,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         setDefaultText();
-        // Default-Betreute:
-
-//        contactList.add(new Contact("Max", "Mustermann", "01234567891011"));
-//        contactList.add(new Contact("Hallo", "Duda", "12343212121"));
     }
 
     /**
@@ -108,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void initView() {
         this.textViewReceiver = findViewById(R.id.textViewReceiver);
-        switch(this.role) {
+        switch(role) {
             case BETREUER:
                 this.spinnerContactList = findViewById(R.id.spinnerContactList);
                 ImageButton btnAddPerson = findViewById(R.id.imageButtonAddPerson);
@@ -187,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         android.app.AlertDialog.Builder imageDialog = new android.app.AlertDialog.Builder(this);
         imageDialog.setTitle("Informationen");
         LayoutInflater inflater = this.getLayoutInflater(); // Takes the xml-file and builds the View-Object from it. It is neccessary, because I have a custom-layout for the image.
-        View view = inflater.inflate(R.layout.info_popup, null);
+        View view = inflater.inflate(R.layout.info_popup_betreuer, null);
 
         imageDialog.setView(view);
         imageDialog.setNegativeButton(getString(R.string.imageDialog_NegativeButton_Back), new DialogInterface.OnClickListener() {
@@ -251,10 +246,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(passwordInput.equals(passwordSaved)) {
                     dialog.dismiss();
                     openChoicePopup();
-                   /* Intent intent = new Intent(MainActivity.this, NewContact.class);
-                    intent.putExtra("CONTACT", contactList.get(0));
-                    contactList.clear();
-                    startActivityForResult(intent, 1);*/
                 } else {
                     dialog.dismiss();
                     Toast.makeText(MainActivity.this, "Sie haben das falsche Password eingegeben.", Toast.LENGTH_LONG).show();
@@ -311,51 +302,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Validate, that the user has logged in before
      */
     private Boolean validateFirstLogin() {
-        String role;
+        String roleString;
         SharedPreferences loginData = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading
-        role = loginData.getString("role","");
+        roleString = loginData.getString("role","");
 
-        if(TextUtils.isEmpty(role)) {
+        if(TextUtils.isEmpty(roleString)) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            //startActivityForResult(intent, 1);
             startActivity(intent);
             return true;
-        }else {
-            this.setRole(role);
+        } else {
+            if(roleString != null)
+                this.setRole(roleString);
             Bundle bundle = getIntent().getExtras();
             if(bundle != null) {
                 Contact contact = (Contact) bundle.get("BETREUER_CONTACT");
 
-                if(this.role == Role.BETREUTER && contact != null) {
+                if(role == Role.BETREUTER && contact != null) {
                     contactList.add(contact);
                     saveContactList();
                 }
             }
 
             return false;
-        }/* else if (role.equals(getResources().getString(R.string.loginActivity_Role_Betreuer))) {
-            Intent intent = new Intent(MainActivity.this, MainActivityBetreuer.class);
-            startActivity(intent);
-        }*/
-
+        }
     }
 
     /**
      * Set Enum for switching Content View
-     * @param role String (Betreuer / Betreuter)
+     * @param roleString String (Betreuer / Betreuter)
      */
-    private void setRole(String role) {
-        if(role.equals("Betreuer"))
-            this.role = Role.BETREUER;
-        else if(role.equals("Betreuter"))
-            this.role = Role.BETREUTER;
+    private void setRole(String roleString) {
+        if(roleString.equals("Betreuer"))
+            role = Role.BETREUER;
+        else if(roleString.equals("Betreuter"))
+            role = Role.BETREUTER;
     }
 
     /**
      * Set correct Content in Main Activity
      */
     private void setContent() {
-        switch(this.role) {
+        switch(role) {
             case BETREUER:
                 findViewById(R.id.content_betreuer).setVisibility(View.VISIBLE);
                 findViewById(R.id.content_betreuter).setVisibility(View.GONE);
@@ -405,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Set Data in Content View
      */
     private void initContent() {
-        switch (this.role) {
+        switch (role) {
             case BETREUER:
                 if(!contactList.isEmpty()) {
                     String[] names = this.convertContactListToNamesArray();
@@ -538,10 +525,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void setDefaultText(){
         //textViewReceiver.setText(R.string.TextView_Receiver);
         //street, houseNo, post, city
-        street.setText("Straße: -");
-        houseNo.setText("Hausnummer: -");
-        post.setText("Plz: -");
-        city.setText("Ort: -");
+        street.setText(getString(R.string.MainActivity_textView_setDefaultText_Street));
+        houseNo.setText(getString(R.string.MainActivity_textView_setDefaultText_HouseNr));
+        post.setText(getString(R.string.MainActivity_textView_setDefaultText_Postcode));
+        city.setText(getString(R.string.MainActivity_textView_setDefaultText_City));
     }
 
     /**
@@ -586,13 +573,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void run() {
                 Intent intent = new Intent(MainActivity.this, CallActivity.class);
                 SharedPreferences settings = getApplicationContext().getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.
-                switch(settings.getString("role","")) {
-                    case "Betreuer":
-                        role = Role.BETREUER;
-                        break;
-                    case "Betreuter":
-                        role = Role.BETREUTER;
-                        break;
+                String roleString = settings.getString("role","");
+                if(roleString != null) {
+                    switch (roleString) {
+                        case "Betreuer":
+                            role = Role.BETREUER;
+                            break;
+                        case "Betreuter":
+                            role = Role.BETREUTER;
+                            break;
+                    }
                 }
                 startActivity(intent);
                 handlerThread.quit();
@@ -604,7 +594,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
 
-        switch(this.role) {
+        switch(role) {
             case BETREUER:  new BackgroundTask().execute(contactList.get(spinnerContactList.getSelectedItemPosition()).getTelephonenumber());               break;
             case BETREUTER:  new BackgroundTask().execute(contactList.get(0).getTelephonenumber());               break;
         }

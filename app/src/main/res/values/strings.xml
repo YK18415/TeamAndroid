@@ -18,6 +18,10 @@
 
     <!-- MainActivity -->
     <string name="anrufen">anrufen</string>
+    <string name="MainActivity_textView_setDefaultText_Street">Straße: -</string>
+    <string name="MainActivity_textView_setDefaultText_HouseNr">Hausnummer: -</string>
+    <string name="MainActivity_textView_setDefaultText_Postcode">Plz: -</string>
+    <string name="MainActivity_textView_setDefaultText_City">Ort: -</string>
 
     <!-- MainActivity - Betreuer -->
     <string name="label_overview_betreuer">Willkommen</string>
@@ -42,7 +46,7 @@
     <string name="content_betreuter_NameHint">Name</string>
     <string name="content_betreuter_StreetHint">Straße + Hausnummer</string>
     <string name="content_betreuter_addressHint">Adresse</string>
-    <string name="content_betreuter_labelTel">Nummer:</string>
+    <string name="content_betreuter_labelTel">Nummer: </string>
     <string name="content_betreuter_postcodeHint">38302</string>
 
     <!-- NewContactActivity -->
@@ -66,7 +70,7 @@
     <string name="contactNoPostal">Keine Postleitzahl angegeben</string>
     <string name="contactNoCity">Keine Stadt angegeben</string>
     <string name="betreuer_ndern">Betreuer Ändern</string>
-    <string name="changeBetrHelpText">Um den Betreuer auf dem Gerät des Betreuten zu ändern, ... und geben sie das beim Einrichten der App festgelegte Passwort ein.</string>
+    <string name="changeBetrHelpText">Um den Betreuer auf dem Gerät des Betreuten zu ändern, … und geben sie das beim Einrichten der App festgelegte Passwort ein.</string>
 
     <!-- CallActivity -->
     <string name="callActivity_auflegen">auflegen</string>

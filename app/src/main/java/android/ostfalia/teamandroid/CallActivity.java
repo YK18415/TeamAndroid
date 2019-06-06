@@ -182,8 +182,6 @@ public class CallActivity extends AppCompatActivity {
      * Sets the layout depending on the role of the user and sets the clickListener for the Betreuer (Accept/Decline-Button).
      */
     private void handleLayout() {
-       /* Bundle bundle = getIntent().getExtras();
-        String role = bundle.get("role").toString();*/
         SharedPreferences settings = getSharedPreferences(getString(R.string.SharedPreferencesName), MODE_PRIVATE); // For reading.;
         String role = settings.getString(getString(R.string.SharedPreferences_Key_RoleUser),"");
 
@@ -728,7 +726,7 @@ public class CallActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
+        if(user != null) {
         } else {
             signInAnonymously();
         }
@@ -740,45 +738,6 @@ public class CallActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    // TODO: Copy this in the documentation.
-
-    //Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-    /* In der onCreate:
-         //settings = getApplicationContext().getSharedPreferences("emailmessagedetails", MODE_PRIVATE); // For reading.
-        /*Boolean wasPaused = getIntent().getExtras().getBoolean("IS_PAUSED");
-
-        if(isCallActive(this) && wasPaused) {
-            String bitmapStr = settings.getString("imagePreferance", "");
-            imageView.setImageBitmap(decodeBase64(bitmapStr));
-        }*/
-
-    // In onPause:
-        /*SharedPreferences.Editor editor = settings.edit(); // For writing.
-
-        // Store the data:
-        editor.putBoolean("IS_CALL_ACTIVE", isCallActive(this));
-        editor.putString("CURRENT_PHOTO_PATH", currentPhotoPath);
-        // Store image:
-        editor.putString("imagePreferance", encodeTobase64(bitmap));
-
-        editor.commit();
-    }
-
-    // Eigene Methoden:
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immage = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immage.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-
-        return imageEncoded;
-    }
-
-    public static Bitmap decodeBase64(String input) {
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-    }*/
 
     @Override
     public void onBackPressed() {

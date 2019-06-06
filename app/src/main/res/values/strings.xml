@@ -34,7 +34,7 @@
     <string name="showContactDetails">Kontakt anzeigen</string>
     <string name="btnDeleteContact">Aktuellen Kontakt entfernen</string>
     <string name="TextView_Receiver">Telefonnummer: -</string>
-    <string name="mainActivity_Info">Das Passwort, was Sie beim Login des Betreuten angegeben haben, wird für die Änderungen Ihrer Informationen (z.B.&#160;Handynummer) auf dem Gerät des Betreuten benötigt.
+    <string name="mainActivity_Info">Das Passwort, welches Sie beim Login des Betreuten angegeben haben, wird für die Änderungen Ihrer Informationen (z.B.&#160;Handynummer) auf dem Gerät des Betreuten benötigt.
         \nDie Informationen werden geändert, indem bei dem Betreuten drei Mal in einer bestimmten Zeit auf den Namen des Betreuers getippt wird.</string>
 
     <string-array name="spinnerContactInit">
